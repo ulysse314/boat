@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# Value relay
+
 import asyncio
 import json
 import logging
