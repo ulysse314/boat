@@ -7,6 +7,7 @@ import pprint
 import sys
 
 os.chdir(os.path.abspath(os.path.dirname(sys.argv[0])))
+sys.path.append("..")
 
 import camera
 import config
