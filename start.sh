@@ -1,7 +1,6 @@
 #!/bin/bash
 
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-BOAT_NAME=`cat /etc/ulysse314/name`
 log_file="${DIR}/../daemon.log"
 mv "${log_file}.1" "${log_file}.2"
 mv "${log_file}" "${log_file}.1"
@@ -10,5 +9,5 @@ while true
 do
   echo "--" >> "${log_file}"
   date >> "${log_file}"
-  "${DIR}/$1/server.py" "${BOAT_NAME}" "/etc/ulysse314/ulysse314.ini" >> "${log_file}" 2>&1
+  "${DIR}/$1/server.py" >> "${log_file}" 2>&1
 done
