@@ -9,5 +9,5 @@ while true
 do
   echo "--" >> "${log_file}"
   date >> "${log_file}"
-  "${DIR}/$1/server.py" "$2" "${DIR}/../ulysse314.ini" >> "${log_file}" 2>&1
+  "${DIR}/$1/server.py" "$2" "/etc/ulysse314/ulysse314.ini" >> "${log_file}" 2>&1
 done
