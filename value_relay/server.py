@@ -16,11 +16,11 @@ import camera
 import config
 import value_logger
 
-BOAT_NAME = sys.argv[1]
-CONFIG_FILE = sys.argv[2]
+with open("/etc/ulysse314/name", "r") as file:
+  BOAT_NAME = file.readline().strip()
 
 logging.basicConfig(level=logging.DEBUG)
-config.load(CONFIG_FILE, BOAT_NAME)
+config.load(BOAT_NAME)
 
 BOAT_PORT = int(config.values["boat_port"])
 CONTROLLER_PORT = int(config.values["controller_port"])

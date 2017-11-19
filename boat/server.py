@@ -17,7 +17,6 @@ import value_sender
 
 with open("/etc/ulysse314/name", "r") as file:
   BOAT_NAME = file.readline().strip()
-CONFIG_FILE = "/etc/ulysse314/ulysse314.ini"
 
 logging.basicConfig(level=logging.DEBUG)
 config.load(CONFIG_FILE, BOAT_NAME)

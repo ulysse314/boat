@@ -7,7 +7,7 @@ values = None
 def load(filename, boat_name):
   global values
   parser = configparser.SafeConfigParser()
-  parser.read(filename)
+  parser.read("/etc/ulysse314/ulysse314.ini")
 
   if values == None:
     values = {}
