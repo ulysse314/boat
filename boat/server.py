@@ -15,8 +15,9 @@ sys.path.append("..")
 import config
 import value_sender
 
-BOAT_NAME = sys.argv[1]
-CONFIG_FILE = sys.argv[2]
+with open("/etc/ulysse314/name", "r") as file:
+  BOAT_NAME = file.readline().strip()
+CONFIG_FILE = "/etc/ulysse314/ulysse314.ini"
 
 logging.basicConfig(level=logging.DEBUG)
 config.load(CONFIG_FILE, BOAT_NAME)
