@@ -11,6 +11,8 @@ def load(filename, boat_name):
 
   if values == None:
     values = {}
+    for name, value in parser.items("shared"):
+      values[name] = value
     for name, value in parser.items(boat_name):
       values[name] = value
   return values
