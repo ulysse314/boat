@@ -26,7 +26,7 @@ logging.basicConfig(level=logging.DEBUG)
 config.load(CONFIG_FILE, BOAT_NAME)
 
 BOAT_PORT = int(config.values["boat_port"])
-RELAY_SERVER = config.value["value_relay_server"]
+RELAY_SERVER = config.values["value_relay_server"]
 
 sender = value_sender.ValueSender(BOAT_NAME, RELAY_SERVER, BOAT_PORT, config.values["boat_key"])
 
