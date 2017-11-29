@@ -9,12 +9,11 @@ import os
 import pprint
 import sys
 
-import e3372
-
 os.chdir(os.path.abspath(os.path.dirname(sys.argv[0])))
 sys.path.append("..")
 
 import config
+import e3372
 import value_sender
 
 SETTINGS_DIR = "/etc/ulysse314/"
