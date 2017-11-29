@@ -18,8 +18,11 @@ import value_sender
 
 SETTINGS_DIR = "/etc/ulysse314/"
 CONFIG_FILE = os.path.join(SETTINGS_DIR, "ulysse314.ini")
-with open(os.path.join(SETTINGS_DIR, "name"), "r") as file:
-  BOAT_NAME = file.readline().strip()
+if len(sys.argv) == 1:
+  with open(os.path.join(SETTINGS_DIR, "name"), "r") as file:
+    BOAT_NAME = file.readline().strip()
+else:
+  BOAT_NAME = sys.argv[1]
 
 logging.basicConfig(level=logging.DEBUG)
 config.load(CONFIG_FILE, BOAT_NAME)

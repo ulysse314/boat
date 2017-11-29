@@ -9,5 +9,9 @@ while true
 do
   echo "--" >> "${log_file}"
   date >> "${log_file}"
-  "${DIR}/$1/server.py" >> "${log_file}" 2>&1
+  if [ "$1"" == "" ]; then
+    "${DIR}/$1/server.py" >> "${log_file}" 2>&1
+  else
+    "${DIR}/$1/server.py" "$1" >> "${log_file}" 2>&1
+  fi
 done

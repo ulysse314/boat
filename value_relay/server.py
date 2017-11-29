@@ -16,8 +16,11 @@ import camera
 import config
 import value_logger
 
-with open("/etc/ulysse314/name", "r") as file:
-  BOAT_NAME = file.readline().strip()
+if len(sys.argv) == 1:
+  with open("/etc/ulysse314/name", "r") as file:
+    BOAT_NAME = file.readline().strip()
+else:
+  BOAT_NAME = sys.argv[1]
 
 logging.basicConfig(level=logging.DEBUG)
 config.load(BOAT_NAME)
