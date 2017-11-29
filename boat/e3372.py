@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 
+import aiohttp
+import asyncio
 import logging
 import pprint
-import requests
 import sys
 import time
 import threading
@@ -59,30 +60,33 @@ class HuaweiE3372:
     self.session = None
     self.logger.debug("e3372 init stop")
 
-  def get(self,path):
+  def start(self):
+    task = asyncio.ensure_future(self.run())
+
+  async def get(self,path):
     try:
       if self.session == None:
-        self.session = requests.Session()
-        # get a session cookie by requesting the COOKIE_URL
-        self.session.get(self.base_url + self.COOKIE_URL, timeout = 10)
+        self.session = aiohttp.ClientSession()
+      # get a session cookie by requesting the COOKIE_URL
+      await self.session.get(self.base_url + self.COOKIE_URL, timeout = 10)
       return xmltodict.parse(self.session.get(self.base_url + path, timeout = 5).text).get('response',None)
     except Exception as e:
+      self.logger.exception("get")
       self.session = None
-      self.logger.exception()
     return {}
 
-  def run(self):
+  async def run(self):
     while self.running:
       values = {}
       try:
-        for key,value in self.get('/api/device/signal').items():
-          if key in self.KEYS:
-            values[key] = value
-        for key,value in self.get('/api/monitoring/status').items():
-          if key in self.KEYS:
-            values[key] = value
+        tasks = [ self.get('/api/device/signal'), self.get('/api/monitoring/status')]
+        for finished in asyncio.as_completed(tasks):
+          dict = await finished
+          for key,value in dict.items():
+            if key in self.KEYS:
+              values[key] = value
       except Exception as e:
-        log.logException(self.logger, e)
+        self.logger.exception("run")
       self.values = values
       await asyncio.sleep(1)
 
