@@ -9,6 +9,8 @@ import os
 import pprint
 import sys
 
+import e3372
+
 os.chdir(os.path.abspath(os.path.dirname(sys.argv[0])))
 sys.path.append("..")
 
@@ -27,6 +29,8 @@ BOAT_PORT = int(config.values["boat_port"])
 RELAY_SERVER = config.value["value_relay_server"]
 
 sender = value_sender.ValueSender(BOAT_NAME, RELAY_SERVER, BOAT_PORT, config.values["boat_key"])
+
+controllers = [ e3372.HuaweiE3372() ]
 
 loop = asyncio.get_event_loop()
 loop.create_task(sender.run())
