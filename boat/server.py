@@ -15,7 +15,9 @@ sys.path.append("..")
 import config
 import value_sender
 
-with open("/etc/ulysse314/name", "r") as file:
+SETTINGS_DIR = "/etc/ulysse314/"
+CONFIG_FILE = os.path.join(SETTINGS_DIR, "ulysse314.ini")
+with open(os.path.join(SETTINGS_DIR, "name"), "r") as file:
   BOAT_NAME = file.readline().strip()
 
 logging.basicConfig(level=logging.DEBUG)
