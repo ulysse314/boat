@@ -28,7 +28,7 @@ class ValueSender:
       try:
         self.logger.debug("Starting connection")
         loop = asyncio.get_event_loop()
-        await loop.create_connection(ulysse_protocol.UlysseProtocol, self.value_relay_server, self.boat_port)
+        await loop.create_connection(lambda: ulysse_protocol.UlysseProtocol(self), self.value_relay_server, self.boat_port)
       except:
         self.logger.exception("connection failed")
         await asyncio.sleep(1)
@@ -44,7 +44,7 @@ class ValueSender:
   def connection_made(self, transport):
     self.logger.info("Connection made")
     self.transport = transport
-    self.transport.send_key(key)
+    self.transport.send_key(self.key)
     self.send_next_values()
 
   def connection_lost(self, ex):
