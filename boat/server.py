@@ -25,7 +25,7 @@ else:
   BOAT_NAME = sys.argv[1]
 
 logging.basicConfig(level=logging.DEBUG)
-config.load(CONFIG_FILE, BOAT_NAME)
+config.load(BOAT_NAME)
 
 BOAT_PORT = int(config.values["boat_port"])
 RELAY_SERVER = config.values["value_relay_server"]
