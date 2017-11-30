@@ -30,7 +30,7 @@ config.load(BOAT_NAME)
 BOAT_PORT = int(config.values["boat_port"])
 RELAY_SERVER = config.values["value_relay_server"]
 
-sender = value_sender.ValueSender(BOAT_NAME, RELAY_SERVER, BOAT_PORT, config.values["boat_key"])
+sender = value_sender.ValueSender(None, BOAT_NAME, RELAY_SERVER, BOAT_PORT, config.values["boat_key"])
 
 controllers = [ e3372.HuaweiE3372() ]
 
