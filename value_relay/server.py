@@ -23,6 +23,7 @@ else:
   BOAT_NAME = sys.argv[1]
 
 logging.basicConfig(level=logging.DEBUG)
+logging.debug(BOAT_NAME)
 config.load(BOAT_NAME)
 
 BOAT_PORT = int(config.values["boat_port"])
