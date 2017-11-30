@@ -4,7 +4,7 @@ import sys
 
 values = None
 
-def load(filename, boat_name):
+def load(boat_name):
   global values
   parser = configparser.SafeConfigParser()
   parser.read("/etc/ulysse314/ulysse314.ini")
