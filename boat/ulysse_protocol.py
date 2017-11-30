@@ -50,10 +50,10 @@ class UlysseProtocol(asyncio.Protocol):
     self.transport.write_eof()
 
   def send_key(self, data):
-    self.transport.write(data)
-    self.transport.write("\n")
+    self.transport.write(data.encode("utf-8"))
+    self.transport.write("\n".encode("utf-8"))
 
   def send_values(self, values):
     data = json.dumps(values)
-    self.transport.write(data)
-    self.transport.write("\n")
+    self.transport.write(data.encode("utf-8"))
+    self.transport.write("\n".encode("utf-8"))
