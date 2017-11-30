@@ -9,9 +9,9 @@ while true
 do
   echo "--" >> "${log_file}"
   date >> "${log_file}"
-  if [ "$1" == "" ]; then
+  if [ "$2" == "" ]; then
     "${DIR}/$1/server.py" >> "${log_file}" 2>&1
   else
-    "${DIR}/$1/server.py" "$1" >> "${log_file}" 2>&1
+    "${DIR}/$1/server.py" "$2" >> "${log_file}" 2>&1
   fi
 done
