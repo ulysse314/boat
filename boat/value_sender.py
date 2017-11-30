@@ -27,7 +27,8 @@ class ValueSender:
     while True:
       try:
         self.logger.debug("Starting connection")
-        await loop.create_connection(UlysseProtocol, self.value_relay_server, self.boat_port)
+        loop = asyncio.get_event_loop()
+        await loop.create_connection(ulysse_protocol.UlysseProtocol, self.value_relay_server, self.boat_port)
       except:
         self.logger.exception("connection failed")
         await asyncio.sleep(1)
