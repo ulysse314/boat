@@ -33,8 +33,14 @@ RELAY_SERVER = config.values["value_relay_server"]
 sender = value_sender.ValueSender(None, BOAT_NAME, RELAY_SERVER, BOAT_PORT, config.values["boat_key"])
 
 controllers = [ e3372.HuaweiE3372() ]
+started_controllers = []
 for controller in controllers:
-  controller.start()
+  try:
+    controller.start()
+    logging.debug("{} started".format(controller.__class__.__name__))
+    started_controllers.append(controller)
+  except:
+    logging.exception("{} not started !!!!".format(controller.__class__.__name__))
 
 loop = asyncio.get_event_loop()
 loop.create_task(sender.connect())
