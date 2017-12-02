@@ -10,7 +10,7 @@ import threading
 import xmltodict
 
 class HuaweiE3372:
-  BASE_URL = 'http://{host}'
+  BASE_URL = 'http://{host}{url}'
   COOKIE_URL = '/html/index.html'
   XML_APIS = [
     '/api/device/information',
@@ -54,7 +54,7 @@ class HuaweiE3372:
     self.logger.debug("e3372 init start")
     threading.Thread.__init__(self)
     self.host = host
-    self.base_url = self.BASE_URL.format(host=host)
+    self.base_url = self.BASE_URL.format(host = host, url = "{url}")
     self.values = {}
     self.running = True #setting the thread running to true
     self.session = None
@@ -66,28 +66,27 @@ class HuaweiE3372:
   async def get(self,path):
     try:
       if self.session == None:
-        self.session = aiohttp.ClientSession()
-        self.logger.debug("----")
-        resp = await self.session.get(self.base_url + self.COOKIE_URL, timeout = 10)
-        self.logger.debug(self.base_url + self.COOKIE_URL)
-        self.logger.debug(pprint.pformat(resp))
-        self.logger.debug(pprint.pformat(resp.cookies))
-        self.logger.debug(pprint.pformat(resp.cookies["SessionID"]))
-        await resp.text()
+        # cookie jar should be unsafe since the domain is an ip.
+        self.session = aiohttp.ClientSession(cookie_jar = aiohttp.CookieJar(unsafe = True))
+        resp = await self.session.get(self.base_url.format(url = self.COOKIE_URL), timeout = 10)
+        if not resp.cookies["SessionID"]:
+          self.logger.warning("No session cookie")
+          self.session = None
       # get a session cookie by requesting the COOKIE_URL
-      print(len(self.session.cookie_jar))
-      for cookie in self.session.cookie_jar:
-        print(cookie.key)
-        print(cookie["domain"])
-      self.logger.debug("=====")
-      self.logger.debug(self.base_url + path)
-      resp = await self.session.get(self.base_url + path, timeout = 10)
-      self.logger.debug(pprint.pformat(resp))
+      url = self.base_url.format(url = path)
+      self.logger.debug(url)
+      resp = await self.session.get(url, timeout = 10)
+      if resp.status != 200:
+        self.logger.warning("Error with URL " + url)
+        return {}
       text = await resp.text()
-      self.logger.debug(pprint.pformat(text))
       json = xmltodict.parse(text)
-      self.logger.debug(pprint.pformat(json))
-      return json.get('response',None)
+      if "error" in json:
+        self.logger.warning("Error")
+        self.logger.warning(pprint.pformat(json))
+        self.session = None
+        return {}
+      return json["response"]
     except Exception as e:
       self.logger.exception("get")
       self.session = None
@@ -97,7 +96,7 @@ class HuaweiE3372:
     while self.running:
       values = {}
       try:
-        tasks = [ self.get('/api/device/signal'), self.get('/api/monitoring/status')]
+        tasks = [ self.get('/api/device/signal'), self.get('/api/monitoring/status') ]
         for task in tasks:
           dict = await task
           for key,value in dict.items():
