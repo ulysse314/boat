@@ -12,7 +12,10 @@ import xmltodict
 class HuaweiE3372:
   BASE_URL = 'http://{host}{url}'
   COOKIE_URL = '/html/index.html'
-  XML_APIS = [
+  APIS = [ '/api/device/signal',
+    '/api/monitoring/status',
+    '/api/monitoring/traffic-statistics' ]
+  APIS_AVAILABLE = [
     '/api/device/information',
     '/api/device/signal',
     '/api/monitoring/status',
@@ -23,6 +26,7 @@ class HuaweiE3372:
     '/api/net/net-mode',
   ]
   KEYS = [
+    # /api/monitoring/status
     "ConnectionStatus",
     "CurrentNetworkType",
     "CurrentNetworkTypeEx",
@@ -31,12 +35,14 @@ class HuaweiE3372:
     "SignalIcon",
     "SignalStrength",
     "SimStatus",
-    "cell_id",
     "cellroam",
     "classify",
-    "ecio",
     "flymode",
     "maxsignal",
+    "simlockStatus",
+    # /api/device/signal
+    "cell_id",
+    "ecio",
     "mode",
     "pci",
     "rscp",
@@ -44,8 +50,13 @@ class HuaweiE3372:
     "rsrq",
     "rssi",
     "sc",
-    "simlockStatus",
     "sinr",
+    # /api/monitoring/traffic-statistics
+    "CurrentConnectTime",
+    "CurrentUpload",
+    "CurrentDownload",
+    "CurrentDownloadRate",
+    "CurrentUploadRate",
   ]
   session = None
 
@@ -63,7 +74,7 @@ class HuaweiE3372:
   def start(self):
     task = asyncio.ensure_future(self.run())
 
-  async def get(self,path):
+  async def get(self, path):
     try:
       if self.session == None:
         # cookie jar should be unsafe since the domain is an ip.
@@ -92,29 +103,39 @@ class HuaweiE3372:
       self.session = None
     return {}
 
+  async def get_values(self):
+    values = {}
+    try:
+      for api in self.APIS:
+        dict = await self.get(api)
+        for key,value in dict.items():
+          if key in self.KEYS:
+            values[key] = value
+    except Exception as e:
+      self.logger.exception("run")
+    return values
+
   async def run(self):
     while self.running:
-      values = {}
-      try:
-        tasks = [ self.get('/api/device/signal'), self.get('/api/monitoring/status') ]
-        for task in tasks:
-          dict = await task
-          for key,value in dict.items():
-            if key in self.KEYS:
-              values[key] = value
-      except Exception as e:
-        self.logger.exception("run")
+      values = await self.get_values()
       self.values = values
       await asyncio.sleep(1)
 
 async def debug(e3372):
   while True:
-    pprint.pprint(e3372.values)
+    values = await e3372.get_values()
+    pprint.pprint(values)
+    print("====================================")
+    for api in e3372.APIS_AVAILABLE:
+      pprint.pprint(api)
+      values = await e3372.get(api)
+      pprint.pprint(values)
+      print(" ")
+    print("------------------------------------")
     await asyncio.sleep(1)
 
 def main():
   e3372 = HuaweiE3372()
-  e3372.start()
   task = asyncio.ensure_future(debug(e3372))
   loop = asyncio.get_event_loop()
   loop.run_forever()
