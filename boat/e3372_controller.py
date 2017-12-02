@@ -68,9 +68,27 @@ class E3372Controller:
     self.session = None
 
   def start(self):
-    task = asyncio.ensure_future(self.run())
+    asyncio.ensure_future(self.run())
 
-  async def get(self, path):
+  async def run(self):
+    while self.running:
+      values = await self._get_values()
+      self.values = { "cellular": values }
+      await asyncio.sleep(1)
+
+  async def _get_values(self):
+    values = {}
+    try:
+      for api in self.APIS:
+        dict = await self._get(api)
+        for key,value in dict.items():
+          if key in self.KEYS:
+            values[key] = value
+    except Exception as e:
+      self.logger.exception("run")
+    return values
+
+  async def _get(self, path):
     try:
       if self.session == None:
         # cookie jar should be unsafe since the domain is an ip.
@@ -99,39 +117,21 @@ class E3372Controller:
       self.session = None
     return {}
 
-  async def get_values(self):
-    values = {}
-    try:
-      for api in self.APIS:
-        dict = await self.get(api)
-        for key,value in dict.items():
-          if key in self.KEYS:
-            values[key] = value
-    except Exception as e:
-      self.logger.exception("run")
-    return values
-
-  async def run(self):
-    while self.running:
-      values = await self.get_values()
-      self.values = values
-      await asyncio.sleep(1)
-
 async def debug(e3372_controller):
   while True:
-    values = await e3372_controller.get_values()
+    values = await e3372_controller._get_values()
     pprint.pprint(values)
     print("====================================")
     for api in e3372_controller.APIS_AVAILABLE:
       pprint.pprint(api)
-      values = await e3372_controller.get(api)
+      values = await e3372_controller._get(api)
       pprint.pprint(values)
       print(" ")
     print("------------------------------------")
     await asyncio.sleep(1)
 
 def main():
-  e3372_controller = E3372ControllerController()
+  e3372_controller = E3372Controller()
   task = asyncio.ensure_future(debug(e3372_controller))
   loop = asyncio.get_event_loop()
   loop.run_forever()
