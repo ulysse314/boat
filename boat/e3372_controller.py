@@ -8,7 +8,7 @@ import sys
 import time
 import xmltodict
 
-class HuaweiE3372:
+class E3372Controller:
   BASE_URL = 'http://{host}{url}'
   COOKIE_URL = '/html/index.html'
   APIS = [ '/api/device/signal',
@@ -117,22 +117,22 @@ class HuaweiE3372:
       self.values = values
       await asyncio.sleep(1)
 
-async def debug(e3372):
+async def debug(e3372_controller):
   while True:
-    values = await e3372.get_values()
+    values = await e3372_controller.get_values()
     pprint.pprint(values)
     print("====================================")
-    for api in e3372.APIS_AVAILABLE:
+    for api in e3372_controller.APIS_AVAILABLE:
       pprint.pprint(api)
-      values = await e3372.get(api)
+      values = await e3372_controller.get(api)
       pprint.pprint(values)
       print(" ")
     print("------------------------------------")
     await asyncio.sleep(1)
 
 def main():
-  e3372 = HuaweiE3372()
-  task = asyncio.ensure_future(debug(e3372))
+  e3372_controller = E3372ControllerController()
+  task = asyncio.ensure_future(debug(e3372_controller))
   loop = asyncio.get_event_loop()
   loop.run_forever()
 

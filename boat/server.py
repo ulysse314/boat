@@ -13,7 +13,7 @@ os.chdir(os.path.abspath(os.path.dirname(sys.argv[0])))
 sys.path.append("..")
 
 import config
-import e3372
+import e3372_controller
 import value_sender
 
 SETTINGS_DIR = "/etc/ulysse314/"
@@ -32,7 +32,7 @@ RELAY_SERVER = config.values["value_relay_server"]
 
 sender = value_sender.ValueSender(None, BOAT_NAME, RELAY_SERVER, BOAT_PORT, config.values["boat_key"])
 
-controllers = [ e3372.HuaweiE3372() ]
+controllers = [ e3372_controller.E3372Controller() ]
 started_controllers = []
 for controller in controllers:
   try:
