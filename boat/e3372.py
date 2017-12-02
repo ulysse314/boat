@@ -107,11 +107,17 @@ class HuaweiE3372:
       self.values = values
       await asyncio.sleep(1)
 
-#def main():
-#  e3372 = HuaweiE3372()
-#  for path in e3372.XML_APIS:
-#    for key,value in e3372.get(path).items():
-#      print(key,value)
-#
-#if __name__ == "__main__":
-#  main()
+async def debug(e3372):
+  while True:
+    pprint.pprint(e3372.values)
+    await asyncio.sleep(1)
+
+def main():
+  e3372 = HuaweiE3372()
+  e3372.start()
+  task = asyncio.ensure_future(debug(e3372))
+  loop = asyncio.get_event_loop()
+  loop.run_forever()
+
+if __name__ == "__main__":
+  main()
