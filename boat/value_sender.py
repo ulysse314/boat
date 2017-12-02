@@ -17,18 +17,21 @@ class ValueSender:
     self.value_relay_server = value_relay_server
     self.boat_port = boat_port
     self.key = key
+    self.transport = None
   
   def add_values(self, values):
     id = values["id"]
     self.values[id] = values
     self.ids_to_send.append(id)
 
-  async def run(self):
+  async def connect(self):
     while True:
       try:
         self.logger.debug("Starting connection")
         loop = asyncio.get_event_loop()
         await loop.create_connection(lambda: ulysse_protocol.UlysseProtocol(self), self.value_relay_server, self.boat_port)
+        self.logger.debug("Starting done")
+        break
       except:
         self.logger.exception("connection failed")
         await asyncio.sleep(1)
@@ -43,12 +46,16 @@ class ValueSender:
 ## connection
   def connection_made(self, transport):
     self.logger.info("Connection made")
+    if self.transport:
+      self.transport.delegate = None
     self.transport = transport
     self.transport.send_key(self.key)
     self.send_next_values()
 
   def connection_lost(self, ex):
-    self.logger.info("Connection lost: {}".format(self.peername))
+    peername = self.transport.get_extra_info('peername')
+    self.logger.info("Connection lost: {}".format(peername))
+    asyncio.ensure_future(self.connect())
 
   def received_message(self, message):
     if "id" in message:
@@ -59,4 +66,3 @@ class ValueSender:
 
   def eof_received(self):
     self.transport.close()
-    self.ids_to_send = None    

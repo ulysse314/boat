@@ -67,9 +67,27 @@ class HuaweiE3372:
     try:
       if self.session == None:
         self.session = aiohttp.ClientSession()
+        self.logger.debug("----")
+        resp = await self.session.get(self.base_url + self.COOKIE_URL, timeout = 10)
+        self.logger.debug(self.base_url + self.COOKIE_URL)
+        self.logger.debug(pprint.pformat(resp))
+        self.logger.debug(pprint.pformat(resp.cookies))
+        self.logger.debug(pprint.pformat(resp.cookies["SessionID"]))
+        await resp.text()
       # get a session cookie by requesting the COOKIE_URL
-      await self.session.get(self.base_url + self.COOKIE_URL, timeout = 10)
-      return xmltodict.parse(self.session.get(self.base_url + path, timeout = 5).text).get('response',None)
+      print(len(self.session.cookie_jar))
+      for cookie in self.session.cookie_jar:
+        print(cookie.key)
+        print(cookie["domain"])
+      self.logger.debug("=====")
+      self.logger.debug(self.base_url + path)
+      resp = await self.session.get(self.base_url + path, timeout = 10)
+      self.logger.debug(pprint.pformat(resp))
+      text = await resp.text()
+      self.logger.debug(pprint.pformat(text))
+      json = xmltodict.parse(text)
+      self.logger.debug(pprint.pformat(json))
+      return json.get('response',None)
     except Exception as e:
       self.logger.exception("get")
       self.session = None
@@ -80,8 +98,8 @@ class HuaweiE3372:
       values = {}
       try:
         tasks = [ self.get('/api/device/signal'), self.get('/api/monitoring/status')]
-        for finished in asyncio.as_completed(tasks):
-          dict = await finished
+        for task in tasks:
+          dict = await task
           for key,value in dict.items():
             if key in self.KEYS:
               values[key] = value

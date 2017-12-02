@@ -14,11 +14,13 @@ class UlysseProtocol(asyncio.Protocol):
   def connection_made(self, transport):
     self.logger.info("Connection made")
     self.transport = transport
-    self.delegate.connection_made(self)
+    if self.delegate:
+      self.delegate.connection_made(self)
 
   def connection_lost(self, ex):
     self.logger.info("Connection lost")
-    self.delegate.connection_lost(self, ex)
+    if self.delegate:
+      self.delegate.connection_lost(ex)
 
   def data_received(self, data):
     eol_index = data.index(b'\n')
@@ -38,11 +40,12 @@ class UlysseProtocol(asyncio.Protocol):
       self.logger.exception("read value")
       pprint.pprint(data)
       self.transport.close()
-    self.delegate.received_message(message)
+    if self.delegate:
+      self.delegate.received_message(message)
 
   def eof_received(self):
-    self.logger.info("EOF received")
-    self.close()
+    if self.delegate:
+      self.delegate.eof_received()
 
 # Actions
   def close(self):
@@ -57,3 +60,6 @@ class UlysseProtocol(asyncio.Protocol):
     data = json.dumps(values)
     self.transport.write(data.encode("utf-8"))
     self.transport.write("\n".encode("utf-8"))
+
+  def get_extra_info(self, key):
+    return self.transport.get_extra_info(key)
