@@ -6,7 +6,6 @@ import logging
 import pprint
 import sys
 import time
-import threading
 import xmltodict
 
 class HuaweiE3372:
@@ -62,14 +61,11 @@ class HuaweiE3372:
 
   def __init__(self, host = '192.168.8.1'):
     self.logger = logging.getLogger('e3372')
-    self.logger.debug("e3372 init start")
-    threading.Thread.__init__(self)
     self.host = host
     self.base_url = self.BASE_URL.format(host = host, url = "{url}")
     self.values = {}
     self.running = True #setting the thread running to true
     self.session = None
-    self.logger.debug("e3372 init stop")
 
   def start(self):
     task = asyncio.ensure_future(self.run())
