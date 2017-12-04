@@ -55,6 +55,7 @@ class ValueSender:
   def connection_lost(self, ex):
     peername = self.transport.get_extra_info('peername')
     self.logger.info("Connection lost: {}".format(peername))
+    self.transport = None
     asyncio.ensure_future(self.connect())
 
   def received_message(self, message):
