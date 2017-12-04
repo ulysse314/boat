@@ -17,9 +17,11 @@ class GPSController():
   logger = logging.getLogger("ValueSender")
   json_transport = None
   response_available_event = asyncio.Event()
+  received_values = {}
   values = {}
   
   def start(self):
+    asyncio.ensure_future(self.run())
     asyncio.ensure_future(self.connect())
 
   async def connect(self):
@@ -41,32 +43,7 @@ class GPSController():
       await asyncio.sleep(1)
 
   def _get_values(self):
-    values = {}
-    try:
-      values["status"] = self.gpsd.status
-      if not math.isnan(self.gpsd.fix.latitude): values["lat"] = self.gpsd.fix.latitude
-      if not math.isnan(self.gpsd.fix.longitude): values["lon"] = self.gpsd.fix.longitude
-      if not math.isnan(self.gpsd.fix.eps): values["eps"] = self.gpsd.fix.eps
-      if not math.isnan(self.gpsd.fix.epx): values["epx"] = self.gpsd.fix.epx
-      if not math.isnan(self.gpsd.fix.epy): values["epy"] = self.gpsd.fix.epy
-      if not math.isnan(self.gpsd.fix.epv): values["epv"] = self.gpsd.fix.epv
-      if not math.isnan(self.gpsd.fix.ept): values["ept"] = self.gpsd.fix.ept
-      if not math.isnan(self.gpsd.fix.epd): values["epd"] = self.gpsd.fix.epd
-      if not math.isnan(self.gpsd.fix.epc): values["epc"] = self.gpsd.fix.epc
-      if not math.isnan(self.gpsd.fix.climb): values["climb"] = self.gpsd.fix.climb
-      if not math.isnan(self.gpsd.fix.speed): values["speed"] = self.gpsd.fix.speed
-      if not math.isnan(self.gpsd.fix.altitude): values["alt"] = self.gpsd.fix.altitude
-      if not math.isnan(self.gpsd.fix.track): values["track"] = self.gpsd.fix.track
-      if not math.isnan(self.gpsd.fix.mode): values["mode"] = self.gpsd.fix.mode
-      values["sat"] = len(self.gpsd.satellites)
-      tracked = 0
-      for sat in self.gpsd.satellites:
-        if sat.used:
-          tracked += 1
-      values["tracked"] = tracked
-    except:
-      self.logger.exception("gpspoller update")
-    return values
+    return self.received_values.copy()
  
 ## connection
   def connection_made(self, transport):
@@ -80,7 +57,7 @@ class GPSController():
     peername = self.json_transport.get_extra_info('peername')
     self.logger.info("Connection lost: {}".format(peername))
     self.json_transport = None
-    self.values = {}
+    self.received_values = {}
     asyncio.ensure_future(self.connect())
 
   def received_message(self, message):
@@ -89,22 +66,22 @@ class GPSController():
     elif message["class"] == "TPV":
       for key in ["alt", "climb", "epc", "epd", "eps", "ept", "epv", "epx", "epy", "lat", "lon", "speed", "track", "mode"]:
         if key in message:
-          self.values[key] = message[key]
-        elif key in self.values:
-          del self.values[key]
+          self.received_values[key] = message[key]
+        elif key in self.received_values:
+          del self.received_values[key]
     elif message["class"] == "SKY":
       if "satellites" in message:
-        if "sat" in self.values:
-          del self.values["sat"]
-        if "tracked" in self.values:
-          del self.values["tracked"]
+        if "sat" in self.received_values:
+          del self.received_values["sat"]
+        if "tracked" in self.received_values:
+          del self.received_values["tracked"]
         satellites = message["satellites"]
-        self.values["sat"] = len(satellites)
+        self.received_values["sat"] = len(satellites)
         tracked = 0
         for sat in satellites:
           if "used" in sat and sat["used"]:
             tracked += 1
-        self.values["tracked"] = tracked
+        self.received_values["tracked"] = tracked
 
   def eof_received(self):
     self.json_transport.close()
