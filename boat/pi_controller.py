@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import asyncio
+import logging
 import os
 import pprint
 import psutil
@@ -8,6 +9,7 @@ import subprocess
 
 class PiController:
   values = {}
+  logger = logging.getLogger("PiController")
 
   def start(self):
     asyncio.ensure_future(self.run())
@@ -19,7 +21,10 @@ class PiController:
       await asyncio.sleep(1)
 
   async def _get_values(self):
-    return { "temp": self._get_cpu_temperature(), "ram": self._get_ram_info(), "cpu%": psutil.cpu_percent(), "disk": self._get_disk_space() }
+    try:
+      values = { "temp": self._get_cpu_temperature(), "ram": self._get_ram_info(), "cpu%": psutil.cpu_percent(), "disk": self._get_disk_space() }
+    except:
+      self.logger.exception("Get values")
 
   def _get_cpu_temperature(self):
     process = subprocess.Popen(['vcgencmd', 'measure_temp'], stdout=subprocess.PIPE)
