@@ -16,6 +16,7 @@ import config
 import e3372_controller
 import gps_controller
 import pi_controller
+import pwm_controller
 import value_sender
 
 SETTINGS_DIR = "/etc/ulysse314/"
@@ -34,7 +35,8 @@ RELAY_SERVER = config.values["value_relay_server"]
 
 sender = value_sender.ValueSender(None, BOAT_NAME, RELAY_SERVER, BOAT_PORT, config.values["boat_key"])
 
-controllers = [ e3372_controller.E3372Controller(), gps_controller.GPSController(), pi_controller.PiController() ]
+pwm = pwm_controller.PWMController()
+controllers = [ e3372_controller.E3372Controller(), gps_controller.GPSController(), pi_controller.PiController(), pwm ]
 started_controllers = []
 for controller in controllers:
   try:
