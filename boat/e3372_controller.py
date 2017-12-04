@@ -58,20 +58,18 @@ class E3372Controller:
     "CurrentUploadRate",
   ]
   session = None
+  logger = logging.getLogger('e3372')
+  values = {}
 
   def __init__(self, host = '192.168.8.1'):
-    self.logger = logging.getLogger('e3372')
     self.host = host
     self.base_url = self.BASE_URL.format(host = host, url = "{url}")
-    self.values = {}
-    self.running = True #setting the thread running to true
-    self.session = None
 
   def start(self):
     asyncio.ensure_future(self.run())
 
   async def run(self):
-    while self.running:
+    while True:
       values = await self._get_values()
       self.values = { "cellular": values }
       await asyncio.sleep(1)
