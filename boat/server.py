@@ -12,6 +12,7 @@ import sys
 os.chdir(os.path.abspath(os.path.dirname(sys.argv[0])))
 sys.path.append("..")
 
+import arduino_controller
 import config
 import e3372_controller
 import gps_controller
@@ -36,7 +37,11 @@ RELAY_SERVER = config.values["value_relay_server"]
 sender = value_sender.ValueSender(None, BOAT_NAME, RELAY_SERVER, BOAT_PORT, config.values["boat_key"])
 
 pwm = pwm_controller.PWMController()
-controllers = [ e3372_controller.E3372Controller(), gps_controller.GPSController(), pi_controller.PiController(), pwm ]
+controllers = [ e3372_controller.E3372Controller(),
+                gps_controller.GPSController(),
+                pi_controller.PiController(),
+                pwm,
+                arduino_controller.ArduinoController() ]
 started_controllers = []
 for controller in controllers:
   try:
