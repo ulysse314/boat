@@ -54,10 +54,11 @@ class GenericClient(asyncio.Protocol):
     
   def test_hello_packet(self, hello_packet):
     key = config.values[self.key_name]
-    if not key != hello_packet:
+    if key != hello_packet:
       logging.error("key not valid")
       self.transport.close()
       return
+    logging.debug("key valid")
     self.hello_packet_received()
     return
 
@@ -65,7 +66,7 @@ class GenericClient(asyncio.Protocol):
     self.received_hello_packet = True
 
   def data_received(self, data):
-    eol_index = data.index(b'\n')
+    eol_index = data.find(b'\n')
     if eol_index == -1:
       self.partial_packet += data
       return
@@ -77,7 +78,7 @@ class GenericClient(asyncio.Protocol):
       return
     self.partial_packet = data[eol_index + 1:]
     if not self.received_hello_packet:
-      self.test_hello_packet(full_packet)
+      self.test_hello_packet(full_packet.decode("utf-8"))
       return
     try:
       message = json.loads(full_packet.decode("utf-8"))
