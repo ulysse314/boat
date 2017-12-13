@@ -3,7 +3,7 @@
 import asyncio
 import logging
 import pprint
-import os.path
+import os
 import serial
 import serial_asyncio
 import time
