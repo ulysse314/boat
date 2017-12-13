@@ -9,7 +9,6 @@ import line_protocol
 class JsonProtocol(line_protocol.LineProtocol):
   def line_ready(self, line):
     try:
-      string = line.decode("utf-8")
       message = json.loads(string)
     except:
       self.logger.exception("read value {}".format(pprint.pformat(string)))

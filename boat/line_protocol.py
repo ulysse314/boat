@@ -39,7 +39,8 @@ class LineProtocol(asyncio.Protocol):
       full_packet = self.partial_packet[:end_of_buffer_index - 1]
       self.partial_packet = self.partial_packet[eol_index + 1:]
       if len(full_packet) > 0:
-        self.line_ready(full_packet)
+        line = full_packet.decode("utf-8")
+        self.line_ready(line)
 
   def eof_received(self):
     if self.delegate:
