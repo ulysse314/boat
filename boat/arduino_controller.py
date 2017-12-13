@@ -6,7 +6,6 @@ import pprint
 import os.path
 import serial
 import serial_asyncio
-import threading
 import time
 
 import line_protocol
