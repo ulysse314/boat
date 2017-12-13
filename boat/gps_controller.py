@@ -51,7 +51,7 @@ class GPSController():
     if self.json_transport:
       self.json_transport.delegate = None
     self.json_transport = transport
-    self.json_transport.send_data(self.WATCH)
+    self.json_transport.send_line(self.WATCH)
 
   def connection_lost(self, ex):
     peername = self.json_transport.get_extra_info('peername')
