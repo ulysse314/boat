@@ -21,10 +21,10 @@ class GPSController():
   values = {}
   
   def start(self):
-    asyncio.ensure_future(self.run())
-    asyncio.ensure_future(self.connect())
+    asyncio.ensure_future(self._run())
+    asyncio.ensure_future(self._connect())
 
-  async def connect(self):
+  async def _connect(self):
     while True:
       try:
         self.logger.debug("Starting connection")
@@ -36,7 +36,7 @@ class GPSController():
         self.logger.exception("connection failed")
         await asyncio.sleep(1)
 
-  async def run(self):
+  async def _run(self):
     while True:
       values = self._get_values()
       self.values = { "gps": values }
@@ -58,7 +58,7 @@ class GPSController():
     self.logger.info("Connection lost: {}".format(peername))
     self.json_transport = None
     self.received_values = {}
-    asyncio.ensure_future(self.connect())
+    asyncio.ensure_future(self._connect())
 
   def received_message(self, message):
     if "class" not in message:
