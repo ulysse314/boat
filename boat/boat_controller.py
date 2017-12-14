@@ -42,12 +42,6 @@ class BoatController:
   def start(self):  
     asyncio.ensure_future(self._run())
 
-  def start_update_values(self):
-    pass
-
-  def stop_update_values(self):
-    pass
-
   async def _run(self):
     self.received_values({"led":{"left%":100,"right%":0}})
     await asyncio.sleep(0.25)
@@ -60,6 +54,7 @@ class BoatController:
     self.received_values({"led":{"left%":0,"right%":0}})
     while True:
       values = self._get_values()
+      pprint.pprint(values)
       self.value_sender.add_values(values)
       await asyncio.sleep(1)
 
