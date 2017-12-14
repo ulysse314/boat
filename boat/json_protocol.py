@@ -9,7 +9,7 @@ import line_protocol
 class JsonProtocol(line_protocol.LineProtocol):
   def line_ready(self, line):
     try:
-      message = json.loads(string)
+      message = json.loads(line)
     except:
       self.logger.exception("read value {}".format(pprint.pformat(string)))
       self.transport.close()
