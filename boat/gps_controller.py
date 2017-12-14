@@ -88,7 +88,9 @@ class GPSController():
 
 async def debug(gps_controller):
   while True:
+    gps_controller.stop_update_values()
     pprint.pprint(gps_controller.values)
+    gps_controller.start_update_values()
     await asyncio.sleep(1)
 
 def main():
