@@ -1,6 +1,7 @@
 import asyncio
 import json
 import logging
+import pprint
 import queue
 
 import ulysse_protocol
@@ -10,15 +11,17 @@ class ValueSender:
   values = {}
   ids_to_send = []
   logger = logging.getLogger("ValueSender")
+  transport = None
   
-  def __init__(self, delegate, boat_name, value_relay_server, boat_port, key):
-    self.delegate = delegate
+  def __init__(self, boat_name, value_relay_server, boat_port, key):
     self.boat_name = boat_name
     self.value_relay_server = value_relay_server
     self.boat_port = boat_port
     self.key = key
-    self.transport = None
   
+  def start(self):
+    asyncio.ensure_future(self.connect())
+
   def add_values(self, values):
     id = values["id"]
     self.values[id] = values
@@ -27,7 +30,7 @@ class ValueSender:
   async def connect(self):
     while True:
       try:
-        self.logger.debug("Starting connection")
+        self.logger.debug("Starting connection {} {}".format(self.value_relay_server, self.boat_port))
         loop = asyncio.get_event_loop()
         await loop.create_connection(lambda: ulysse_protocol.UlysseProtocol(self), self.value_relay_server, self.boat_port)
         self.logger.debug("Starting done")
@@ -63,7 +66,8 @@ class ValueSender:
       self.ids_to_send.remove(message["id"])
       self.send_next_values()
       return
-    self.delegate.received_values(values)
+    if self.delegate:
+      self.delegate.received_values(values)
 
   def eof_received(self):
     self.transport.close()
