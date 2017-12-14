@@ -12,9 +12,9 @@ class PiController:
   logger = logging.getLogger("PiController")
 
   def start(self):
-    asyncio.ensure_future(self.run())
+    asyncio.ensure_future(self._run())
 
-  async def run(self):
+  async def _run(self):
     while True:
       values = await self._get_values()
       self.values["pi"] = values
