@@ -17,7 +17,7 @@ class BoatController:
     self.pwm_controller = pwm
     self.value_sender = value_sender
 
-  def get_values(self):
+  def _get_values(self):
     values = {}
     values["id"] = self.value_id
     self.value_id += 1
@@ -33,14 +33,15 @@ class BoatController:
             values[key] = controller_values[key]
           else:
             values[key].update(controller_values[key])
+        controller_values.update_vales()
       except:
         self.logger.exception("Problem to get values with {}".format(pprint.pformat(controller)))
     return values
   
   def start(self):  
-    asyncio.ensure_future(self.run())
+    asyncio.ensure_future(self._run())
 
-  async def run(self):
+  async def _run(self):
     self.received_values({"led":{"left%":100,"right%":0}})
     await asyncio.sleep(0.25)
     self.received_values({"led":{"left%":0,"right%":100}})
@@ -51,7 +52,7 @@ class BoatController:
     await asyncio.sleep(0.25)
     self.received_values({"led":{"left%":0,"right%":0}})
     while True:
-      values = self.get_values()
+      values = self._get_values()
       self.value_sender.add_values(values)
       await asyncio.sleep(1)
 
