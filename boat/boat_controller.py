@@ -33,13 +33,16 @@ class BoatController:
             values[key] = controller_values[key]
           else:
             values[key].update(controller_values[key])
-        controller_values.update_vales()
+        controller.update_values()
       except:
         self.logger.exception("Problem to get values with {}".format(pprint.pformat(controller)))
     return values
   
   def start(self):  
     asyncio.ensure_future(self._run())
+
+  def update_values(self):
+    pass
 
   async def _run(self):
     self.received_values({"led":{"left%":100,"right%":0}})

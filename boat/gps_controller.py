@@ -24,6 +24,9 @@ class GPSController():
     asyncio.ensure_future(self._run())
     asyncio.ensure_future(self._connect())
 
+  def update_values(self):
+    pass
+
   async def _connect(self):
     while True:
       try:

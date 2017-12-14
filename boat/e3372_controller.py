@@ -68,6 +68,9 @@ class E3372Controller:
   def start(self):
     asyncio.ensure_future(self._run())
 
+  def update_values(self):
+    pass
+
   async def _run(self):
     while True:
       values = await self._get_values()

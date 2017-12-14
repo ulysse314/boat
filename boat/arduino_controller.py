@@ -29,6 +29,9 @@ class ArduinoController:
 
   def start(self):
     asyncio.ensure_future(self._connect())
+
+  def update_values(self):
+    pass
   
   async def _connect(self):
     self.logger.debug("Connect")

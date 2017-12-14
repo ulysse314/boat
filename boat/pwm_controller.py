@@ -68,13 +68,11 @@ class PWMController:
     value = valid_motor(value)
     self.left_motor = value
     self.set_motor(LEFT_MOTOR_ID, self.left_motor)
-    self.update_values()
 
   def set_right_motor(self, value):
     value = valid_motor(value)
     self.right_motor = value
     self.set_motor(RIGHT_MOTOR_ID, self.right_motor)
-    self.update_values()
 
   def set_motor(self, motor_id, value):
     if value > 0.0:
@@ -98,13 +96,11 @@ class PWMController:
     value = valid_led(value)
     self.left_led = value
     self.set_led(LEFT_LED_ID, value)
-    self.update_values()
 
   def set_right_led(self, value):
     value = valid_led(value)
     self.right_led = value
     self.set_led(RIGHT_LED_ID, value)
-    self.update_values()
 
   def set_led(self, led_id, value):
     try:
