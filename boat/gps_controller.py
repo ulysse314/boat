@@ -21,14 +21,14 @@ class GPSController():
   values = {}
   
   def start(self):
-    asyncio.ensure_future(self._run())
     asyncio.ensure_future(self._connect())
 
   def start_update_values(self):
     pass
 
   def stop_update_values(self):
-    pass
+    values = self._get_values()
+    self.values = { "gps": values }
 
   async def _connect(self):
     while True:
@@ -41,12 +41,6 @@ class GPSController():
       except:
         self.logger.exception("connection failed")
         await asyncio.sleep(1)
-
-  async def _run(self):
-    while True:
-      values = self._get_values()
-      self.values = { "gps": values }
-      await asyncio.sleep(1)
 
   def _get_values(self):
     return self.received_values.copy()
