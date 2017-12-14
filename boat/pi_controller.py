@@ -12,23 +12,17 @@ class PiController:
   logger = logging.getLogger("PiController")
 
   def start(self):
-    asyncio.ensure_future(self._run())
+    pass
 
   def start_update_values(self):
-    pass
+    asyncio.ensure_future(self._get_values())
 
   def stop_update_values(self):
     pass
 
-  async def _run(self):
-    while True:
-      values = await self._get_values()
-      self.values["pi"] = values
-      await asyncio.sleep(1)
-
   async def _get_values(self):
     try:
-      values = { "temp": self._get_cpu_temperature(), "ram": self._get_ram_info(), "cpu%": psutil.cpu_percent(), "disk": self._get_disk_space() }
+      self.values["pi"] = { "temp": self._get_cpu_temperature(), "ram": self._get_ram_info(), "cpu%": psutil.cpu_percent(), "disk": self._get_disk_space() }
     except:
       self.logger.exception("Get values")
 
