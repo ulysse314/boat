@@ -28,9 +28,9 @@ class ArduinoController:
     pass
 
   def start(self):
-    asyncio.ensure_future(self.connect())
+    asyncio.ensure_future(self._connect())
   
-  async def connect(self):
+  async def _connect(self):
     self.logger.debug("Connect")
     while True:
       try:
@@ -43,7 +43,7 @@ class ArduinoController:
         self.logger.exception("connection failed")
       await asyncio.sleep(1)
 
-  def update_values(self):
+  def _update_values(self):
     self.values = { "motor": {} }
     try:
       if '1 DS18B20 28:0C:17:1F:03:00:00:08' in self.received_values:
@@ -100,7 +100,7 @@ class ArduinoController:
     except:
       self.logger.exception("Problem to get water info")
 
-  def parse_line(self, line):
+  def _parse_line(self, line):
     line = line.strip("\r\n \t")
     elements = line.split(" ")
     if len(elements) >= 4:
@@ -129,11 +129,11 @@ class ArduinoController:
     self.serial_transport = None
     self.values = {}
     self.received_values = {}
-    asyncio.ensure_future(self.connect())
+    asyncio.ensure_future(self._connect())
 
   def received_message(self, line):
-    if self.parse_line(line):
-      self.update_values()
+    if self._parse_line(line):
+      self._update_values()
 
   def eof_received(self):
     self.serial_transport.close()
