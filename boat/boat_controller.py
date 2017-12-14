@@ -27,13 +27,14 @@ class BoatController:
     values["timestamp"] = time.time()
     for controller in self.controllers:
       try:
+        controller.stop_update_values()
         controller_values = controller.values
         for key in controller_values:
           if key not in values:
             values[key] = controller_values[key]
           else:
             values[key].update(controller_values[key])
-        controller.update_values()
+        controller.start_update_values()
       except:
         self.logger.exception("Problem to get values with {}".format(pprint.pformat(controller)))
     return values
@@ -41,7 +42,10 @@ class BoatController:
   def start(self):  
     asyncio.ensure_future(self._run())
 
-  def update_values(self):
+  def start_update_values(self):
+    pass
+
+  def stop_update_values(self):
     pass
 
   async def _run(self):

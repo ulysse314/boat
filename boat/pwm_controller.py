@@ -55,7 +55,10 @@ class PWMController:
   def start(self):
     pass
 
-  def update_values(self):
+  def start_update_values(self):
+    pass
+
+  def stop_update_values(self):
     self.values = { "motor": {"left%": self.left_motor, "right%": self.right_motor }, "led": {"left%": self.left_led, "right%": self.right_led } }
 
   def set_motors(self, values):
