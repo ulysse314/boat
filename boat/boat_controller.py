@@ -54,7 +54,6 @@ class BoatController:
     self.received_values({"led":{"left%":0,"right%":0}})
     while True:
       values = self._get_values()
-      pprint.pprint(values)
       self.value_sender.add_values(values)
       await asyncio.sleep(1)
 
