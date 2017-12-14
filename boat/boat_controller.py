@@ -53,7 +53,6 @@ class BoatController:
     while True:
       values = self.get_values()
       self.value_sender.add_values(values)
-      pprint.pprint(values)
       await asyncio.sleep(1)
 
 ## value_sender delegate
