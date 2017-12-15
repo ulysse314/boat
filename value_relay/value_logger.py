@@ -4,13 +4,11 @@ import json
 import logging
 import pprint
 import requests
-import threading
 import time
 
-class ValueLogger(threading.Thread):
+class ValueLogger:
   def __init__(self, boat_name, new_trip_url, logger_url):
     logging.debug("Starting logger")
-    threading.Thread.__init__(self)
     self.new_trip_url = new_trip_url
     self.logger_url = logger_url
     self.trip_id = None
