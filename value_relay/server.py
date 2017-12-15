@@ -48,17 +48,23 @@ class GenericClient(asyncio.Protocol):
   pending_packets_to_send = []
   paused = False
 
+  def __init__(self):
+    self.logger = logging.getLogger(self.__class__.__name__)
+
   def connection_made(self, transport):
     self.transport = transport
     self.peername = transport.get_extra_info("peername")
+    self.logger.debug(self.peername)
     
   def test_hello_packet(self, hello_packet):
     key = config.values[self.key_name]
     if key != hello_packet:
-      logging.error("key not valid")
+      pprint.pprint(key)
+      pprint.pprint(hello_packet)
+      self.logger.error("key not valid")
       self.transport.close()
       return
-    logging.debug("key valid")
+    self.logger.debug("key valid")
     self.hello_packet_received()
     return
 
@@ -86,7 +92,7 @@ class GenericClient(asyncio.Protocol):
         self.send_packet(('{"id":' + str(message["id"]) + '}').encode("utf-8"))
       self.message_received(message, full_packet)
     except:
-      logging.exception("read value")
+      self.logger.exception("read value")
       pprint.pprint(data)
       self.transport.close()
 
@@ -94,28 +100,28 @@ class GenericClient(asyncio.Protocol):
     if self.paused:
       self.queue_packet(packet)
     else:
-      logging.debug("Write message to {}".format(self.peername))
+      self.logger.debug("Write message to {}".format(self.peername))
       self.transport.write(packet + b'\n')
 
   def queue_packet(self, packet):
     self.pending_packets_to_send.append(packet)
 
   def connection_lost(self, ex):
-    logging.debug("connection_lost: {}".format(self.peername))
+    self.logger.debug("connection_lost: {}".format(self.peername))
     
   def pause_writing(self):
-    logging.debug("Paused: {}".format(self.peername))
+    self.logger.debug("Paused: {}".format(self.peername))
     self.paused = True
     
   def resume_writing(self):
-    logging.debug("Resumed: {}".format(self.peername))
+    self.logger.debug("Resumed: {}".format(self.peername))
     self.paused = False
 
 class BoatClient(GenericClient):
   key_name = "boat_key"
 
   def hello_packet_received(self):
-    logging.debug("New boat")    
+    self.logger.debug("New boat")
     global valid_boat_client
     super(BoatClient, self).hello_packet_received()
     if valid_boat_client:
@@ -138,7 +144,7 @@ class ControllerClient(GenericClient):
   key_name = "controller_key"
 
   def hello_packet_received(self):
-    logging.debug("New controller")
+    self.logger.debug("New controller")
     global valid_controller_clients
     global last_packet
     super(ControllerClient, self).hello_packet_received()
@@ -176,9 +182,9 @@ if __name__ == '__main__':
 
     loop = asyncio.get_event_loop()
     logging.debug("Boat server listenning for port: {}".format(BOAT_PORT))
-    boat_coro = loop.create_server(BoatClient, port = BOAT_PORT)
+    boat_coro = loop.create_server(lambda: BoatClient(), port = BOAT_PORT)
     boat_server = loop.run_until_complete(boat_coro)
     logging.debug("Controller server listenning for port: {}".format(CONTROLLER_PORT))
-    controller_coro = loop.create_server(ControllerClient, port = CONTROLLER_PORT)
+    controller_coro = loop.create_server(lambda: ControllerClient(), port = CONTROLLER_PORT)
     controller_server = loop.run_until_complete(controller_coro)
     loop.run_forever()
