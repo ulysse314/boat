@@ -23,7 +23,7 @@ else:
   BOAT_NAME = sys.argv[1]
 
 logging.basicConfig(level=logging.DEBUG)
-logging.debug(BOAT_NAME)
+logging.debug("Boat: {}".format(BOAT_NAME))
 config.load(BOAT_NAME)
 
 BOAT_PORT = int(config.values["boat_port"])
@@ -175,8 +175,10 @@ if __name__ == '__main__':
     print("starting up..")
 
     loop = asyncio.get_event_loop()
+    logging.debug("Boat server listenning for port: {}".format(BOAT_PORT))
     boat_coro = loop.create_server(BoatClient, port = BOAT_PORT)
     boat_server = loop.run_until_complete(boat_coro)
+    logging.debug("Controller server listenning for port: {}".format(CONTROLLER_PORT))
     controller_coro = loop.create_server(ControllerClient, port = CONTROLLER_PORT)
     controller_server = loop.run_until_complete(controller_coro)
     loop.run_forever()
