@@ -36,7 +36,7 @@ class ValueSender:
         self.logger.debug("Starting done")
         break
       except:
-        self.logger.exception("connection failed")
+        self.logger.error("Connection failed")
         await asyncio.sleep(1)
 
   def send_next_values(self):
