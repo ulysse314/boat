@@ -72,25 +72,31 @@ class GenericClient(asyncio.Protocol):
     self.received_hello_packet = True
 
   def data_received(self, data):
-    eol_index = data.find(b'\n')
-    if eol_index == -1:
-      self.partial_packet += data
-      return
-    end_of_buffer_index = eol_index
-    if eol_index > 0 and data[eol_index] == b'\r':
-      end_of_buffer_index -= 1
-    full_packet = self.partial_packet + data[:end_of_buffer_index - 1]
-    if len(full_packet) == 0:
-      return
-    self.partial_packet = data[eol_index + 1:]
+    self.partial_packet += data
+    while True:
+      try:
+        eol_index = self.partial_packet.index(b'\n')
+      except:
+        return
+      if eol_index == -1:
+        return
+      end_of_buffer_index = eol_index
+      if eol_index > 0 and self.partial_packet[eol_index - 1] == 13:
+        end_of_buffer_index -= 1
+      full_packet = self.partial_packet[:end_of_buffer_index]
+      self.partial_packet = self.partial_packet[eol_index + 1:]
+      if len(full_packet) > 0:
+        self.line_ready(full_packet)
+
+  def line_ready(self, line):
     if not self.received_hello_packet:
-      self.test_hello_packet(full_packet.decode("utf-8"))
+      self.test_hello_packet(line.decode("utf-8"))
       return
     try:
-      message = json.loads(full_packet.decode("utf-8"))
+      message = json.loads(line.decode("utf-8"))
       if "id" in message:
         self.send_packet(('{"id":' + str(message["id"]) + '}').encode("utf-8"))
-      self.message_received(message, full_packet)
+      self.message_received(message, line)
     except:
       self.logger.exception("read value")
       pprint.pprint(data)
