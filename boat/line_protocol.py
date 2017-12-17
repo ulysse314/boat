@@ -6,10 +6,10 @@ import queue
 
 class LineProtocol(asyncio.Protocol):
   partial_packet = b''
-  logger = logging.getLogger("LineProtocol")
 
   def __init__(self, delegate):
     self.delegate = delegate
+    self.logger = logging.getLogger(self.__class__.__name__)
 
 # Notifications
   def connection_made(self, transport):
@@ -34,9 +34,9 @@ class LineProtocol(asyncio.Protocol):
       if eol_index == -1:
         return
       end_of_buffer_index = eol_index
-      if eol_index > 0 and self.partial_packet[eol_index - 1] == b'\r':
+      if eol_index > 0 and self.partial_packet[eol_index - 1] == 13:
         end_of_buffer_index -= 1
-      full_packet = self.partial_packet[:end_of_buffer_index - 1]
+      full_packet = self.partial_packet[:end_of_buffer_index]
       self.partial_packet = self.partial_packet[eol_index + 1:]
       if len(full_packet) > 0:
         line = full_packet.decode("utf-8")

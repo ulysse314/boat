@@ -4,7 +4,7 @@ import logging
 import pprint
 import queue
 
-import ulysse_protocol
+import json_protocol
 
 class ValueSender:
   sending_id = None
@@ -20,19 +20,24 @@ class ValueSender:
     self.key = key
   
   def start(self):
+    self.logger.debug("Start")
     asyncio.ensure_future(self.connect())
 
   def add_values(self, values):
     id = values["id"]
+    self.logger.debug("Adding values with id {}".format(id))
     self.values[id] = values
+    should_trigger = len(self.ids_to_send) == 0
     self.ids_to_send.append(id)
+    if should_trigger:
+      self.send_next_values()
 
   async def connect(self):
     while True:
       try:
         self.logger.debug("Starting connection {} {}".format(self.value_relay_server, self.boat_port))
         loop = asyncio.get_event_loop()
-        await loop.create_connection(lambda: ulysse_protocol.UlysseProtocol(self), self.value_relay_server, self.boat_port)
+        await loop.create_connection(lambda: json_protocol.JsonProtocol(self), self.value_relay_server, self.boat_port)
         self.logger.debug("Starting done")
         break
       except:
@@ -40,19 +45,19 @@ class ValueSender:
         await asyncio.sleep(1)
 
   def send_next_values(self):
-    if len(self.ids_to_send) == 0:
+    if len(self.ids_to_send) == 0 or not self.transport:
       return
-    self.logger.debug("Sending next value")
     self.sending_id = self.ids_to_send[-1]
-    self.transport.send_values(self.values[self.sending_id])
+    self.logger.debug("Sending next value {}".format(self.sending_id))
+    self.transport.send_json(self.values[self.sending_id])
 
 ## connection
   def connection_made(self, transport):
-    self.logger.info("Connection made")
+    self.logger.info("Connection made: {}".format(pprint.pformat(transport)))
     if self.transport:
       self.transport.delegate = None
     self.transport = transport
-    self.transport.send_key(self.key)
+    self.transport.send_line(self.key)
     self.send_next_values()
 
   def connection_lost(self, ex):
