@@ -14,6 +14,7 @@ sys.path.append("..")
 
 import camera
 import config
+import line_parser
 import value_logger
 
 if len(sys.argv) == 1:
@@ -42,13 +43,13 @@ def send_packet_to_all_valid_controls(packet):
     control.send_packet(packet)
 
 class GenericClient(asyncio.Protocol):
-  partial_packet = b''
   received_hello_packet = False
   data_to_send = b''
   pending_packets_to_send = []
   paused = False
 
   def __init__(self):
+    self.line_parser = line_parser.LineParser()
     self.logger = logging.getLogger(self.__class__.__name__)
 
   def connection_made(self, transport):
@@ -72,21 +73,9 @@ class GenericClient(asyncio.Protocol):
     self.received_hello_packet = True
 
   def data_received(self, data):
-    self.partial_packet += data
-    while True:
-      try:
-        eol_index = self.partial_packet.index(b'\n')
-      except:
-        return
-      if eol_index == -1:
-        return
-      end_of_buffer_index = eol_index
-      if eol_index > 0 and self.partial_packet[eol_index - 1] == 13:
-        end_of_buffer_index -= 1
-      full_packet = self.partial_packet[:end_of_buffer_index]
-      self.partial_packet = self.partial_packet[eol_index + 1:]
-      if len(full_packet) > 0:
-        self.line_ready(full_packet)
+    list = self.line_parser.add_buffer(data)
+    for line in list:
+      self.line_ready(line)
 
   def line_ready(self, line):
     if not self.received_hello_packet:

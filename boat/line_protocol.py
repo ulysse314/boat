@@ -4,12 +4,14 @@ import logging
 import pprint
 import queue
 
+import line_parser
+
 class LineProtocol(asyncio.Protocol):
-  partial_packet = b''
 
   def __init__(self, delegate):
     self.delegate = delegate
     self.logger = logging.getLogger(self.__class__.__name__)
+    self.line_parser = line_parser.LineParser()
 
 # Notifications
   def connection_made(self, transport):
@@ -25,22 +27,10 @@ class LineProtocol(asyncio.Protocol):
       self.delegate.connection_lost(ex)
 
   def data_received(self, data):
-    self.partial_packet += data
-    while True:
-      try:
-        eol_index = self.partial_packet.index(b'\n')
-      except:
-        return
-      if eol_index == -1:
-        return
-      end_of_buffer_index = eol_index
-      if eol_index > 0 and self.partial_packet[eol_index - 1] == 13:
-        end_of_buffer_index -= 1
-      full_packet = self.partial_packet[:end_of_buffer_index]
-      self.partial_packet = self.partial_packet[eol_index + 1:]
-      if len(full_packet) > 0:
-        line = full_packet.decode("utf-8")
-        self.line_ready(line)
+    list = self.line_parser.add_buffer(data)
+    for line in list:
+      line = line.decode("utf-8")
+      self.line_ready(line)
 
   def eof_received(self):
     if self.delegate:

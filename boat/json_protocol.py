@@ -1,8 +1,12 @@
 import asyncio
 import json
 import logging
+import os
 import pprint
 import queue
+import sys
+
+os.chdir(os.path.abspath(os.path.dirname(__file__)))
 
 import line_protocol
 

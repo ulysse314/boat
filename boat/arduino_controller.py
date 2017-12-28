@@ -14,7 +14,6 @@ class ArduinoController:
   NODE_INDEX = 0
   TYPE_INDEX = 1
   ADDRESS_INDEX = 2
-  END_OF_LINE = "\r\n"
   DEV_PORT = "/dev/ttyUSB0"
   PORT_SPEED = 115200
   logger = logging.getLogger('ArduinoController')
