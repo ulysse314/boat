@@ -1,4 +1,5 @@
 #!/bin/bash
+# ./start.sh (boat|value_relay) <boat_name>
 
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 log_file="${DIR}/../daemon.log"
