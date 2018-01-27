@@ -32,7 +32,6 @@ else:
 logging.basicConfig(level=logging.DEBUG)
 config.load(BOAT_NAME)
 
-pprint.pprint(config.values)
 BOAT_PORT = int(config.values["boat_port"])
 RELAY_SERVER = config.values["value_relay_server"]
 
