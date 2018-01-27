@@ -111,15 +111,15 @@ class PWMController:
     except:
       self.logger.exception("Cannot set led id {} to value {}".format(led_id, value))
 
-async def debug(pwn_controller):
+async def debug(pwm_controller):
   while True:
-    pprint.pprint(pwn_controller.values)
+    pprint.pprint(pwm_controller.values)
     await asyncio.sleep(1)
 
 def main():
-  pwn_controller = PWMController()
-  pwn_controller.start()
-  task = asyncio.ensure_future(debug(pwn_controller))
+  pwm_controller = PWMController()
+  pwm_controller.start()
+  task = asyncio.ensure_future(debug(pwm_controller))
   loop = asyncio.get_event_loop()
   loop.run_forever()
 
