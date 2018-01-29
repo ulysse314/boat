@@ -23,10 +23,6 @@ class ArduinoController:
   received_values = {}
   serial_transport = None
 
-  def __init__(self):
-    self.logger.debug("tset")
-    pass
-
   def start(self):
     asyncio.ensure_future(self._connect())
 
