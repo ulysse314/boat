@@ -7,6 +7,7 @@ import logging
 import pprint
 import time
 
+import munin_server
 import value_sender
 
 class BoatController:
@@ -57,6 +58,7 @@ class BoatController:
     self.received_values({"led":{"left%":0,"right%":0}})
     while True:
       values = self._get_values()
+      munin_server.set_values(values)
       self.value_sender.add_values(values)
       await asyncio.sleep(1)
 

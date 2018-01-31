@@ -17,6 +17,7 @@ import boat_controller
 import config
 import e3372_controller
 import gps_controller
+import munin_server
 import pi_controller
 import pwm_controller
 import value_sender
@@ -56,6 +57,7 @@ boat = boat_controller.BoatController(started_controllers, pwm, sender)
 sender.delegate = boat
 boat.start()
 sender.start()
+munin_server.start(int(config.values["munin_port"]))
 
 loop = asyncio.get_event_loop()
 loop.run_forever()
