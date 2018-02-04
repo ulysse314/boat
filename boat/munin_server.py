@@ -5,7 +5,7 @@ import asyncio
 import json
 import logging
 
-latest_values = b''
+latest_values = b'{}'
 logger = logging.getLogger("MuninServer")
 
 def start(port):
