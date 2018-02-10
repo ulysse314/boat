@@ -6,7 +6,11 @@ import json
 import logging
 import pprint
 import queue
+import sys
 
+sys.path.append("..")
+
+import config
 import json_protocol
 
 class ValueSender:
@@ -27,11 +31,11 @@ class ValueSender:
     asyncio.ensure_future(self.connect())
 
   def add_values(self, values):
-    id = values["id"]
+    message_id = values["id"]
     self.logger.debug("Adding values with id {}".format(id))
-    self.values[id] = values
+    self.values[message_id] = values
     should_trigger = len(self.ids_to_send) == 0
-    self.ids_to_send.append(id)
+    self.ids_to_send.append(message_id)
     if should_trigger:
       self.send_next_values()
 
@@ -71,11 +75,36 @@ class ValueSender:
 
   def received_message(self, message):
     if "id" in message:
-      self.ids_to_send.remove(message["id"])
-      self.send_next_values()
+      message_id = message["id"]
+      if message_id in self.ids_to_send:
+        self.ids_to_send.remove(message_id)
+        del self.values[message_id]
+        self.send_next_values()
       return
     if self.delegate:
       self.delegate.received_values(values)
 
   def eof_received(self):
     self.transport.close()
+
+async def debug_send_values(value_sender):
+  idcount = 0
+  while True:
+    print("looop")
+    value_sender.add_values({"id": idcount, "b": 1})
+    idcount += 1
+    await asyncio.sleep(10)
+
+def main():
+  pprint.pprint("test")
+  logging.basicConfig(level=logging.DEBUG)
+  boat_name = sys.argv[1]
+  config.load(boat_name)
+  value_sender = ValueSender(boat_name, config.values["value_relay_server"], int(config.values["boat_port"]), config.values["boat_key"])
+  value_sender.start()
+  asyncio.ensure_future(debug_send_values(value_sender))
+  print("ok")
+  asyncio.get_event_loop().run_forever()
+
+if __name__ == "__main__":
+  main()
