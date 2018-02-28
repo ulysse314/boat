@@ -48,9 +48,13 @@ class LineProtocol(asyncio.Protocol):
     self.logger.info("Close")
     self.transport.write_eof()
 
-  def send_line(self, data):
-    self.transport.write(data.encode("utf-8"))
+  def send_line(self, line):
+    self.transport.write(line.encode("utf-8"))
     self.transport.write("\n".encode("utf-8"))
+
+  def send_lines(self, lines):
+    for line in lines:
+      self.send_line(line)
 
   def get_extra_info(self, key):
     return self.transport.get_extra_info(key)
