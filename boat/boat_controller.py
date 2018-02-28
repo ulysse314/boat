@@ -11,12 +11,11 @@ import munin_server
 import value_sender
 
 class BoatController:
-  logger = logging.getLogger("Boat");
-  record = False
-  boot_time = time.time()
-  value_id = 0
-  
   def __init__(self, controllers, pwm, value_sender):
+    self.logger = logging.getLogger("Boat");
+    self.record = False
+    self.boot_date = datetime.datetime.now().isoformat()
+    self.value_id = 0
     self.controllers = controllers
     self.pwm_controller = pwm
     self.value_sender = value_sender
@@ -29,6 +28,7 @@ class BoatController:
     i = datetime.datetime.now()
     values['date'] = i.isoformat()
     values["timestamp"] = time.time()
+    values["boot_date"] = self.boot_date
     for controller in self.controllers:
       try:
         controller.stop_update_values()
