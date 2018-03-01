@@ -14,7 +14,7 @@ class BoatController:
   def __init__(self, controllers, pwm, value_sender):
     self.logger = logging.getLogger("Boat");
     self.record = False
-    self.boot_date = datetime.datetime.now().isoformat()
+    self.boot_timestamp = time.time()
     self.value_id = 0
     self.controllers = controllers
     self.pwm_controller = pwm
@@ -28,7 +28,7 @@ class BoatController:
     i = datetime.datetime.now()
     values['date'] = i.isoformat()
     values["timestamp"] = time.time()
-    values["boot_date"] = self.boot_date
+    values["boot_timestamp"] = self.boot_timestamp
     for controller in self.controllers:
       try:
         controller.stop_update_values()
