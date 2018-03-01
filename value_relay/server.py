@@ -138,6 +138,9 @@ class BoatClient(GenericClient):
 class ControllerClient(GenericClient):
   key_name = "controller_key"
 
+  def __init__(self, boat_name):
+    self.boat_name = boat_name
+
   def hello_packet_received(self):
     self.logger.debug("New controller")
     global valid_controller_clients
@@ -153,9 +156,8 @@ class ControllerClient(GenericClient):
     if "record" in message:
       global logger
       if message["record"] and not logger:
-        global BOAT_NAME
         global config
-        logger = value_logger.ValueLogger(BOAT_NAME, config.values["new_trip_url"], config.values["logger_url"])
+        logger = value_logger.ValueLogger(self.boat_name, config.values["new_trip_url"], config.values["logger_url"])
         logger.start()
       elif not message["record"] and logger:
         logger.should_stop()
@@ -179,6 +181,6 @@ if __name__ == '__main__':
   boat_coro = loop.create_server(lambda: BoatClient(), port = BOAT_PORT)
   boat_server = loop.run_until_complete(boat_coro)
   logging.debug("Controller server listenning for port: {}".format(CONTROLLER_PORT))
-  controller_coro = loop.create_server(lambda: ControllerClient(), port = CONTROLLER_PORT)
+  controller_coro = loop.create_server(lambda: ControllerClient(BOAT_NAME), port = CONTROLLER_PORT)
   controller_server = loop.run_until_complete(controller_coro)
   loop.run_forever()
