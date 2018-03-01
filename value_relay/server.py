@@ -33,7 +33,7 @@ CONTROLLER_PORT = int(config.values["controller_port"])
 valid_boat_client = None
 valid_controller_clients = []
 last_packet = None
-logger = None
+logger_for_values = None
 
 def send_packet_to_all_valid_controls(packet):
   global last_packet
@@ -124,10 +124,10 @@ class BoatClient(GenericClient):
     valid_boat_client = self
 
   def message_received(self, message, packet):
-    global logger
+    global logger_for_values
     send_packet_to_all_valid_controls(packet)
-    if logger:
-      logger.add_packet(packet)
+    if logger_for_values:
+      logger_for_values.add_packet(packet)
 
   def connection_lost(self, ex):
     global valid_boat_client
@@ -154,14 +154,14 @@ class ControllerClient(GenericClient):
     if valid_boat_client:
       valid_boat_client.send_packet(packet)
     if "record" in message:
-      global logger
-      if message["record"] and not logger:
+      global logger_for_values
+      if message["record"] and not logger_for_values:
         global config
-        logger = value_logger.ValueLogger(self.boat_name, config.values["new_trip_url"], config.values["logger_url"])
-        logger.start()
-      elif not message["record"] and logger:
-        logger.should_stop()
-        logger = None
+        logger_for_values = value_logger.ValueLogger(self.boat_name, config.values["new_trip_url"], config.values["logger_url"])
+        logger_for_values.start()
+      elif not message["record"] and logger_for_values:
+        logger_for_values.should_stop()
+        logger_for_values = None
     if "camera" in message and "state" in message["camera"]:
       if message["camera"]["state"]:
         camera.start()
