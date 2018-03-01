@@ -97,8 +97,10 @@ class ArduinoController:
     except:
       self.logger.exception("Problem to get battery info")
     try:
-      self.values["water"] = (int(self.received_values[ '1 Water 17']['values'][3]) < 700)
-      self.values["water_raw"] = int(self.received_values[ '1 Water 17']['values'][3])
+      self.values["water"] = {
+        "detected": (int(self.received_values[ '1 Water 17']['values'][3]) < 700),
+        "raw": int(self.received_values[ '1 Water 17']['values'][3])
+      }
     except:
       self.logger.exception("Problem to get water info")
 
