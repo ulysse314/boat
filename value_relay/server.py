@@ -173,13 +173,12 @@ class ControllerClient(GenericClient):
     super(ControllerClient, self).connection_lost(ex)
 
 if __name__ == '__main__':
-    print("starting up..")
-
-    loop = asyncio.get_event_loop()
-    logging.debug("Boat server listenning for port: {}".format(BOAT_PORT))
-    boat_coro = loop.create_server(lambda: BoatClient(), port = BOAT_PORT)
-    boat_server = loop.run_until_complete(boat_coro)
-    logging.debug("Controller server listenning for port: {}".format(CONTROLLER_PORT))
-    controller_coro = loop.create_server(lambda: ControllerClient(), port = CONTROLLER_PORT)
-    controller_server = loop.run_until_complete(controller_coro)
-    loop.run_forever()
+  print("starting up..")
+  loop = asyncio.get_event_loop()
+  logging.debug("Boat server listenning for port: {}".format(BOAT_PORT))
+  boat_coro = loop.create_server(lambda: BoatClient(), port = BOAT_PORT)
+  boat_server = loop.run_until_complete(boat_coro)
+  logging.debug("Controller server listenning for port: {}".format(CONTROLLER_PORT))
+  controller_coro = loop.create_server(lambda: ControllerClient(), port = CONTROLLER_PORT)
+  controller_server = loop.run_until_complete(controller_coro)
+  loop.run_forever()
