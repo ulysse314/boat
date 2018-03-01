@@ -32,15 +32,15 @@ CONTROLLER_PORT = int(config.values["controller_port"])
 
 valid_boat_client = None
 valid_controller_clients = []
-last_packet = None
+last_message = None
 logger_for_values = None
 
-def send_packet_to_all_valid_controls(packet):
-  global last_packet
+def send_message_to_all_valid_controls(message):
+  global last_message
   global valid_controller_clients
-  last_packet = packet
+  last_message = message
   for control in valid_controller_clients:
-    control.send_packet(packet)
+    control.send_message(message)
 
 class GenericClient(asyncio.Protocol):
   received_hello_packet = False
@@ -125,7 +125,7 @@ class BoatClient(GenericClient):
 
   def message_received(self, message, packet):
     global logger_for_values
-    send_packet_to_all_valid_controls(packet)
+    send_message_to_all_valid_controls(message)
     if logger_for_values:
       logger_for_values.add_packet(packet)
 
@@ -140,6 +140,7 @@ class ControllerClient(GenericClient):
 
   def __init__(self, boat_name):
     self.boat_name = boat_name
+    self.extra_values = { "record": False, "camera": False }
 
   def hello_packet_received(self):
     self.logger.debug("New controller")
@@ -159,14 +160,24 @@ class ControllerClient(GenericClient):
         global config
         logger_for_values = value_logger.ValueLogger(self.boat_name, config.values["new_trip_url"], config.values["logger_url"])
         logger_for_values.start()
+        self.extra_values["record"] = True
       elif not message["record"] and logger_for_values:
         logger_for_values.should_stop()
         logger_for_values = None
+        self.extra_values["record"] = False
     if "camera" in message and "state" in message["camera"]:
       if message["camera"]["state"]:
         camera.start()
+        self.extra_values["camera"] = True
       else:
         camera.stop()
+        self.extra_values["camera"] = False
+
+  def send_message(self, message):
+    message = message.copy()
+    message.update(self.extra_values)
+    line = json.dumps(message)
+    self.send_packet(line.encode("utf-8"))
 
   def connection_lost(self, ex):
     global valid_controller_clients
