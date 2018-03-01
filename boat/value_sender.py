@@ -82,7 +82,7 @@ class ValueSender:
         self.send_next_values()
       return
     if self.delegate:
-      self.delegate.received_values(values)
+      self.delegate.received_values(message)
 
   def eof_received(self):
     self.transport.close()
