@@ -140,7 +140,8 @@ class ControllerClient(GenericClient):
 
   def __init__(self, boat_name):
     self.boat_name = boat_name
-    self.extra_values = { "record": False, "camera": False }
+    self.extra_values = { "record": False, "camera": { "state": False } }
+    super(ControllerClient, self).__init__()
 
   def hello_packet_received(self):
     self.logger.debug("New controller")
@@ -165,13 +166,13 @@ class ControllerClient(GenericClient):
         logger_for_values.should_stop()
         logger_for_values = None
         self.extra_values["record"] = False
-    if "camera" in message and "state" in message["camera"]:
-      if message["camera"]["state"]:
-        camera.start()
-        self.extra_values["camera"] = True
-      else:
-        camera.stop()
-        self.extra_values["camera"] = False
+    if "camera" in message:
+      if "state" in message["camera"]:
+        if message["camera"]["state"]:
+          camera.start()
+        else:
+          camera.stop()
+      self.extra_values["camera"].update(message["camera"])
 
   def send_message(self, message):
     message = message.copy()
