@@ -146,11 +146,11 @@ class ControllerClient(GenericClient):
   def hello_packet_received(self):
     self.logger.debug("New controller")
     global valid_controller_clients
-    global last_packet
+    global last_message
     super(ControllerClient, self).hello_packet_received()
     valid_controller_clients.append(self)
-    if last_packet:
-      self.send_packet(last_packet)
+    if last_message:
+      self.send_message(last_message)
 
   def message_received(self, message, packet):
     if valid_boat_client:
