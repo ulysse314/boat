@@ -34,6 +34,7 @@ valid_boat_client = None
 valid_controller_clients = []
 last_message = None
 logger_for_values = None
+extra_values = { "record": False, "camera": { "state": False } }
 
 def send_message_to_all_valid_controls(message):
   global last_message
@@ -140,7 +141,6 @@ class ControllerClient(GenericClient):
 
   def __init__(self, boat_name):
     self.boat_name = boat_name
-    self.extra_values = { "record": False, "camera": { "state": False } }
     super(ControllerClient, self).__init__()
 
   def hello_packet_received(self):
@@ -153,30 +153,32 @@ class ControllerClient(GenericClient):
       self.send_message(last_message)
 
   def message_received(self, message, packet):
+    global logger_for_values
+    global extra_values
     if valid_boat_client:
       valid_boat_client.send_packet(packet)
     if "record" in message:
-      global logger_for_values
       if message["record"] and not logger_for_values:
         global config
         logger_for_values = value_logger.ValueLogger(self.boat_name, config.values["new_trip_url"], config.values["logger_url"])
         logger_for_values.start()
-        self.extra_values["record"] = True
+        extra_values["record"] = True
       elif not message["record"] and logger_for_values:
         logger_for_values.should_stop()
         logger_for_values = None
-        self.extra_values["record"] = False
+        extra_values["record"] = False
     if "camera" in message:
       if "state" in message["camera"]:
         if message["camera"]["state"]:
           camera.start()
         else:
           camera.stop()
-      self.extra_values["camera"].update(message["camera"])
+      extra_values["camera"].update(message["camera"])
 
   def send_message(self, message):
+    global extra_values
     message = message.copy()
-    message.update(self.extra_values)
+    message.update(extra_values)
     line = json.dumps(message)
     self.send_packet(line.encode("utf-8"))
 
