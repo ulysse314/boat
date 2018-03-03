@@ -44,14 +44,13 @@ def send_message_to_all_valid_controls(message):
     control.send_message(message)
 
 class GenericClient(asyncio.Protocol):
-  received_hello_packet = False
-  data_to_send = b''
-  pending_packets_to_send = []
-  paused = False
-
   def __init__(self):
     self.line_parser = line_parser.LineParser()
     self.logger = logging.getLogger(self.__class__.__name__)
+    self.received_hello_packet = False
+    self.data_to_send = b''
+    self.pending_packets_to_send = []
+    self.paused = False
 
   def connection_made(self, transport):
     self.transport = transport
@@ -114,7 +113,9 @@ class GenericClient(asyncio.Protocol):
     self.paused = False
 
 class BoatClient(GenericClient):
-  key_name = "boat_key"
+  def __init__(self):
+    self.key_name = "boat_key"
+    super(BoatClient, self).__init__()
 
   def hello_packet_received(self):
     self.logger.debug("New boat")
@@ -137,9 +138,8 @@ class BoatClient(GenericClient):
     super(BoatClient, self).connection_lost(ex)
 
 class ControllerClient(GenericClient):
-  key_name = "controller_key"
-
   def __init__(self, boat_name):
+    self.key_name = "controller_key"
     self.boat_name = boat_name
     super(ControllerClient, self).__init__()
 
