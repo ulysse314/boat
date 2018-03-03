@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import aiohttp
 import asyncio
 import json
 import logging
@@ -17,62 +18,88 @@ class ValueLogger:
     self.trip_id = None
     self.should_stop = False
     self.boat_name = boat_name
+    self.packets_to_send = None
   
   async def _send_packet(self, packet):
-    self.logger.debug(self.logger_url + "&tripid=" + str(self.trip_id))
-    resp = requests.post(self.logger_url + "&tripid=" + str(self.trip_id), data = {"values":packet})
+    url = self.logger_url + "&tripid=" + str(self.trip_id)
+    self.logger.debug("send url: {}, packet: {}".format(url, packet))
     try_count = 0
     while True:
-      if resp.status_code == 200:
-        self.logger.debug("Packet sent")
-        self.logger.debug(resp.text)
-        break
+      try:
+        resp = await aiohttp.request("post", url, data = {"values": packet})
+        if resp.status == 200:
+          text = await resp.text()
+          self.logger.debug("Packet sent {}".format(text))
+          break
+      except:
+        self.logger.exception("Fail to send packet")
       await asyncio.sleep(try_count)
       try_count += 1
       if try_count >= 10:
         self.logger.error("Fail to send, packet dropped")
         break
   
-  async def _try_add_packet_soon(self, packet):
+  async def _try_add_packet_soon(self):
+    while len(self.packets_to_send) > 0:
+      packet = self.packets_to_send.pop(0)
+      await self._send_packet(packet)
+    self.packets_to_send = None
+
+  def _start_sending_if_needed(self):
+    if self.trip_id != None and self.packets_to_send != None:
+      asyncio.ensure_future(self._try_add_packet_soon())
+
+  async def _run(self):
+    self.logger.debug("run")
     try_count = 0
     while True:
-      if self.loop != None:
-        self.logger.debug("Adding packet to be sent")
-        asyncio.run_coroutine_threadsafe(self._send_packet(packet), self.loop)
-        break
-      self.logger.debug("No event loop, try to send the packet later")
-      await asyncio.sleep(try_count)
+      url = self.new_trip_url + "&boat=" + requests.utils.quote(self.boat_name)
+      self.logger.debug("URL: {}".format(url))
+      resp = await aiohttp.request("post", url)
+      if resp.status == 200:
+        try:
+          text = await resp.text()
+          data = json.loads(text)
+          self.logger.debug("Received " + text)
+          self.trip_id = data["trip_id"]
+          self.logger.debug("Trip id: {}".format(self.trip_id))
+          break
+        except:
+          self.logger.exception("Fail to get the trip id")
       try_count += 1
       if try_count >= 10:
-        self.logger.error("Fail to get the event loop, packet dropped")
-        break
+        self.logger.error("Fail to get the trip id, stopping")
+        self.should_stop = True
+    self._start_sending_if_needed()
   
   def add_packet(self, packet):
     if self.should_stop:
       self.logger.error("Should stop, packet dropped")
     else:
-      asyncio.ensure_future(self._try_add_packet_soon(packet))
+      if self.packets_to_send != None:
+        self.packets_to_send.append(packet)
+      else:
+        self.packets_to_send = [packet]
+      self._start_sending_if_needed()
 
-  def should_stop_when_empty(self):
+  def start(self):
+    self.logger.debug("start")
+    asyncio.ensure_future(self._run())
+
+  def stop(self):
     self.logger.debug("Should stop")
-    self.call_soon_threadsafe(self.loop.stop)
     self.should_stop = True
 
-  def run(self):
-    self.logger.debug("start")
-    self.loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(self.loop)
-    while True:
-      self.logger.debug(self.new_trip_url + "&boat=" + requests.utils.quote(self.boat_name))
-      pprint.pprint(self.new_trip_url + "&boat=" + requests.utils.quote(self.boat_name))
-      resp = requests.post(self.new_trip_url + "&boat=" + requests.utils.quote(self.boat_name))
-      if resp.status_code == 200:
-        data = json.loads(resp.text)
-        self.logger.debug("Received " + resp.text)
-        self.trip_id = data["trip_id"]
-        self.logger.debug("Trip id: {}".format(self.trip_id))
-        break
-    self.loop.run_forever()
-    pending = asyncio.Task.all_tasks()
-    self.logger.debug("Wait until all stacks are done")
-    self.loop.run_until_complete(asyncio.gather(*pending))
+async def debug(value_logger):
+  await asyncio.sleep(2)
+  value_logger.add_packet('{"test":2,"timestamp":0}')
+
+if __name__ == '__main__':
+  print("starting up..")
+  logging.basicConfig(level=logging.DEBUG)
+  loop = asyncio.get_event_loop()
+  value_logger = ValueLogger("test", generate_trip, save_value)
+  value_logger.start()
+  value_logger.add_packet('{"test":1,"timestamp":0}')
+  asyncio.ensure_future(debug(value_logger))
+  loop.run_forever()

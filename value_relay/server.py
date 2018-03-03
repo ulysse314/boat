@@ -164,7 +164,7 @@ class ControllerClient(GenericClient):
         logger_for_values.start()
         extra_values["record"] = True
       elif not message["record"] and logger_for_values:
-        logger_for_values.should_stop()
+        logger_for_values.stop()
         logger_for_values = None
         extra_values["record"] = False
     if "camera" in message:
