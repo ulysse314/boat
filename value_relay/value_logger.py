@@ -22,11 +22,10 @@ class ValueLogger:
   
   async def _send_packet(self, packet):
     url = self.logger_url + "&tripid=" + str(self.trip_id)
-    self.logger.debug("send url: {}, packet: {}".format(url, packet))
     try_count = 0
     while True:
       try:
-        resp = await aiohttp.request("post", url, data = {"values": packet})
+        resp = await aiohttp.request("post", url, data = {"values": packet.decode("utf-8")})
         if resp.status == 200:
           text = await resp.text()
           self.logger.debug("Packet sent {}".format(text))
