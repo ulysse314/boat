@@ -4,8 +4,13 @@
 import asyncio
 import json
 import logging
+import os
 import pprint
 import queue
+import sys
+
+os.chdir(os.path.abspath(os.path.dirname(sys.argv[0])))
+sys.path.append("..")
 
 import line_parser
 
