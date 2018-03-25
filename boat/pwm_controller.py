@@ -36,7 +36,6 @@ class PWMController:
     self.logger = logging.getLogger('pwm')
     try:
       self.values = {}
-      self.pwm = Adafruit_PCA9685.PCA9685()
       self.motor_forward = PWM_FORWARD_US * 4096.0 * REAL_FREQUENCE
       self.motor_stopped = PWM_STOPPED_US * 4096.0 * REAL_FREQUENCE
       self.motor_reverse = PWM_REVERSE_US * 4096.0 * REAL_FREQUENCE
@@ -44,6 +43,7 @@ class PWMController:
       self.right_motor = 0
       self.left_led = 0
       self.right_led = 0
+      self.pwm = Adafruit_PCA9685.PCA9685()
       self.pwm.set_pwm_freq(ADAFRUIT_FREQUENCE)
       self.set_left_led(0)
       self.set_right_led(0)
@@ -84,6 +84,9 @@ class PWMController:
       real_value = self.motor_stopped + (self.motor_stopped - self.motor_reverse) * value / 100.0
     else:
       real_value = self.motor_stopped
+    if not self.pwm:
+      self.logger.error("No pwm")
+      return
     try:
       self.pwm.set_pwm(motor_id, 0, int(real_value))
     except:
@@ -106,6 +109,9 @@ class PWMController:
     self.set_led(RIGHT_LED_ID, value)
 
   def set_led(self, led_id, value):
+    if not self.pwm:
+      self.logger.error("No pwm")
+      return
     try:
       self.pwm.set_pwm(led_id, int(value * 4096.0 / 100.0), 0)
     except:
