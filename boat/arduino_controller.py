@@ -7,6 +7,7 @@ import pprint
 import os
 import serial
 import serial_asyncio
+import sys
 import time
 
 import line_protocol
@@ -15,13 +16,18 @@ class ArduinoController:
   NODE_INDEX = 0
   TYPE_INDEX = 1
   ADDRESS_INDEX = 2
-  DEV_PORT = "/dev/ttyUSB0"
-  PORT_SPEED = 115200
-  logger = logging.getLogger('ArduinoController')
-  commands = []
-  values = {}
-  received_values = {}
-  serial_transport = None
+
+  def __init__(self, dev_port = None, port_speed = 115200):
+    if not dev_port:
+      self.dev_port = "/dev/ttyUSB0"
+    else:
+      self.dev_port = dev_port
+    self.port_speed = port_speed
+    self.logger = logging.getLogger('ArduinoController')
+    self.commands = []
+    self.values = {}
+    self.received_values = {}
+    self.serial_transport = None
 
   def start(self):
     asyncio.ensure_future(self._connect())
@@ -37,9 +43,9 @@ class ArduinoController:
     while True:
       try:
         self.logger.debug("Starting connection")
-        if os.path.exists(self.DEV_PORT):
+        if os.path.exists(self.dev_port):
           loop = asyncio.get_event_loop()
-          await serial_asyncio.create_serial_connection(loop, lambda: line_protocol.LineProtocol(self), self.DEV_PORT, baudrate = self.PORT_SPEED)
+          await serial_asyncio.create_serial_connection(loop, lambda: line_protocol.LineProtocol(self), self.dev_port, baudrate = self.port_speed)
           break
       except:
         self.logger.exception("connection failed")
@@ -147,13 +153,17 @@ async def debug(arduino_controller):
     await asyncio.sleep(1)
     pprint.pprint(arduino_controller.values)
 
-def main():
+def main(port):
   logging.basicConfig(level=logging.DEBUG)
-  arduino_controller = ArduinoController()
+  arduino_controller = ArduinoController(port)
   arduino_controller.start()
   task = asyncio.ensure_future(debug(arduino_controller))
   loop = asyncio.get_event_loop()
   loop.run_forever()
+  return 0
 
 if __name__ == "__main__":
-  main()
+  port = None
+  if len(sys.argv) > 1:
+    port = sys.argv[1]
+  sys.exit(main(port))
