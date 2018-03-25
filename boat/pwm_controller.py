@@ -32,19 +32,18 @@ def valid_led(value):
   return value
 
 class PWMController:
-  values = {}
-  pwm = Adafruit_PCA9685.PCA9685()
-  motor_forward = PWM_FORWARD_US * 4096.0 * REAL_FREQUENCE
-  motor_stopped = PWM_STOPPED_US * 4096.0 * REAL_FREQUENCE
-  motor_reverse = PWM_REVERSE_US * 4096.0 * REAL_FREQUENCE
-  logger = logging.getLogger('pwm')
-  left_motor = 0
-  right_motor = 0
-  left_led = 0
-  right_led = 0
-
   def __init__(self):
     try:
+      self.values = {}
+      self.pwm = Adafruit_PCA9685.PCA9685()
+      self.motor_forward = PWM_FORWARD_US * 4096.0 * REAL_FREQUENCE
+      self.motor_stopped = PWM_STOPPED_US * 4096.0 * REAL_FREQUENCE
+      self.motor_reverse = PWM_REVERSE_US * 4096.0 * REAL_FREQUENCE
+      self.logger = logging.getLogger('pwm')
+      self.left_motor = 0
+      self.right_motor = 0
+      self.left_led = 0
+      self.right_led = 0
       self.pwm.set_pwm_freq(ADAFRUIT_FREQUENCE)
       self.set_left_led(0)
       self.set_right_led(0)
