@@ -24,6 +24,7 @@ class ArduinoController:
       self.dev_port = dev_port
     self.port_speed = port_speed
     self.logger = logging.getLogger('ArduinoController')
+    self.logger.debug(pprint.pformat(self.dev_port))
     self.commands = []
     self.values = {}
     self.received_values = {}
