@@ -42,28 +42,30 @@ boolean GPSSensor::printAddress(Stream *serial) {
 }
 
 boolean GPSSensor::printValues(Stream *serial) {
-  serial->print(_gps->latitude_degree); // 3
+  serial->print((int)_gps->antenna); // 3
   serial->print(" ");
-  serial->print(_gps->longitude_degree); // 4
+  serial->print(_gps->satellites_in_views); // 4
   serial->print(" ");
-  serial->print(_gps->altitude); // 5
+  serial->print(_gps->satellites_used); // 5
   serial->print(" ");
-  serial->print(_gps->speed); // 6
+  serial->print(_gps->mode); // 6
   serial->print(" ");
-  serial->print(_gps->angle); // 7
+  if (_gps->fix) serial->print(_gps->fix_quality); // 7
   serial->print(" ");
-  serial->print(_gps->PDOP); // 8
+  if (_gps->fix) serial->print(_gps->latitude_degree); // 8
   serial->print(" ");
-  serial->print(_gps->VDOP); // 9
+  if (_gps->fix) serial->print(_gps->longitude_degree); // 9
   serial->print(" ");
-  serial->print(_gps->VDOP); // 10
+  if (_gps->fix) serial->print(_gps->altitude); // 10
   serial->print(" ");
-  serial->print(_gps->satellites_used); // 11
+  if (_gps->fix) serial->print(_gps->speed); // 11
   serial->print(" ");
-  serial->print(_gps->satellites_in_views); // 12
+  if (_gps->fix) serial->print(_gps->angle); // 12
   serial->print(" ");
-  serial->print(_gps->mode); // 13
+  if (_gps->fix) serial->print(_gps->PDOP); // 13
   serial->print(" ");
-  serial->print(_gps->fix_quality); // 14
+  if (_gps->fix) serial->print(_gps->VDOP); // 14
+  serial->print(" ");
+  if (_gps->fix) serial->print(_gps->VDOP); // 15
   return true;
 }
