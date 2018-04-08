@@ -57,15 +57,16 @@ class ArduinoController:
     try:
       if '0 GPS serial1' in self.received_values:
         values = self.received_values['0 GPS serial1']['values']
-        self.values["gps"]["lat"] = float(values[3]) / 10000000
-        self.values["gps"]["lon"] = float(values[4]) / 10000000
-        self.values["gps"]["alt"] = float(values[5])
-        self.values["gps"]["speed"] = float(values[6])
-        self.values["gps"]["angle"] = float(values[7])
-        self.values["gps"]["tracked"] = int(values[11])
-        self.values["gps"]["sat"] = int(values[12])
-        self.values["gps"]["mode"] = int(values[13])
-        self.values["gps"]["fix"] = int(values[14])
+        if len(values) >= 4: self.values["gps"]["antenne"] = int(values[3]);
+        if len(values) >= 5: self.values["gps"]["sat"] = int(values[4])
+        if len(values) >= 6: self.values["gps"]["tracked"] = int(values[5])
+        if len(values) >= 7: self.values["gps"]["mode"] = int(values[6])
+        if len(values) >= 8: self.values["gps"]["fix"] = int(values[7])
+        if len(values) >= 9: self.values["gps"]["lat"] = float(values[8]) / 10000000
+        if len(values) >= 10: self.values["gps"]["lon"] = float(values[9]) / 10000000
+        if len(values) >= 11: self.values["gps"]["alt"] = float(values[10])
+        if len(values) >= 12: self.values["gps"]["speed"] = float(values[11])
+        if len(values) >= 13: self.values["gps"]["angle"] = float(values[12])
     except:
       self.logger.exception("Problem to get gps")
 
