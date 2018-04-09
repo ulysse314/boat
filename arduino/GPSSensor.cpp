@@ -49,23 +49,25 @@ boolean GPSSensor::printValues(Stream *serial) {
   serial->print(_gps->satellites_used); // 5
   serial->print(" ");
   serial->print(_gps->mode); // 6
-  serial->print(" ");
-  if (_gps->fix) serial->print(_gps->fix_quality); // 7
-  serial->print(" ");
-  if (_gps->fix) serial->print(_gps->latitude_degree); // 8
-  serial->print(" ");
-  if (_gps->fix) serial->print(_gps->longitude_degree); // 9
-  serial->print(" ");
-  if (_gps->fix) serial->print(_gps->altitude); // 10
-  serial->print(" ");
-  if (_gps->fix) serial->print(_gps->speed); // 11
-  serial->print(" ");
-  if (_gps->fix) serial->print(_gps->angle); // 12
-  serial->print(" ");
-  if (_gps->fix) serial->print(_gps->PDOP); // 13
-  serial->print(" ");
-  if (_gps->fix) serial->print(_gps->VDOP); // 14
-  serial->print(" ");
-  if (_gps->fix) serial->print(_gps->VDOP); // 15
+  if (_gps->fix) {
+    serial->print(" ");
+    serial->print(_gps->fix_quality); // 7
+    serial->print(" ");
+    serial->print(_gps->latitude_degree); // 8
+    serial->print(" ");
+    serial->print(_gps->longitude_degree); // 9
+    serial->print(" ");
+    serial->print(_gps->altitude); // 10
+    serial->print(" ");
+    serial->print(_gps->speed); // 11
+    serial->print(" ");
+    serial->print(_gps->angle); // 12
+    serial->print(" ");
+    serial->print(_gps->PDOP); // 13
+    serial->print(" ");
+    serial->print(_gps->VDOP); // 14
+    serial->print(" ");
+    serial->print(_gps->VDOP); // 15
+  }
   return true;
 }
