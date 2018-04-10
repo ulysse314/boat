@@ -1,145 +1,154 @@
 #include "SensorList.h"
 
-SensorList::SensorList(void) {
-  _firstSensor = NULL;
+SensorList::SensorList() {
+  _sensorBucket = NULL;
+}
+
+SensorList::~SensorList() {
+  while (_sensorBucket) {
+    delete _sensorBucket->sensor;
+    SensorBucket *nextBucket = _sensorBucket->nextBucket;
+    delete _sensorBucket;
+    _sensorBucket = nextBucket;
+  }
 }
 
 void SensorList::addSensor(Sensor *sensor) {
-  _SensorList *newSensor;
-  _SensorList **cursor;
+  SensorBucket *newSensorBucket;
+  SensorBucket **bucketCursor;
   
-  newSensor = (_SensorList *)malloc(sizeof(_SensorList));
-  newSensor->sensor = sensor;
-  newSensor->next = NULL;
+  newSensorBucket = (SensorBucket *)malloc(sizeof(SensorBucket));
+  newSensorBucket->sensor = sensor;
+  newSensorBucket->nextBucket = NULL;
   
-  cursor = &_firstSensor;
-  while (*cursor) {
-    cursor = &((*cursor)->next);
+  bucketCursor = &_sensorBucket;
+  while (*bucketCursor) {
+    bucketCursor = &((*bucketCursor)->nextBucket);
   }
-  *cursor = newSensor;
+  *bucketCursor = newSensorBucket;
 }
 
 Sensor *SensorList::sensorAtIndex(unsigned int index) {
-  _SensorList *cursor = _firstSensor;
+  SensorBucket *bucketCursor = _sensorBucket;
   
-  while (cursor && index > 0) {
-    cursor = cursor->next;
+  while (bucketCursor && index > 0) {
+    bucketCursor = bucketCursor->nextBucket;
     index--;
   }
-  return cursor?cursor->sensor:NULL;
+  return bucketCursor?bucketCursor->sensor:NULL;
 }
 
 unsigned int SensorList::sensorCount(void) {
-  _SensorList *cursor = _firstSensor;
+  SensorBucket *bucketCursor = _sensorBucket;
   unsigned int count = 0;
   
-  while (cursor) {
-    cursor = cursor->next;
+  while (bucketCursor) {
+    bucketCursor = bucketCursor->nextBucket;
     count++;
   }
   return count;
 }
 
-Sensor *SensorList::getNextSensorCursor(void **sensorCursor) {
+Sensor *SensorList::getNextSensor(void **cursor) {
   Sensor *result;
   
-  if (sensorCursor == NULL || *sensorCursor == NULL) {
+  if (cursor == NULL || *cursor == NULL) {
     result = NULL;
   } else {
-    _SensorList *list = (_SensorList *)*sensorCursor;
-    result = list->sensor;
-    *sensorCursor = (void *)(list->next);
+    SensorBucket *bucketCursor = (SensorBucket *)*cursor;
+    result = bucketCursor->sensor;
+    *cursor = (void *)(bucketCursor->nextBucket);
   }
   return result;
 }
 
-boolean SensorList::begin(void) {
+boolean SensorList::begin() {
   boolean result = true;
-  _SensorList *cursor = _firstSensor;
+  SensorBucket *bucketCursor = _sensorBucket;
   
-  while (cursor) {
-    result = cursor->sensor->begin() && result;
-    cursor = cursor->next;
+  while (bucketCursor) {
+    result = bucketCursor->sensor->begin() && result;
+    bucketCursor = bucketCursor->nextBucket;
   }
   return result;
 }
 
-boolean SensorList::loop(void) {
+boolean SensorList::loop() {
   boolean result = true;
-  _SensorList *cursor = _firstSensor;
+  SensorBucket *bucketCursor = _sensorBucket;
   
-  while (cursor) {
-    result = cursor->sensor->loop() && result;
-    cursor = cursor->next;
+  while (bucketCursor) {
+    result = bucketCursor->sensor->loop() && result;
+    bucketCursor = bucketCursor->nextBucket;
   }
   return result;
 }
 
-boolean SensorList::readValues(void) {
+boolean SensorList::readValues() {
   boolean result = true;
-  _SensorList *cursor = _firstSensor;
+  SensorBucket *bucketCursor = _sensorBucket;
   
-  while (cursor) {
-    result = cursor->sensor->readValues() && result;
-    cursor = cursor->next;
+  while (bucketCursor) {
+    result = bucketCursor->sensor->readValues() && result;
+    bucketCursor = bucketCursor->nextBucket;
   }
   return result;
 }
 
-boolean SensorList::resetValues(void) {
+boolean SensorList::resetValues() {
   boolean result = true;
-  _SensorList *cursor = _firstSensor;
+  SensorBucket *bucketCursor = _sensorBucket;
   
-  while (cursor) {
-    result = cursor->sensor->resetValues() && result;
-    cursor = cursor->next;
+  while (bucketCursor) {
+    result = bucketCursor->sensor->resetValues() && result;
+    bucketCursor = bucketCursor->nextBucket;
   }
   return result;
 }
 
 boolean SensorList::printInfo(Stream *serial, int nodeID) {
   boolean result = true;
-  _SensorList *cursor = _firstSensor;
+  SensorBucket *bucketCursor = _sensorBucket;
   
-  while (cursor) {
-    result = cursor->sensor->printInfo(serial, nodeID) && result;
-    cursor = cursor->next;
+  while (bucketCursor) {
+    result = bucketCursor->sensor->printInfo(serial, nodeID) && result;
+    bucketCursor = bucketCursor->nextBucket;
   }
   return result;
 }
 
-boolean SensorList::areAllReady(void) {
+boolean SensorList::areAllReady() {
   boolean result = true;
-  _SensorList *cursor = _firstSensor;
+  SensorBucket *bucketCursor = _sensorBucket;
   
-  while (cursor) {
-    if (!cursor->sensor->isReady()) {
+  while (bucketCursor) {
+    if (!bucketCursor->sensor->isReady()) {
       result = false;
       break;
     }
-    cursor = cursor->next;
+    bucketCursor = bucketCursor->nextBucket;
   }
   return result;
 }
 
 boolean SensorList::printAddress(Stream *serial) {
   boolean result = true;
-  _SensorList *cursor = _firstSensor;
+  SensorBucket *bucketCursor = _sensorBucket;
   
-  while (cursor) {
-    result = cursor->sensor->printAddress(serial) && result;
-    cursor = cursor->next;
+  while (bucketCursor) {
+    result = bucketCursor->sensor->printAddress(serial) && result;
+    bucketCursor = bucketCursor->nextBucket;
   }
   return result;
 }
 
 boolean SensorList::printValues(Stream *serial) {
   boolean result = true;
-  _SensorList *cursor = _firstSensor;
+  SensorBucket *bucketCursor = _sensorBucket;
   
-  while (cursor) {
-    result = cursor->sensor->printValues(serial) && result;
-    cursor = cursor->next;
+  while (bucketCursor) {
+    result = bucketCursor->sensor->printValues(serial) && result;
+    bucketCursor = bucketCursor->nextBucket;
   }
   return result;
 }
