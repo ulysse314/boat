@@ -17,6 +17,7 @@ import arduino_controller
 import boat_controller
 import config
 import e3372_controller
+import feather_controller
 import gps_controller
 import munin_server
 import pi_controller
@@ -38,6 +39,7 @@ sender = value_sender.ValueSender(BOAT_NAME, RELAY_SERVER, BOAT_PORT, config.val
 
 pwm = pwm_controller.PWMController()
 controllers = [ e3372_controller.E3372Controller(),
+                feather_controller.FeatherController(config.values["sensors"]),
                 gps_controller.GPSController(),
                 pi_controller.PiController(),
                 pwm,
