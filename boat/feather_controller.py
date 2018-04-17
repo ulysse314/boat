@@ -14,14 +14,16 @@ parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 if parent_dir not in sys.path:
   sys.path.append(parent_dir)
 
+import config
 import line_protocol
 
-class ArduinoController:
+class FeatherController:
   NODE_INDEX = 0
   TYPE_INDEX = 1
   ADDRESS_INDEX = 2
 
-  def __init__(self, dev_port = None, port_speed = 115200):
+  def __init__(self, sensors, dev_port = None, port_speed = 115200):
+    self.sensors = sensors
     if not dev_port:
       self.dev_port = "/dev/featherm0"
     else:
@@ -58,21 +60,34 @@ class ArduinoController:
 
   def _update_values(self):
     self.values = { "gps": {} }
-    try:
-      if '0 GPS serial1' in self.received_values:
-        values = self.received_values['0 GPS serial1']['values']
-        if len(values) >= 4: self.values["gps"]["antenne"] = int(values[3]);
-        if len(values) >= 5: self.values["gps"]["sat"] = int(values[4])
-        if len(values) >= 6: self.values["gps"]["tracked"] = int(values[5])
-        if len(values) >= 7: self.values["gps"]["mode"] = int(values[6])
-        if len(values) >= 8: self.values["gps"]["fix"] = int(values[7])
-        if len(values) >= 9: self.values["gps"]["lat"] = float(values[8]) / 10000000
-        if len(values) >= 10: self.values["gps"]["lon"] = float(values[9]) / 10000000
-        if len(values) >= 11: self.values["gps"]["alt"] = float(values[10])
-        if len(values) >= 12: self.values["gps"]["speed"] = float(values[11])
-        if len(values) >= 13: self.values["gps"]["angle"] = float(values[12])
-    except:
-      self.logger.exception("Problem to get gps")
+    for sensor_id in self.received_values:
+      values = self.received_values[sensor_id]['values']
+      if sensor_id == '0 GPS serial1':
+        try:
+          if len(values) >= 4: self.values["gps"]["antenne"] = int(values[3]);
+          if len(values) >= 5: self.values["gps"]["sat"] = int(values[4])
+          if len(values) >= 6: self.values["gps"]["tracked"] = int(values[5])
+          if len(values) >= 7: self.values["gps"]["mode"] = int(values[6])
+          if len(values) >= 8: self.values["gps"]["fix"] = int(values[7])
+          if len(values) >= 9: self.values["gps"]["lat"] = float(values[8]) / 10000000
+          if len(values) >= 10: self.values["gps"]["lon"] = float(values[9]) / 10000000
+          if len(values) >= 11: self.values["gps"]["alt"] = float(values[10])
+          if len(values) >= 12: self.values["gps"]["speed"] = float(values[11])
+          if len(values) >= 13: self.values["gps"]["angle"] = float(values[12])
+        except:
+          self.logger.exception("Problem to get gps")
+      elif sensor_id in self.sensors:
+        sensor = self.sensors[sensor_id]
+        if sensor["type"] == "dallas":
+          self._add_values(sensor["keys"], float(values[3]))
+
+  def _add_values(self, keys, value):
+    array = self.values
+    for key in keys[:-1]:
+      if key not in array:
+        array[key] = {}
+      array = array[key]
+    array[keys[-1]] = value
 
   def _parse_line(self, line):
     line = line.strip("\r\n \t")
@@ -83,7 +98,7 @@ class ArduinoController:
         self.received_values[key] = { "values": elements, "line": line, "update_time": time.time() }
       except:
         self.logger.exception("Problem to parse line")
-    if line == "--":
+    if line.startswith("--"):
       result = True
     else:
       result = False
@@ -117,9 +132,9 @@ async def debug(arduino_controller):
     await asyncio.sleep(1)
     pprint.pprint(arduino_controller.values)
 
-def main(port):
+def main(sensors, port):
   logging.basicConfig(level=logging.DEBUG)
-  arduino_controller = ArduinoController(port)
+  arduino_controller = FeatherController(sensors, port)
   arduino_controller.start()
   task = asyncio.ensure_future(debug(arduino_controller))
   loop = asyncio.get_event_loop()
@@ -127,7 +142,8 @@ def main(port):
   return 0
 
 if __name__ == "__main__":
+  config.load()
   port = None
   if len(sys.argv) > 1:
     port = sys.argv[1]
-  sys.exit(main(port))
+  sys.exit(main(config.values["sensors"], port))
