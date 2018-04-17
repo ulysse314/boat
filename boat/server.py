@@ -22,11 +22,8 @@ import pi_controller
 import pwm_controller
 import value_sender
 
-SETTINGS_DIR = "/etc/ulysse314/"
-CONFIG_FILE = os.path.join(SETTINGS_DIR, "ulysse314.ini")
 if len(sys.argv) == 1:
-  with open(os.path.join(SETTINGS_DIR, "name"), "r") as file:
-    BOAT_NAME = file.readline().strip()
+  BOAT_NAME = config.default_boat_name()
 else:
   BOAT_NAME = sys.argv[1]
 
