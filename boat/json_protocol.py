@@ -9,7 +9,9 @@ import pprint
 import queue
 import sys
 
-os.chdir(os.path.abspath(os.path.dirname(__file__)))
+parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+if parent_dir not in sys.path:
+  sys.path.append(parent_dir)
 
 import line_protocol
 

@@ -10,6 +10,10 @@ import serial_asyncio
 import sys
 import time
 
+parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+if parent_dir not in sys.path:
+  sys.path.append(parent_dir)
+
 import line_protocol
 
 class ArduinoController:
