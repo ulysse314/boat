@@ -32,10 +32,12 @@ unsigned long lastPrint = 0;
 void loop() {
   sensorList.loop();
   unsigned long currentTime = millis();
-  if (currentTime - lastPrint> 1000) {
+  unsigned long difference = currentTime - lastPrint;
+  if (difference > 1000) {
     lastPrint = currentTime;
     sensorList.printInfo(&Serial, 0);
-    Serial.println("--");
+    Serial.print("--");
+    Serial.println(difference);
   }
   activatorList.loop();
   activatorList.listen(&Serial);
