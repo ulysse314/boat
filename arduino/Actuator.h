@@ -1,7 +1,7 @@
 class Actuator {
 public:
   virtual const char *getAddress() const = 0;
-  virtual void begin();
-  virtual void loop();
-  virtual bool processValues(const char *values);
+  virtual bool begin() {};
+  virtual bool loop() {};
+  virtual bool processValues(const char *values) {};
 };
