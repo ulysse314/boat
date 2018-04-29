@@ -38,6 +38,7 @@ void loop() {
     sensorList.printInfo(&Serial, 0);
     Serial.print("--");
     Serial.println(difference);
+    Serial.flush();
   }
   activatorList.loop();
   activatorList.listen(&Serial);
