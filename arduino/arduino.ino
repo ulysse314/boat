@@ -1,13 +1,14 @@
 #include "ActuatorList.h"
+#include "DallasSensor.h"
 #include "GPSSensor.h"
+#include "MotorActuator.h"
 #include "SensorList.h"
 #include "OneWire.h"
-#include "DallasSensor.h"
 
 #define ONE_WIRE_PIN          13
 
 SensorList sensorList;
-ActuatorList activatorList;
+ActuatorList actuatorList;
 OneWire oneWire(ONE_WIRE_PIN);
 
 void setup() {
@@ -21,10 +22,14 @@ void setup() {
   }
   sensorList.begin();
   sensorList.loop();
-  activatorList.begin();
-  activatorList.loop();
+  MotorActuator *motorActuator = new MotorActuator();
+  actuatorList.addActuator(motorActuator);
+  actuatorList.begin();
+  actuatorList.loop();
   while (!Serial);
   Serial.begin(115200);
+  Serial.println("Ready");
+  Serial.flush();
 }
 
 unsigned long lastPrint = 0;
@@ -40,6 +45,6 @@ void loop() {
     Serial.println(difference);
     Serial.flush();
   }
-  activatorList.loop();
-  activatorList.listen(&Serial);
+  actuatorList.loop();
+  actuatorList.listen(&Serial);
 }
