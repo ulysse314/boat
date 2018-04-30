@@ -26,8 +26,8 @@ void setup() {
   actuatorList.addActuator(motorActuator);
   actuatorList.begin();
   actuatorList.loop();
-  while (!Serial);
   Serial.begin(115200);
+  while (!Serial);
   Serial.println("Ready");
   Serial.flush();
 }
