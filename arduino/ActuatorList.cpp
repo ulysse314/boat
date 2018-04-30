@@ -3,7 +3,7 @@
 #include "Actuator.h"
 
 inline bool isOrdered(Actuator *actuator1, Actuator *actuator2) {
-  return strcmp(actuator1->getAddress(), actuator2->getAddress()) > 0;
+  return strcmp(actuator1->getAddress(), actuator2->getAddress()) < 0;
 }
 
 class ActuatorSearcher {
@@ -19,8 +19,19 @@ public:
     _searchFinished = false;
   }
   
+  bool isValidActuator(char character) {
+    if (!_bucket) {
+      return false;
+    }
+    const char *address = _bucket->actuator->getAddress();
+    if (_characterIndex >= strlen(address)) {
+      return false;
+    }
+    return address[_characterIndex] < character;
+  }
+
   void nextCharacter(char character) {
-    while (_bucket && _bucket->actuator->getAddress()[_characterIndex] < character) {
+    while (isValidActuator(character)) {
       _bucket = _bucket->nextBucket;
     }
     _characterIndex++;
@@ -80,6 +91,7 @@ void ActuatorList::begin() {
     bucketCursor->actuator->begin();
     bucketCursor = bucketCursor->nextBucket;
   }
+  _actuatorSearcher->reset(_actuatorBucket);
 }
 
 void ActuatorList::loop() {
@@ -93,35 +105,51 @@ void ActuatorList::loop() {
 void ActuatorList::listen(Stream *serial) {
   char buffer[30];
   size_t readAvailable;
-  char *toProcess = buffer;
-  while (readAvailable = serial->readBytes(buffer, sizeof(buffer) + 1)) {
+  while (readAvailable = serial->readBytes(buffer, sizeof(buffer) - 1)) {
+    if (!readAvailable) {
+      return;
+    }
+    buffer[readAvailable] = 0;
     char *cursor = buffer;
     while (readAvailable) {
-      while ((cursor[0] != '\n' && cursor[0] != '\r' && cursor[0] != ' ') && readAvailable) {
-        if (!_actuatorSearcher->isFinished()) {
-          _actuatorSearcher->nextCharacter(cursor[0]);
-        }
+      while ((cursor[0] != '\n' && cursor[0] != '\r' && cursor[0] != ' ') && readAvailable && !_actuatorSearcher->isFinished()) {
+        _actuatorSearcher->nextCharacter(cursor[0]);
         cursor++;
         readAvailable--;
       }
       if (!_actuatorSearcher->isFinished()) {
         // If there are still available characters, it must be a space, so the address is done.
         if (readAvailable) {
+          if (cursor[0] == ' ') {
+            cursor++;
+            readAvailable--;
+          }
           _actuatorSearcher->finished();
-        }
-      } else {
-        toProcess[cursor - toProcess] = 0;
-        _currentValue.concat(toProcess);
-        if (readAvailable) {
-        // If there are still available characters, it must be a EOL.
-          processBuffer();
         }
       }
       if (readAvailable) {
-        readAvailable--;
-        cursor++;
+        char *toProcess = cursor;
+        while ((cursor[0] != '\n' && cursor[0] != '\r') && readAvailable) {
+          cursor++;
+          readAvailable--;
+        }
+        if (readAvailable) {
+          // Erase \n or \r, and pass it.
+          toProcess[cursor - toProcess] = 0;
+        }
+        _currentValue.concat(toProcess);
+        if (readAvailable) {
+          // If there are still available characters, it must be a EOL (which has been erased).
+          // So we need to pass it.
+          cursor++;
+          readAvailable--;
+          processBuffer();
+          while ((cursor[0] == '\n' || cursor[0] == '\r') && readAvailable) {
+            cursor++;
+            readAvailable--;
+          }
+        }
       }
-      toProcess = cursor;
     }
   }
 }
