@@ -29,5 +29,14 @@ bool MotorActuator::begin() {
 }
 
 bool MotorActuator::processValues(const char *values) {
+  int left = atoi(values);
+  int right = 0;
+  while (values[0] != ' ' && values[0] != 0) {
+    values++;
+  }
+  if (values[0] == ' ') {
+    values++;
+    right = atoi(values);
+  }
   return true;
 }
