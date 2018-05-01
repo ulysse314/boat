@@ -20,8 +20,8 @@ public:
   
 private:
   Adafruit_PWMServoDriver *_pwmDriver;
-  int _left;
-  int _right;
+  int _left = 0;
+  int _right = 0;
 
   void setStringValueForMotor(const char *stringValue, int *value, int motorID);
   void setValueForMotor(int value, int motorID);
