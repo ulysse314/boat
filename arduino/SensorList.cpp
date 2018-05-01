@@ -62,8 +62,8 @@ Sensor *SensorList::getNextSensor(void **cursor) {
   return result;
 }
 
-boolean SensorList::begin() {
-  boolean result = true;
+bool SensorList::begin() {
+  bool result = true;
   SensorBucket *bucketCursor = _sensorBucket;
   
   while (bucketCursor) {
@@ -73,8 +73,8 @@ boolean SensorList::begin() {
   return result;
 }
 
-boolean SensorList::loop() {
-  boolean result = true;
+bool SensorList::loop() {
+  bool result = true;
   SensorBucket *bucketCursor = _sensorBucket;
   
   while (bucketCursor) {
@@ -84,8 +84,8 @@ boolean SensorList::loop() {
   return result;
 }
 
-boolean SensorList::readValues() {
-  boolean result = true;
+bool SensorList::readValues() {
+  bool result = true;
   SensorBucket *bucketCursor = _sensorBucket;
   
   while (bucketCursor) {
@@ -95,8 +95,8 @@ boolean SensorList::readValues() {
   return result;
 }
 
-boolean SensorList::resetValues() {
-  boolean result = true;
+bool SensorList::resetValues() {
+  bool result = true;
   SensorBucket *bucketCursor = _sensorBucket;
   
   while (bucketCursor) {
@@ -106,8 +106,8 @@ boolean SensorList::resetValues() {
   return result;
 }
 
-boolean SensorList::printInfo(Stream *serial, int nodeID) {
-  boolean result = true;
+bool SensorList::printInfo(Stream *serial, int nodeID) {
+  bool result = true;
   SensorBucket *bucketCursor = _sensorBucket;
   
   while (bucketCursor) {
@@ -117,8 +117,8 @@ boolean SensorList::printInfo(Stream *serial, int nodeID) {
   return result;
 }
 
-boolean SensorList::areAllReady() {
-  boolean result = true;
+bool SensorList::areAllReady() {
+  bool result = true;
   SensorBucket *bucketCursor = _sensorBucket;
   
   while (bucketCursor) {
@@ -131,8 +131,8 @@ boolean SensorList::areAllReady() {
   return result;
 }
 
-boolean SensorList::printAddress(Stream *serial) {
-  boolean result = true;
+bool SensorList::printAddress(Stream *serial) {
+  bool result = true;
   SensorBucket *bucketCursor = _sensorBucket;
   
   while (bucketCursor) {
@@ -142,8 +142,8 @@ boolean SensorList::printAddress(Stream *serial) {
   return result;
 }
 
-boolean SensorList::printValues(Stream *serial) {
-  boolean result = true;
+bool SensorList::printValues(Stream *serial) {
+  bool result = true;
   SensorBucket *bucketCursor = _sensorBucket;
   
   while (bucketCursor) {

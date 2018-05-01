@@ -16,7 +16,7 @@ public:
   const char *sensorClass() const override { return "Motor"; };
   bool begin() override;
   bool processValues(const char *values) override;
-  boolean printValues(Stream *serial) override;
+  bool printValues(Stream *serial) override;
   
 private:
   Adafruit_PWMServoDriver *_pwmDriver;

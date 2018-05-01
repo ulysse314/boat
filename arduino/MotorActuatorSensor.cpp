@@ -67,7 +67,7 @@ void MotorActuatorSensor::setValueForMotor(int value, int motorID) {
   _pwmDriver->setPWM(motorID, 0, realValue);
 }
 
-boolean MotorActuatorSensor::printValues(Stream *serial) {
+bool MotorActuatorSensor::printValues(Stream *serial) {
   serial->print(_left);
   serial->print(" ");
   serial->print(_right);

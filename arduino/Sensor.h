@@ -9,14 +9,14 @@ public:
   virtual const char *sensorType() const { return ""; };
   virtual const char *addressString() const { return ""; };
   virtual const char *copyAddressString() const { return NULL; };
-  virtual boolean begin() { return true; };
-  virtual boolean isReady() { return true; };
-  virtual boolean loop() { return true; };
-  virtual boolean readValues() { return true; };
-  virtual boolean resetValues() { return true; };
-  virtual boolean printInfo(Stream *serial, int nodeID = -1);
-  virtual boolean printAddress(Stream *serial);
-  virtual boolean printValues(Stream *serial) { return false; };
+  virtual bool begin() { return true; };
+  virtual bool isReady() { return true; };
+  virtual bool loop() { return true; };
+  virtual bool readValues() { return true; };
+  virtual bool resetValues() { return true; };
+  virtual bool printInfo(Stream *serial, int nodeID = -1);
+  virtual bool printAddress(Stream *serial);
+  virtual bool printValues(Stream *serial) { return false; };
 };
 
 #endif // Sensor_h

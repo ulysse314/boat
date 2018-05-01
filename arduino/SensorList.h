@@ -23,14 +23,14 @@ public:
   unsigned int sensorCount();
   void *getSensorCursor() { return (void*)_sensorBucket; };
   Sensor *getNextSensor(void **sensorCursor);
-  virtual boolean begin();
-  virtual boolean areAllReady();
-  virtual boolean loop();
-  virtual boolean readValues();
-  virtual boolean resetValues();
-  virtual boolean printInfo(Stream *serial, int nodeID = -1);
-  virtual boolean printAddress(Stream *serial);
-  virtual boolean printValues(Stream *serial);
+  virtual bool begin();
+  virtual bool areAllReady();
+  virtual bool loop();
+  virtual bool readValues();
+  virtual bool resetValues();
+  virtual bool printInfo(Stream *serial, int nodeID = -1);
+  virtual bool printAddress(Stream *serial);
+  virtual bool printValues(Stream *serial);
 };
 
 #endif // SensorList_h

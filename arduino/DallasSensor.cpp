@@ -61,7 +61,7 @@ const char *DallasSensor::copyAddressString() const {
   return string;
 }
 
-boolean DallasSensor::printAddress(Stream *serial) {
+bool DallasSensor::printAddress(Stream *serial) {
   byte ii;
   for(ii = 0; ii < 8; ii++) {
     if (_address[ii] < 16) {
@@ -75,7 +75,7 @@ boolean DallasSensor::printAddress(Stream *serial) {
   return true;
 }
 
-boolean DallasSensor::printValues(Stream *serial) {
+bool DallasSensor::printValues(Stream *serial) {
   char buffer[32];
   sprintf(buffer, "%.2f", this->celsius());
   serial->print(buffer);
@@ -115,7 +115,7 @@ void DallasSensor::sendReadCommand() {
   _celsius = (float)raw / 16.0;
 }
 
-boolean DallasSensor::loop() {
+bool DallasSensor::loop() {
   switch(_state) {
       case DallasSensorStateReset:
           this->sendConvertCommand();

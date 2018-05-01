@@ -9,10 +9,10 @@ class GPSSensor : public Sensor {
 public:
   virtual const char *sensorClass() const override { return "GPS"; };
   virtual const char *sensorType() const override { return "GPS"; };
-  virtual boolean begin() override;
-  virtual boolean loop() override;
-  virtual boolean printAddress(Stream *serial) override;
-  virtual boolean printValues(Stream *serial) override;
+  virtual bool begin() override;
+  virtual bool loop() override;
+  virtual bool printAddress(Stream *serial) override;
+  virtual bool printValues(Stream *serial) override;
 
 protected:
     Adafruit_GPS *_gps;

@@ -10,9 +10,9 @@ public:
   
   const char *sensorClass() const override { return "PowerSensor"; };
   const char *addressString() const override { return _address; };
-  boolean begin() override;
-  boolean readValues() override;
-  boolean printValues(Stream *serial) override;
+  bool begin() override;
+  bool readValues() override;
+  bool printValues(Stream *serial) override;
   
 protected:
   const char *_address = NULL;

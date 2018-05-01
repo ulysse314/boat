@@ -1,13 +1,13 @@
 #include "Sensor.h"
 
-boolean Sensor::printInfo(Stream *serial, int nodeID) {
+bool Sensor::printInfo(Stream *serial, int nodeID) {
   const char *string;
 
   string = this->sensorClass();
   if (!string) {
     return false;
   } else {
-    boolean result;
+    bool result;
   
     if (nodeID != -1) {
       serial->print(nodeID);
@@ -23,9 +23,9 @@ boolean Sensor::printInfo(Stream *serial, int nodeID) {
   }
 }
 
-boolean Sensor::printAddress(Stream *serial) {
+bool Sensor::printAddress(Stream *serial) {
   const char *string;
-  boolean result = false;
+  bool result = false;
 
   string = this->addressString();
   if (string && string[0] != 0) {

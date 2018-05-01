@@ -15,19 +15,19 @@ PowerSensor::~PowerSensor() {
   free((void *)_address);
 }
 
-boolean PowerSensor::begin() {
+bool PowerSensor::begin() {
   pinMode(_amperePin, INPUT);
   pinMode(_voltPin, INPUT);
   return true;
 }
 
-boolean PowerSensor::readValues() {
+bool PowerSensor::readValues() {
   _rawAmpere = analogRead(_amperePin);
   _rawVolt = analogRead(_voltPin);
   return true;
 }
 
-boolean PowerSensor::printValues(Stream *serial) {
+bool PowerSensor::printValues(Stream *serial) {
   serial->print(_rawAmpere);
   serial->print(" ");
   serial->print(_rawAmpere);

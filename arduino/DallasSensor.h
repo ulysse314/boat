@@ -24,7 +24,7 @@ class DallasSensor : public Sensor
   DallasSensorState           _state;
   unsigned long               _timer;
   float                       _celsius;
-  boolean                     _gotFirstValue;
+  bool                        _gotFirstValue;
 
 public:
   static const char *sensorType(const uint8_t address[8]);
@@ -46,11 +46,11 @@ public:
   const char *sensorClass() const override { return "DALLAS"; };
   const char *sensorType() const override;
   const char *copyAddressString() const override;
-  boolean begin() override { return this->loop(); };
-  boolean isReady() override { return _gotFirstValue; };
-  boolean loop() override;
-  boolean printAddress(Stream *serial) override;
-  boolean printValues(Stream *serial) override;
+  bool begin() override { return this->loop(); };
+  bool isReady() override { return _gotFirstValue; };
+  bool loop() override;
+  bool printAddress(Stream *serial) override;
+  bool printValues(Stream *serial) override;
 };
 
 #endif // DallasSensor_h

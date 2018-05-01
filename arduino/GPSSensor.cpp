@@ -17,7 +17,7 @@ bool GPSSensor::begin() {
   return true;
 }
 
-boolean GPSSensor::loop() {
+bool GPSSensor::loop() {
   if (GPSSerial.available()) {
     char c = _gps->read();
     if (_gps->newNMEAreceived()) {
@@ -28,12 +28,12 @@ boolean GPSSensor::loop() {
   return true;
 }
 
-boolean GPSSensor::printAddress(Stream *serial) {
+bool GPSSensor::printAddress(Stream *serial) {
   serial->print("serial1");
   return true;
 }
 
-boolean GPSSensor::printValues(Stream *serial) {
+bool GPSSensor::printValues(Stream *serial) {
   serial->print((int)_gps->antenna); // 3
   serial->print(" ");
   serial->print(_gps->satellites_in_views); // 4
