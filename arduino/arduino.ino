@@ -43,7 +43,7 @@ void loop() {
   if (difference > 1000) {
     lastPrint = currentTime;
     sensorList.printInfo(&Serial, 0);
-    Serial.print("--");
+    Serial.print("-- ");
     Serial.println(difference);
     Serial.flush();
   }
