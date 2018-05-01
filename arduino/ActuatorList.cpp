@@ -3,7 +3,7 @@
 #include "Actuator.h"
 
 inline bool isOrdered(Actuator *actuator1, Actuator *actuator2) {
-  return strcmp(actuator1->getAddress(), actuator2->getAddress()) < 0;
+  return strcmp(actuator1->addressString(), actuator2->addressString()) < 0;
 }
 
 class ActuatorSearcher {
@@ -23,7 +23,7 @@ public:
     if (!_bucket) {
       return false;
     }
-    const char *address = _bucket->actuator->getAddress();
+    const char *address = _bucket->actuator->addressString();
     if (_characterIndex >= strlen(address)) {
       return false;
     }
@@ -38,7 +38,7 @@ public:
   }
 
   Actuator *actuatorFound() const {
-    if (_searchFinished && _bucket && _bucket->actuator->getAddress()[_characterIndex] == 0) {
+    if (_searchFinished && _bucket && _bucket->actuator->addressString()[_characterIndex] == 0) {
       return _bucket->actuator;
     }
     return NULL;
