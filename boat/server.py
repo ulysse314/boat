@@ -37,13 +37,13 @@ RELAY_SERVER = config.values["value_relay_server"]
 
 sender = value_sender.ValueSender(BOAT_NAME, RELAY_SERVER, BOAT_PORT, config.values["boat_key"])
 
-pwm = pwm_controller.PWMController()
+#pwm = pwm_controller.PWMController()
+arduino = arduino_controller.ArduinoController()
 controllers = [ e3372_controller.E3372Controller(),
                 feather_controller.FeatherController(config.values["sensors"]),
                 gps_controller.GPSController(),
                 pi_controller.PiController(),
-                pwm,
-                arduino_controller.ArduinoController() ]
+                arduino ]
 started_controllers = []
 for controller in controllers:
   try:
@@ -53,7 +53,7 @@ for controller in controllers:
   except:
     logging.exception("{} not started !!!!".format(controller.__class__.__name__))
 
-boat = boat_controller.BoatController(started_controllers, pwm, sender)
+boat = boat_controller.BoatController(started_controllers, arduino, sender)
 sender.delegate = boat
 boat.start()
 sender.start()

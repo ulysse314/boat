@@ -30,6 +30,20 @@ class ArduinoController:
     self.received_values = {}
     self.serial_transport = None
 
+  def set_motors(self, values):
+    left = None
+    right = None
+    if "left%" in values:
+      left = values["left%"]
+    if "right%" in values:
+      right = values["right%"]
+    if self.serial_transport:
+      line = str(left) + " " + str(right) + "\n"
+      self.serial_transport.write(line)
+
+  def set_leds(self, values):
+    pass
+
   def start(self):
     asyncio.ensure_future(self._connect())
 
