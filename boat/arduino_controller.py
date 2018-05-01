@@ -19,7 +19,7 @@ class ArduinoController:
 
   def __init__(self, dev_port = None, port_speed = 115200):
     if not dev_port:
-      self.dev_port = "/dev/ttyUSB0"
+      self.dev_port = "/dev/featherm0"
     else:
       self.dev_port = dev_port
     self.port_speed = port_speed
