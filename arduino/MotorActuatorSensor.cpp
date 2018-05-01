@@ -1,4 +1,4 @@
-#include "MotorActuator.h"
+#include "MotorActuatorSensor.h"
 
 #include "Adafruit_PWMServoDriver.h"
 
@@ -18,23 +18,23 @@
 #define REVERSED() (PWM_REVERSE_US * 4096.0 * REAL_FREQUENCE)
 
 
-MotorActuator::MotorActuator() {
+MotorActuatorSensor::MotorActuatorSensor() {
   _pwmDriver = new Adafruit_PWMServoDriver();
 }
 
-MotorActuator::~MotorActuator() {
+MotorActuatorSensor::~MotorActuatorSensor() {
   delete _pwmDriver;
 }
 
-bool MotorActuator::begin() {
+bool MotorActuatorSensor::begin() {
   _pwmDriver->begin();
   _pwmDriver->setPWMFreq(REAL_FREQUENCE);
   delay(10);
   return true;
 }
 
-bool MotorActuator::processValues(const char *values) {
-  setStringValueForMotor(values, LEFT_MOTOR_ID);
+bool MotorActuatorSensor::processValues(const char *values) {
+  setStringValueForMotor(values, &_left, LEFT_MOTOR_ID);
   while (values[0] != ' ' && values[0] != 0) {
     values += 1;
   }
@@ -42,20 +42,20 @@ bool MotorActuator::processValues(const char *values) {
     return true;
   }
   values += 1;
-  setStringValueForMotor(values, RIGHT_MOTOR_ID);
+  setStringValueForMotor(values, &_right, RIGHT_MOTOR_ID);
   return true;
 }
 
-void MotorActuator::setStringValueForMotor(const char *stringValue, int motorID) {
+void MotorActuatorSensor::setStringValueForMotor(const char *stringValue, int *value, int motorID) {
   if (stringValue[0] == 'N') {
     // None
     return;
   }
-  int value = atoi(stringValue);
-  setValueForMotor(value, motorID);
+  *value = atoi(stringValue);
+  setValueForMotor(*value, motorID);
 }
 
-void MotorActuator::setValueForMotor(int value, int motorID) {
+void MotorActuatorSensor::setValueForMotor(int value, int motorID) {
   int realValue = 0.;
   if (value < 0) {
     realValue = STOPPED() + (STOPPED() - REVERSED()) * value / 100.;
@@ -65,4 +65,11 @@ void MotorActuator::setValueForMotor(int value, int motorID) {
     realValue = STOPPED();
   }
   _pwmDriver->setPWM(motorID, 0, realValue);
+}
+
+boolean MotorActuatorSensor::printValues(Stream *serial) {
+  serial->print(_left);
+  serial->print(" ");
+  serial->print(_right);
+  return true;
 }

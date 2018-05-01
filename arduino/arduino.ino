@@ -1,7 +1,7 @@
 #include "ActuatorList.h"
 #include "DallasSensor.h"
 #include "GPSSensor.h"
-#include "MotorActuator.h"
+#include "MotorActuatorSensor.h"
 #include "SensorList.h"
 #include "OneWire.h"
 
@@ -20,10 +20,12 @@ void setup() {
       sensorList.addSensor(new DallasSensor(address, &oneWire));
     }
   }
+  MotorActuatorSensor *motorActuatorSensor = new MotorActuatorSensor();
+  sensorList.addSensor(motorActuatorSensor);
+
   sensorList.begin();
   sensorList.loop();
-  MotorActuator *motorActuator = new MotorActuator();
-  actuatorList.addActuator(motorActuator);
+  actuatorList.addActuator(motorActuatorSensor);
   actuatorList.begin();
   actuatorList.loop();
   Serial.begin(115200);
