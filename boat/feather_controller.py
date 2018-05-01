@@ -35,6 +35,9 @@ class FeatherController:
     self.values = {}
     self.received_values = {}
     self.serial_transport = None
+    self.next_line = None
+    self.last_send = 0
+    self.send_pending = False
 
   def set_motors(self, values):
     left = None
@@ -44,8 +47,20 @@ class FeatherController:
     if "right%" in values:
       right = values["right%"]
     if self.serial_transport:
-      line = str(left) + " " + str(right) + "\n"
-      self.serial_transport.send_line(line)
+      self.next_line = "Motor " + str(left) + " " + str(right) + "\n"
+      asyncio.ensure_future(self.send_line())
+
+  async def send_line(self):
+    current_time = time.time()
+    if self.send_pending or self.next_line is None:
+      return
+    if current_time - self.last_send < 0.3:
+      self.send_pending = True
+      await asyncio.sleep(0.3 - (current_time - self.last_send))
+    self.send_pending = False
+    self.serial_transport.send_line(self.next_line)
+    self.last_send = current_time
+    self.next_line = None
 
   def set_leds(self, values):
     pass
