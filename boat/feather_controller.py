@@ -98,7 +98,7 @@ class FeatherController:
         self.received_values[key] = { "values": elements, "line": line, "update_time": time.time() }
       except:
         self.logger.exception("Problem to parse line")
-    if line.startswith("--"):
+    if line.startswith("-- "):
       result = True
     else:
       result = False
