@@ -16,6 +16,9 @@ public:
   
 private:
   Adafruit_PWMServoDriver *_pwmDriver;
+
+  void setStringValueForMotor(const char *stringValue, int motorID);
+  void setValueForMotor(int value, int motorID);
 };
 
 #endif // MotorActuator_h
