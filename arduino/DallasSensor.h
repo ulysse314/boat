@@ -27,7 +27,7 @@ class DallasSensor : public Sensor
   boolean                     _gotFirstValue;
 
 public:
-  static const char *sensorType(uint8_t address[8]);
+  static const char *sensorType(const uint8_t address[8]);
   inline static int maxConversionTimeMillisForBits(int bits) {
     if (bits == 9) return 94;
     if (bits == 10) return 188;
@@ -43,14 +43,14 @@ public:
   float celsius() { return _celsius; };
   
   // sensor
-  const char *sensorClass();
-  const char *sensorType();
-  const char *copyAddressString();
-  boolean begin() { return this->loop(); };
-  boolean isReady() { return _gotFirstValue; };
-  boolean loop();
-  boolean printAddress(Stream *serial);
-  boolean printValues(Stream *serial);
+  const char *sensorClass() const override { return "DALLAS"; };
+  const char *sensorType() const override;
+  const char *copyAddressString() const override;
+  boolean begin() override { return this->loop(); };
+  boolean isReady() override { return _gotFirstValue; };
+  boolean loop() override;
+  boolean printAddress(Stream *serial) override;
+  boolean printValues(Stream *serial) override;
 };
 
 #endif // DallasSensor_h

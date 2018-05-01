@@ -8,11 +8,11 @@ public:
   PowerSensor(uint32_t amperePin, uint32_t voltPin);
   ~PowerSensor();
   
-  const char *sensorClass() { return "PowerSensor"; };
-  const char *addressString() { return _address; };
-  boolean begin();
-  boolean readValues();
-  boolean printValues(Stream *serial);
+  const char *sensorClass() const override { return "PowerSensor"; };
+  const char *addressString() const override { return _address; };
+  boolean begin() override;
+  boolean readValues() override;
+  boolean printValues(Stream *serial) override;
   
 protected:
   const char *_address = NULL;

@@ -23,7 +23,7 @@ static byte dallasType(uint8_t address[8]) {
   } 
 }
 
-const char *DallasSensor::sensorType(uint8_t address[8]) {
+const char *DallasSensor::sensorType(const uint8_t address[8]) {
   const char *result = NULL;
   
   switch(address[0]) {
@@ -40,15 +40,11 @@ const char *DallasSensor::sensorType(uint8_t address[8]) {
   return result;
 }
 
-const char *DallasSensor::sensorClass() {
-  return "DALLAS";
-}
-
-const char *DallasSensor::sensorType() {
+const char *DallasSensor::sensorType() const {
   return DallasSensor::sensorType(_address);
 }
 
-const char *DallasSensor::copyAddressString() {
+const char *DallasSensor::copyAddressString() const {
   char *string;
   char *cursor;
   char ii;

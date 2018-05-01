@@ -5,10 +5,10 @@
 
 class Sensor {
 public:
-  virtual const char *sensorClass() = 0;
-  virtual const char *sensorType() { return ""; };
-  virtual const char *addressString() { return ""; };
-  virtual const char *copyAddressString() { return NULL; };
+  virtual const char *sensorClass() const = 0;
+  virtual const char *sensorType() const { return ""; };
+  virtual const char *addressString() const { return ""; };
+  virtual const char *copyAddressString() const { return NULL; };
   virtual boolean begin() { return true; };
   virtual boolean isReady() { return true; };
   virtual boolean loop() { return true; };

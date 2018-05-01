@@ -4,14 +4,6 @@
 
 #define GPSSerial Serial1
 
-const char *GPSSensor::sensorClass() {
-  return "GPS";
-}
-
-const char *GPSSensor::sensorType() {
-  return "GPS";
-}
-
 bool GPSSensor::begin() {
   _gps = new Adafruit_GPS(&GPSSerial);
   _gps->begin(9600);

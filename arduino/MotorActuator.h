@@ -10,9 +10,9 @@ public:
   MotorActuator();
   ~MotorActuator();
 
-  const char *getAddress() const { return "Motor"; };
-  bool begin();
-  bool processValues(const char *values);
+  const char *addressString() const override { return "Motor"; };
+  bool begin() override;
+  bool processValues(const char *values) override;
   
 private:
   Adafruit_PWMServoDriver *_pwmDriver;
