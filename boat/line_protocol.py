@@ -49,6 +49,12 @@ class LineProtocol(asyncio.Protocol):
     if self.delegate:
       self.delegate.received_message(line)
 
+  def pause_writing(self):
+    self.logger.warning("pause writting !!!!")
+
+  def resume_writing(self):
+    self.logger.warning("resume writting !!!!")
+
 # Actions
   def close(self):
     self.logger.info("Close")
