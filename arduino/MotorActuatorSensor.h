@@ -22,9 +22,11 @@ private:
   Adafruit_PWMServoDriver *_pwmDriver;
   int _left = 0;
   int _right = 0;
+  uint8_t _leftResult = 0;
+  uint8_t _rightResult = 0;
 
-  void setStringValueForMotor(const char *stringValue, int *value, int motorID);
-  void setValueForMotor(int value, int motorID);
+  uint8_t setStringValueForMotor(const char *stringValue, int *value, int motorID);
+  uint8_t setValueForMotor(int value, int motorID);
 };
 
 #endif // MotorActuatorSensor_h

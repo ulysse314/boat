@@ -36,7 +36,7 @@ bool MotorActuatorSensor::begin() {
 }
 
 bool MotorActuatorSensor::processValues(const char *values) {
-  setStringValueForMotor(values, &_left, LEFT_MOTOR_ID);
+  _leftResult = setStringValueForMotor(values, &_left, LEFT_MOTOR_ID);
   while (values[0] != ' ' && values[0] != 0) {
     values += 1;
   }
@@ -44,20 +44,20 @@ bool MotorActuatorSensor::processValues(const char *values) {
     return true;
   }
   values += 1;
-  setStringValueForMotor(values, &_right, RIGHT_MOTOR_ID);
+  _rightResult = setStringValueForMotor(values, &_right, RIGHT_MOTOR_ID);
   return true;
 }
 
-void MotorActuatorSensor::setStringValueForMotor(const char *stringValue, int *value, int motorID) {
+uint8_t MotorActuatorSensor::setStringValueForMotor(const char *stringValue, int *value, int motorID) {
   if (stringValue[0] == 'N') {
     // None
-    return;
+    return -1;
   }
   *value = atoi(stringValue);
-  setValueForMotor(*value, motorID);
+  return setValueForMotor(*value, motorID);
 }
 
-void MotorActuatorSensor::setValueForMotor(int value, int motorID) {
+uint8_t MotorActuatorSensor::setValueForMotor(int value, int motorID) {
   int realValue = 0.;
   if (value < 0) {
     realValue = STOPPED() + (STOPPED() - REVERSED()) * value / 100.;
@@ -66,12 +66,16 @@ void MotorActuatorSensor::setValueForMotor(int value, int motorID) {
   } else {
     realValue = STOPPED();
   }
-  _pwmDriver->setPWM(motorID, 0, realValue);
+  return _pwmDriver->setPWM(motorID, 0, realValue);
 }
 
 bool MotorActuatorSensor::printValues(Stream *serial) {
   serial->print(_left);
   serial->print(" ");
   serial->print(_right);
+  serial->print(" ");
+  serial->print(_leftResult);
+  serial->print(" ");
+  serial->print(_rightResult);
   return true;
 }
