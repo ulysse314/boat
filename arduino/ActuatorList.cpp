@@ -105,7 +105,11 @@ void ActuatorList::loop() {
 void ActuatorList::listen(Stream *serial) {
   char buffer[30];
   size_t readAvailable;
-  while (readAvailable = serial->readBytes(buffer, sizeof(buffer) - 1)) {
+  while ((readAvailable = serial->available()) > 0) {
+    if (readAvailable > sizeof(buffer) - 1) {
+      readAvailable = sizeof(buffer) - 1;
+    }
+    readAvailable = serial->readBytes(buffer, readAvailable);
     if (!readAvailable) {
       return;
     }
