@@ -17,9 +17,9 @@ if parent_dir not in sys.path:
 import config
 import json_protocol
 
-CONNECTION_TIMER = 10
-
 class ValueSender:
+  CONNECTION_TIMER = 10
+
   def __init__(self, boat_name, value_relay_server, boat_port, key):
     self.sending_id = None
     self.values = {}
@@ -67,9 +67,8 @@ class ValueSender:
     asyncio.ensure_future(self.connect())
 
   def send_next_values(self):
-    global CONNECTION_TIMER
     self.logger.debug("send next values, len: " + str(len(self.ids_to_send)) + ", last: " + str(self.last_sent) + ", diff: " + str(time.time() - self.last_sent))
-    if self.last_sent > 0 and (time.time() - self.last_sent) > CONNECTION_TIMER:
+    if self.last_sent > 0 and (time.time() - self.last_sent) > self.CONNECTION_TIMER:
       self.logger.error("Time out")
       self.disconnect_reconnect()
     if len(self.ids_to_send) == 0:
