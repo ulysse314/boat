@@ -19,7 +19,9 @@
 
 
 MotorActuatorSensor::MotorActuatorSensor() {
-  _pwmDriver = new Adafruit_PWMServoDriver();
+  Wire.begin();
+  Wire.setClock(3400000L);
+  _pwmDriver = new Adafruit_PWMServoDriver(&Wire);
 }
 
 MotorActuatorSensor::~MotorActuatorSensor() {
