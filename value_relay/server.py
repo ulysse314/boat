@@ -33,15 +33,19 @@ CONTROLLER_PORT = int(config.values["controller_port"])
 valid_boat_client = None
 valid_controller_clients = []
 last_message = None
+last_message_id_for_boat = None
 logger_for_values = None
 extra_values = { "record": False, "camera": { "state": False } }
 
 def send_message_to_all_valid_controls(message):
   global last_message
+  global last_message_id_for_boat
   global valid_controller_clients
-  last_message = message
-  for control in valid_controller_clients:
-    control.send_message(message)
+  if last_message_id_for_boat == None or last_message_id_for_boat < message["id"]:
+    last_message_id_for_boat = message["id"]
+    last_message = message
+    for control in valid_controller_clients:
+      control.send_message(message)
 
 class GenericClient(asyncio.Protocol):
   def __init__(self):
@@ -118,11 +122,13 @@ class BoatClient(GenericClient):
     super(BoatClient, self).__init__()
 
   def hello_packet_received(self):
+    global last_message_id_for_boat
     self.logger.debug("New boat")
     global valid_boat_client
     super(BoatClient, self).hello_packet_received()
     if valid_boat_client:
       valid_boat_client.transport.close()
+    last_message_id_for_boat = None
     valid_boat_client = self
 
   def message_received(self, message, packet):
