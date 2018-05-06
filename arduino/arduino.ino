@@ -35,6 +35,7 @@ void setup() {
 }
 
 unsigned long lastPrint = 0;
+unsigned long counter = 0;
 
 void loop() {
   sensorList.loop();
@@ -44,9 +45,13 @@ void loop() {
     lastPrint = currentTime;
     sensorList.printInfo(&Serial, 0);
     Serial.print("-- ");
-    Serial.println(difference);
+    Serial.print(difference);
+    Serial.print(" ");
+    Serial.println(counter);
     Serial.flush();
+    counter = 0;
   }
+  counter += 1;
   actuatorList.loop();
   actuatorList.listen(&Serial);
 }
