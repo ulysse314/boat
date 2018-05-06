@@ -15,11 +15,13 @@ class GPSController():
   SERVER = "127.0.0.1"
   PORT = 2947
   WATCH = '?WATCH={"enable":true,"json":true};'
-  logger = logging.getLogger("ValueSender")
-  json_transport = None
-  response_available_event = asyncio.Event()
-  received_values = {}
-  values = {}
+
+  def __init__(self):
+    self.logger = logging.getLogger(self.__class__.__name__)
+    self.json_transport = None
+    self.response_available_event = asyncio.Event()
+    self.received_values = {}
+    self.values = {}
   
   def start(self):
     asyncio.ensure_future(self._connect())

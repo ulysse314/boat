@@ -9,8 +9,9 @@ import psutil
 import subprocess
 
 class PiController:
-  values = {}
-  logger = logging.getLogger("PiController")
+  def __init__(self):
+    self.values = {}
+    self.logger = logging.getLogger(self.__class__.__name__)
 
   def start(self):
     pass

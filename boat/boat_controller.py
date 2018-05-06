@@ -12,7 +12,7 @@ import value_sender
 
 class BoatController:
   def __init__(self, controllers, pwm, value_sender):
-    self.logger = logging.getLogger("Boat");
+    self.logger = logging.getLogger(self.__class__.__name__)
     self.record = False
     self.boot_timestamp = time.time()
     self.value_id = 0

@@ -58,11 +58,11 @@ class E3372Controller:
     "CurrentDownloadRate",
     "CurrentUploadRate",
   ]
-  session = None
-  logger = logging.getLogger('e3372')
-  values = {}
 
   def __init__(self, host = '192.168.8.1'):
+    self.session = None
+    self.logger = logging.getLogger(self.__class__.__name__)
+    self.values = {}
     self.host = host
     self.base_url = self.BASE_URL.format(host = host, url = "{url}")
 

@@ -33,7 +33,7 @@ def valid_led(value):
 
 class PWMController:
   def __init__(self):
-    self.logger = logging.getLogger('pwm')
+    self.logger = logging.getLogger(self.__class__.__name__)
     self.pwm = None
     self.values = {}
     self.motor_forward = PWM_FORWARD_US * 4096.0 * REAL_FREQUENCE

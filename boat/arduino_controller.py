@@ -23,7 +23,7 @@ class ArduinoController:
     else:
       self.dev_port = dev_port
     self.port_speed = port_speed
-    self.logger = logging.getLogger('ArduinoController')
+    self.logger = logging.getLogger(self.__class__.__name__)
     self.logger.debug(pprint.pformat(self.dev_port))
     self.commands = []
     self.values = {}
