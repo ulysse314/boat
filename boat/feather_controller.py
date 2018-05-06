@@ -91,7 +91,7 @@ class FeatherController:
       await asyncio.sleep(1)
 
   def _update_values(self):
-    self.values = { "gps": {} }
+    self.values = { "gps": {}, "motors": {} }
     for sensor_id in self.received_values:
       values = self.received_values[sensor_id]['values']
       if sensor_id == '0 GPS serial1':
@@ -108,6 +108,11 @@ class FeatherController:
           if len(values) >= 13: self.values["gps"]["angle"] = float(values[12])
         except:
           self.logger.exception("Problem to get gps")
+      elif sensor_id == "0 Motor Motor":
+        self.values["motors"]["left%"] = values[3]
+        self.values["motors"]["right%"] = values[4]
+        self.values["motors"]["leftresult"] = values[5]
+        self.values["motors"]["rightresult%"] = values[6]
       elif sensor_id in self.sensors:
         sensor = self.sensors[sensor_id]
         if sensor["type"] == "dallas":
