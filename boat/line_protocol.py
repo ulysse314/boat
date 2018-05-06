@@ -33,7 +33,7 @@ class LineProtocol(asyncio.Protocol):
   def connection_lost(self, ex):
     self.logger.info("Connection lost")
     if self.delegate:
-      self.delegate.connection_lost(ex)
+      self.delegate.connection_lost(self)
 
   def data_received(self, data):
     list = self.line_parser.add_buffer(data)
