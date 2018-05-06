@@ -17,6 +17,8 @@ if parent_dir not in sys.path:
 import config
 import line_protocol
 
+SEND_DELAY = 0.1
+
 class FeatherController:
   NODE_INDEX = 0
   TYPE_INDEX = 1
@@ -51,12 +53,13 @@ class FeatherController:
       asyncio.ensure_future(self.send_line())
 
   async def send_line(self):
+    global SEND_DELAY
     current_time = time.time()
     if self.send_pending or self.next_line is None:
       return
-    if current_time - self.last_send < 0.3:
+    if current_time - self.last_send < SEND_DELAY:
       self.send_pending = True
-      await asyncio.sleep(0.3 - (current_time - self.last_send))
+      await asyncio.sleep(SEND_DELAY - (current_time - self.last_send))
     self.send_pending = False
     self.serial_transport.send_line(self.next_line)
     self.last_send = current_time
