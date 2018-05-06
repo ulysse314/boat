@@ -8,6 +8,7 @@ import os
 import pprint
 import queue
 import sys
+import time
 
 parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 if parent_dir not in sys.path:
@@ -16,18 +17,20 @@ if parent_dir not in sys.path:
 import config
 import json_protocol
 
+CONNECTION_TIMER = 10
+
 class ValueSender:
-  sending_id = None
-  values = {}
-  ids_to_send = []
-  logger = logging.getLogger("ValueSender")
-  transport = None
-  
   def __init__(self, boat_name, value_relay_server, boat_port, key):
+    self.sending_id = None
+    self.values = {}
+    self.ids_to_send = []
+    self.logger = logging.getLogger(self.__class__.__name__)
+    self.transport = None
     self.boat_name = boat_name
     self.value_relay_server = value_relay_server
     self.boat_port = boat_port
     self.key = key
+    self.last_sent = 0
   
   def start(self):
     self.logger.debug("Start")
@@ -37,10 +40,8 @@ class ValueSender:
     message_id = values["id"]
     self.logger.debug("Adding values with id {}".format(id))
     self.values[message_id] = values
-    should_trigger = len(self.ids_to_send) == 0
     self.ids_to_send.append(message_id)
-    if should_trigger:
-      self.send_next_values()
+    self.send_next_values()
 
   async def connect(self):
     while True:
@@ -54,9 +55,33 @@ class ValueSender:
         self.logger.error("Connection failed")
         await asyncio.sleep(1)
 
+  def cleanup_connection(self):
+    self.last_sent = 0
+    self.sending_id = None
+    if self.transport:
+      self.transport.delegate = None
+      self.transport = None
+
+  def disconnect_reconnect(self):
+    self.cleanup_connection()
+    asyncio.ensure_future(self.connect())
+
   def send_next_values(self):
-    if len(self.ids_to_send) == 0 or not self.transport:
+    global CONNECTION_TIMER
+    self.logger.debug("send next values, len: " + str(len(self.ids_to_send)) + ", last: " + str(self.last_sent) + ", diff: " + str(time.time() - self.last_sent))
+    if self.last_sent > 0 and (time.time() - self.last_sent) > CONNECTION_TIMER:
+      self.logger.error("Time out")
+      self.disconnect_reconnect()
+    if len(self.ids_to_send) == 0:
+      self.logger.debug("Nothing to send")
       return
+    if not self.transport or self.sending_id != None:
+      self.logger.debug("No transport to send")
+      return
+    if self.sending_id != None:
+      self.logger.debug("Already send pending")
+      return
+    self.last_sent = time.time()
     self.sending_id = self.ids_to_send[-1]
     self.logger.debug("Sending next value {}".format(self.sending_id))
     self.transport.send_json(self.values[self.sending_id])
@@ -64,21 +89,25 @@ class ValueSender:
 ## connection
   def connection_made(self, transport):
     self.logger.info("Connection made: {}".format(pprint.pformat(transport)))
-    if self.transport:
-      self.transport.delegate = None
+    self.cleanup_connection()
     self.transport = transport
     self.transport.send_line(self.key)
     self.send_next_values()
 
   def connection_lost(self, ex):
+    if ex != self.transport:
+      self.logger.info("Unknown connection")
+      return
     peername = self.transport.get_extra_info('peername')
     self.logger.info("Connection lost: {}".format(peername))
-    self.transport = None
-    asyncio.ensure_future(self.connect())
+    self.disconnect_reconnect()
 
   def received_message(self, message):
     if "id" in message:
       message_id = message["id"]
+      if self.sending_id == message_id:
+        self.last_sent = 0
+        self.sending_id = None
       if message_id in self.ids_to_send:
         self.ids_to_send.remove(message_id)
         del self.values[message_id]
