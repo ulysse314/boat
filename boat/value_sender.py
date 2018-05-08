@@ -58,6 +58,8 @@ class ValueSender:
   def cleanup_connection(self):
     self.last_sent = 0
     self.sending_id = None
+    if self.delegate:
+      self.delegate.connection_lost()
     if self.transport:
       self.transport.delegate = None
       self.transport = None

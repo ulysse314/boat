@@ -47,6 +47,7 @@ class BoatController:
     asyncio.ensure_future(self._run())
 
   async def _run(self):
+    self._turn_off_motors()
     self.received_values({"led":{"left%":100,"right%":0}})
     await asyncio.sleep(0.25)
     self.received_values({"led":{"left%":0,"right%":100}})
@@ -62,6 +63,9 @@ class BoatController:
       self.value_sender.add_values(values)
       await asyncio.sleep(1)
 
+  def _turn_off_motors(self):
+    self.received_values({"motor":{"left%":0,"right%":0}})
+
 ## value_sender delegate
   def received_values(self, values):
     try:
@@ -75,3 +79,6 @@ class BoatController:
           self.pwm_controller.set_leds(value)
     except Exception as e:
       self.logger.exception("set values")
+
+  def connection_lost(self):
+    self._turn_off_motors()
