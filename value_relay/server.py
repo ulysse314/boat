@@ -116,6 +116,10 @@ class GenericClient(asyncio.Protocol):
     self.logger.debug("Resumed: {}".format(self.peername))
     self.paused = False
 
+  def send_message(self, message):
+    line = json.dumps(message)
+    self.send_packet(line.encode("utf-8"))
+
 class BoatClient(GenericClient):
   def __init__(self):
     self.key_name = "boat_key"
@@ -155,6 +159,8 @@ class ControllerClient(GenericClient):
     global last_message
     super(ControllerClient, self).hello_packet_received()
     valid_controller_clients.append(self)
+    if valid_boat_client:
+      valid_boat_client.send_message({"controller":len(valid_controller_clients)})
     if last_message:
       self.send_message(last_message)
 
@@ -185,13 +191,15 @@ class ControllerClient(GenericClient):
     global extra_values
     message = message.copy()
     message.update(extra_values)
-    line = json.dumps(message)
-    self.send_packet(line.encode("utf-8"))
+    super(ControllerClient, self).send_message(message)
 
   def connection_lost(self, ex):
     global valid_controller_clients
+    global valid_boat_client
     if self.received_hello_packet:
       valid_controller_clients.remove(self)
+      if valid_boat_client:
+        valid_boat_client.send_message({"controller":len(valid_controller_clients)})
     super(ControllerClient, self).connection_lost(ex)
 
 if __name__ == '__main__':
