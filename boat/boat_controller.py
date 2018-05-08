@@ -72,11 +72,13 @@ class BoatController:
       for key in values:
         value = values[key]
         if key == "record":
-          self.record = values[key]
+          self.record = value
         elif key == "motor" and type(value) is dict:
           self.pwm_controller.set_motors(value)
         elif key == "led" and type(value) is dict:
           self.pwm_controller.set_leds(value)
+        elif key == "controller" and value == 0:
+          self._turn_off_motors()
     except Exception as e:
       self.logger.exception("set values")
 
