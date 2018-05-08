@@ -64,8 +64,8 @@ class GenericClient(asyncio.Protocol):
   def test_hello_packet(self, hello_packet):
     key = config.values[self.key_name]
     if key != hello_packet:
-      pprint.pprint(key)
-      pprint.pprint(hello_packet)
+      self.logger.error(pprint.pformat(key))
+      self.logger.error(pprint.pformat(hello_packet))
       self.logger.error("key not valid")
       self.transport.close()
       return
@@ -92,7 +92,7 @@ class GenericClient(asyncio.Protocol):
       self.message_received(message, line)
     except:
       self.logger.exception("read value")
-      pprint.pprint(data)
+      self.logger.error(pprint.pformat(data))
       self.transport.close()
 
   def send_packet(self, packet):
