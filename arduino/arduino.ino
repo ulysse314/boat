@@ -5,7 +5,7 @@
 #include "SensorList.h"
 #include "OneWire.h"
 
-#define ONE_WIRE_PIN          13
+#define ONE_WIRE_PIN          12
 
 SensorList sensorList;
 ActuatorList actuatorList;
