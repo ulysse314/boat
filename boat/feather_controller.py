@@ -63,6 +63,9 @@ class FeatherController:
     self.last_send = current_time
     self.next_motor_line = None
 
+  def get_info(self):
+    self.serial_transport.send_line("Info")
+
   def set_leds(self, values):
     pass
 
@@ -90,6 +93,7 @@ class FeatherController:
 
   def _update_values(self):
     self.values = { "gps": {}, "motor": {} }
+    sensor_id_to_remove = []
     for sensor_id in self.received_values:
       values = self.received_values[sensor_id]['values']
       if sensor_id == '0 GPS serial1':
@@ -106,6 +110,19 @@ class FeatherController:
           if len(values) >= 13: self.values["gps"]["angle"] = float(values[12])
         except:
           self.logger.exception("Problem to get gps")
+      elif sensor_id == "0 Info Info":
+        try:
+          self.values["arduino"] = {
+            "free_memory": int(values[3]),
+            "memory_diff": int(values[4]),
+            "cycle_count": int(values[5]),
+            "loop_duration": int(values[6]),
+            "boot_timestamp": int(values[8]),
+            "compiled_date": values[9] + " " + values[10] + " " + values[11] + " " + values[12]
+          }
+          sensor_id_to_remove.append(sensor_id)
+        except:
+          self.logger.exception("Problem to get arduino info")
       elif sensor_id == "0 Motor Motor":
         self.values["motor"]["left%"] = values[3]
         self.values["motor"]["right%"] = values[4]
@@ -117,6 +134,8 @@ class FeatherController:
           self._add_values(sensor["keys"], float(values[3]))
       else:
         self.logger.debug("Unknown line: " + self.received_values[sensor_id]['line'])
+    for sensor_id in sensor_id_to_remove:
+      del self.received_values[sensor_id]
 
   def _add_values(self, keys, value):
     array = self.values
@@ -147,6 +166,7 @@ class FeatherController:
     if self.serial_transport:
       self.serial_transport.delegate = None
     self.serial_transport = transport
+    self.get_info()
 
   def connection_lost(self, ex):
     self.logger.info("Connection lost")

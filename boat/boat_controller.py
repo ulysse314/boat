@@ -11,13 +11,14 @@ import munin_server
 import value_sender
 
 class BoatController:
-  def __init__(self, controllers, pwm, value_sender):
+  def __init__(self, controllers, pwm, commnand, value_sender):
     self.logger = logging.getLogger(self.__class__.__name__)
     self.record = False
     self.boot_timestamp = time.time()
     self.value_id = 0
     self.controllers = controllers
     self.pwm_controller = pwm
+    self.command_controller = commnand
     self.value_sender = value_sender
 
   def _get_values(self):
@@ -79,6 +80,8 @@ class BoatController:
           self.pwm_controller.set_leds(value)
         elif key == "controller" and value == 0:
           self._turn_off_motors()
+        elif key == "command":
+          self.command_controller.execute(value)
     except Exception as e:
       self.logger.exception("set values")
 

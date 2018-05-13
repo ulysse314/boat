@@ -15,6 +15,7 @@ if parent_dir not in sys.path:
 
 import arduino_controller
 import boat_controller
+import command_controller
 import config
 import e3372_controller
 import feather_controller
@@ -40,10 +41,12 @@ sender = value_sender.ValueSender(BOAT_NAME, RELAY_SERVER, BOAT_PORT, config.val
 #pwm = pwm_controller.PWMController()
 #arduino = arduino_controller.ArduinoController()
 feather = feather_controller.FeatherController(config.values["sensors"])
+commnand = command_controller.CommandController(feather)
 controllers = [ e3372_controller.E3372Controller(),
                 feather,
                 gps_controller.GPSController(),
-                pi_controller.PiController() ]
+                pi_controller.PiController(),
+                commnand ]
 started_controllers = []
 for controller in controllers:
   try:
@@ -53,7 +56,7 @@ for controller in controllers:
   except:
     logging.exception("{} not started !!!!".format(controller.__class__.__name__))
 
-boat = boat_controller.BoatController(started_controllers, feather, sender)
+boat = boat_controller.BoatController(started_controllers, feather, commnand, sender)
 sender.delegate = boat
 boat.start()
 sender.start()
