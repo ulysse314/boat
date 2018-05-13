@@ -12,6 +12,8 @@
 #define REAL_FREQUENCE 297.7
 #define LEFT_MOTOR_ID 0
 #define RIGHT_MOTOR_ID 1
+// Time out in msec
+#define TIME_OUT 4000
 
 #define FORWARD() (PWM_FORWARD_US * 4096.0 * REAL_FREQUENCE)
 #define STOPPED() (PWM_STOPPED_US * 4096.0 * REAL_FREQUENCE)
@@ -36,6 +38,12 @@ bool MotorActuatorSensor::begin() {
 }
 
 bool MotorActuatorSensor::processValues(const char *values) {
+  _lastUpdate = millis();
+  if (strcmp(values, "ping") == 0) {
+    digitalWrite(LED_BUILTIN, HIGH);
+    Serial.println("ping");
+    return true;
+  }
   _leftResult = setStringValueForMotor(values, &_left, LEFT_MOTOR_ID);
   while (values[0] != ' ' && values[0] != 0) {
     values += 1;
@@ -45,6 +53,21 @@ bool MotorActuatorSensor::processValues(const char *values) {
   }
   values += 1;
   _rightResult = setStringValueForMotor(values, &_right, RIGHT_MOTOR_ID);
+  return true;
+}
+
+bool MotorActuatorSensor::loop() {
+  if ((unsigned long)(millis() - _lastUpdate) > TIME_OUT) {
+/*    Serial.print("no ping ");
+    Serial.print(millis());
+    Serial.print(" ");
+    Serial.println(_lastUpdate);*/
+    _left = 0;
+    _leftResult = setValueForMotor(_left, LEFT_MOTOR_ID);
+    _right = 0;
+    _rightResult = setValueForMotor(_right, RIGHT_MOTOR_ID);
+    digitalWrite(LED_BUILTIN, LOW);
+  }
   return true;
 }
 

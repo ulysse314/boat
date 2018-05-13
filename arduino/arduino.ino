@@ -14,6 +14,7 @@ OneWire oneWire(ONE_WIRE_PIN);
 InfoActuatorSensor infoActuatorSensor;
 
 void setup() {
+  pinMode(LED_BUILTIN, OUTPUT);
   uint8_t address[8] = {0};
   GPSSensor *gpsSensor = new GPSSensor();
   sensorList.addSensor(gpsSensor);

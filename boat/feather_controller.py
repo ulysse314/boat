@@ -71,6 +71,7 @@ class FeatherController:
 
   def start(self):
     asyncio.ensure_future(self._connect())
+    asyncio.ensure_future(self._ping())
 
   def start_update_values(self):
     pass
@@ -159,6 +160,12 @@ class FeatherController:
     else:
       result = False
     return result
+
+  async def _ping(self):
+    while True:
+      await asyncio.sleep(2)
+      if self.serial_transport:
+        self.serial_transport.send_line("Motor ping")
  
 ## connection
   def connection_made(self, transport):
