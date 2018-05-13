@@ -60,10 +60,6 @@ bool MotorActuatorSensor::processValues(const char *values) {
 
 bool MotorActuatorSensor::loop() {
   if ((unsigned long)(millis() - _lastUpdate) > TIME_OUT) {
-/*    Serial.print("no ping ");
-    Serial.print(millis());
-    Serial.print(" ");
-    Serial.println(_lastUpdate);*/
     _left = 0;
     _leftResult = setValueForMotor(_left, LEFT_MOTOR_ID);
     _right = 0;
