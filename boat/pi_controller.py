@@ -55,8 +55,10 @@ class PiController:
 
 async def debug(pi_controller):
   while True:
-    pprint.pprint(pi_controller.values)
+    pi_controller.start_update_values()
+    pi_controller.stop_update_values()
     await asyncio.sleep(1)
+    pprint.pprint(pi_controller.values)
 
 def main():
   pi_controller = PiController()
