@@ -4,7 +4,9 @@
 // Sensor
 
 bool InfoActuatorSensor::printInfo(Stream *serial, int nodeID) {
-  if (!_needPrintInfo) {
+  if (!_needPrintInfo || _timestamp < 5) {
+    // Don't send info before 5s after boot. Wait until everything
+    // is settle down.
     return true;
   }
   _needPrintInfo = false;
