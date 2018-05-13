@@ -49,6 +49,7 @@ void loop() {
     Serial.print(" ");
     Serial.println(counter);
     Serial.flush();
+    sensorList.readValues();
     counter = 0;
   }
   counter += 1;
