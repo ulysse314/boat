@@ -29,6 +29,7 @@ void setup() {
   sensorList.begin();
   sensorList.loop();
   actuatorList.addActuator(motorActuatorSensor);
+  actuatorList.addActuator(&infoActuatorSensor);
   actuatorList.begin();
   actuatorList.loop();
   Serial.begin(115200);
@@ -53,6 +54,8 @@ void loop() {
     Serial.println(counter);
     Serial.flush();
     sensorList.readValues();
+    infoActuatorSensor.setCycleCount(counter);
+    infoActuatorSensor.setLoopDuration(difference);
     counter = 0;
   }
   counter += 1;

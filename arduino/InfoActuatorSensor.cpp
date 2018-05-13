@@ -16,6 +16,10 @@ bool InfoActuatorSensor::printValues(Stream *serial) {
   serial->print(" ");
   serial->print(_ramDifference);
   serial->print(" ");
+  serial->print(_cycleCount);
+  serial->print(" ");
+  serial->print(_loopDuration);
+  serial->print(" ");
   serial->print(millis());
   serial->print(" ");
   serial->print(_timestamp);
@@ -29,7 +33,8 @@ bool InfoActuatorSensor::printValues(Stream *serial) {
 bool InfoActuatorSensor::readValues() {
   unsigned int freeRAM = freeMemory();
   _ramDifference = freeRAM - _freeRAM;
-  _needPrintInfo = _ramDifference != 0;
+  _freeRAM = freeRAM;
+  _needPrintInfo = _needPrintInfo || (_ramDifference != 0);
 }
 
 bool InfoActuatorSensor::loop() {

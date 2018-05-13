@@ -18,12 +18,17 @@ public:
 
   bool processValues(const char *values) override;
   
+  void setCycleCount(unsigned long count) { _cycleCount = count; };
+  void setLoopDuration(unsigned long duration) { _loopDuration = duration; };
+
 protected:
   bool _needPrintInfo = true;
   unsigned long _timestamp = 0;
   unsigned long _lastMillis = 0;
   unsigned long _freeRAM = 0;
   long _ramDifference = 0;
+  unsigned long _cycleCount;
+  unsigned long _loopDuration;
 };
 
 #endif // InfoActuatorSensor_h
