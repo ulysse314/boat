@@ -2,22 +2,24 @@
 
 #include "Adafruit_PWMServoDriver.h"
 
-// micro sec
-#define PWM_FORWARD_US 0.0019
-// micro sec
-#define PWM_STOPPED_US 0.0015
-// micro sec
-#define PWM_REVERSE_US 0.0011
-//#define ADAFRUIT_FREQUENCE 250
-#define REAL_FREQUENCE 297.7
+// Frequency to set for the PWM chip
+#define ADAFRUIT_FREQUENCE 250
+// Real expected value, sec: 0.0019
+#define PWM_FORWARD_S 0.001905
+// Real expected value, sec: 0.0015
+#define PWM_STOPPED_S 0.0015
+// Real expected value, sec: 0.0011
+#define PWM_REVERSE_S 0.0011
+// Frequency mesured
+#define REAL_FREQUENCE 238
 #define LEFT_MOTOR_ID 0
 #define RIGHT_MOTOR_ID 1
 // Time out in msec
 #define TIME_OUT 4000
 
-#define FORWARD() (PWM_FORWARD_US * 4096.0 * REAL_FREQUENCE)
-#define STOPPED() (PWM_STOPPED_US * 4096.0 * REAL_FREQUENCE)
-#define REVERSED() (PWM_REVERSE_US * 4096.0 * REAL_FREQUENCE)
+#define FORWARD() (PWM_FORWARD_S * 4096.0 * REAL_FREQUENCE)
+#define STOPPED() (PWM_STOPPED_S * 4096.0 * REAL_FREQUENCE)
+#define REVERSED() (PWM_REVERSE_S * 4096.0 * REAL_FREQUENCE)
 
 
 MotorActuatorSensor::MotorActuatorSensor() {
@@ -32,7 +34,7 @@ MotorActuatorSensor::~MotorActuatorSensor() {
 
 bool MotorActuatorSensor::begin() {
   _pwmDriver->begin();
-  _pwmDriver->setPWMFreq(REAL_FREQUENCE);
+  _pwmDriver->setPWMFreq(ADAFRUIT_FREQUENCE);
   delay(10);
   return true;
 }
