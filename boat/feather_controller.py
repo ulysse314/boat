@@ -17,12 +17,11 @@ if parent_dir not in sys.path:
 import config
 import line_protocol
 
-SEND_DELAY = 0.1
-
 class FeatherController:
   NODE_INDEX = 0
   TYPE_INDEX = 1
   ADDRESS_INDEX = 2
+  SEND_MOTOR_LINE_DELAY = 0.1
 
   def __init__(self, sensors, dev_port = None, port_speed = 115200):
     self.sensors = sensors
@@ -37,7 +36,7 @@ class FeatherController:
     self.values = {}
     self.received_values = {}
     self.serial_transport = None
-    self.next_line = None
+    self.next_motor_line = None
     self.last_send = 0
     self.send_pending = False
 
@@ -49,21 +48,20 @@ class FeatherController:
     if "right%" in values:
       right = values["right%"]
     if self.serial_transport:
-      self.next_line = "Motor " + str(left) + " " + str(right) + "\n"
-      asyncio.ensure_future(self.send_line())
+      self.next_motor_line = "Motor " + str(left) + " " + str(right) + "\n"
+      asyncio.ensure_future(self._send_motor_line())
 
-  async def send_line(self):
-    global SEND_DELAY
+  async def _send_motor_line(self):
     current_time = time.time()
-    if self.send_pending or self.next_line is None:
+    if self.send_pending or self.next_motor_line is None:
       return
-    if current_time - self.last_send < SEND_DELAY:
+    if current_time - self.last_send < self.SEND_MOTOR_LINE_DELAY:
       self.send_pending = True
-      await asyncio.sleep(SEND_DELAY - (current_time - self.last_send))
+      await asyncio.sleep(self.SEND_MOTOR_LINE_DELAY - (current_time - self.last_send))
     self.send_pending = False
-    self.serial_transport.send_line(self.next_line)
+    self.serial_transport.send_line(self.next_motor_line)
     self.last_send = current_time
-    self.next_line = None
+    self.next_motor_line = None
 
   def set_leds(self, values):
     pass
@@ -117,6 +115,8 @@ class FeatherController:
         sensor = self.sensors[sensor_id]
         if sensor["type"] == "dallas":
           self._add_values(sensor["keys"], float(values[3]))
+      else:
+        self.logger.debug("Unknown line: " + self.received_values[sensor_id]['line'])
 
   def _add_values(self, keys, value):
     array = self.values
