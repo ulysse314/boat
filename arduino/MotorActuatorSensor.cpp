@@ -42,7 +42,6 @@ bool MotorActuatorSensor::begin() {
 bool MotorActuatorSensor::processValues(const char *values) {
   _lastUpdate = millis();
   if (strcmp(values, "ping") == 0) {
-    Serial.println("ping");
     return true;
   }
   _leftResult = setStringValueForMotor(values, &_left, LEFT_MOTOR_ID);
