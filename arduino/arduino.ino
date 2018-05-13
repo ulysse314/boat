@@ -1,6 +1,7 @@
 #include "ActuatorList.h"
 #include "DallasSensor.h"
 #include "GPSSensor.h"
+#include "InfoActuatorSensor.h"
 #include "MotorActuatorSensor.h"
 #include "SensorList.h"
 #include "OneWire.h"
@@ -10,6 +11,7 @@
 SensorList sensorList;
 ActuatorList actuatorList;
 OneWire oneWire(ONE_WIRE_PIN);
+InfoActuatorSensor infoActuatorSensor;
 
 void setup() {
   uint8_t address[8] = {0};
@@ -22,6 +24,7 @@ void setup() {
   }
   MotorActuatorSensor *motorActuatorSensor = new MotorActuatorSensor();
   sensorList.addSensor(motorActuatorSensor);
+  sensorList.addSensor(&infoActuatorSensor);
 
   sensorList.begin();
   sensorList.loop();
