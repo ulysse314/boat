@@ -42,7 +42,6 @@ bool MotorActuatorSensor::begin() {
 bool MotorActuatorSensor::processValues(const char *values) {
   _lastUpdate = millis();
   if (strcmp(values, "ping") == 0) {
-    digitalWrite(LED_BUILTIN, HIGH);
     Serial.println("ping");
     return true;
   }
@@ -64,7 +63,6 @@ bool MotorActuatorSensor::loop() {
     _leftResult = setValueForMotor(_left, LEFT_MOTOR_ID);
     _right = 0;
     _rightResult = setValueForMotor(_right, RIGHT_MOTOR_ID);
-    digitalWrite(LED_BUILTIN, LOW);
   }
   return true;
 }
@@ -86,6 +84,11 @@ uint8_t MotorActuatorSensor::setValueForMotor(int value, int motorID) {
     realValue = STOPPED() + (FORWARD() - STOPPED()) * value / 100.;
   } else {
     realValue = STOPPED();
+  }
+  if (_left == 0 && _right == 0) {
+    digitalWrite(LED_BUILTIN, LOW);
+  } else {
+    digitalWrite(LED_BUILTIN, HIGH);
   }
   return _pwmDriver->setPWM(motorID, 0, realValue);
 }
