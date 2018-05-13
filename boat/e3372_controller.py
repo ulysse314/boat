@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# ./e3372_controller.py [router_ip_optional]
 
 import aiohttp
 import asyncio
@@ -58,13 +59,17 @@ class E3372Controller:
     "CurrentDownloadRate",
     "CurrentUploadRate",
   ]
+  ROUTER_IP = '192.168.8.1'
 
-  def __init__(self, host = '192.168.8.1'):
+  def __init__(self, router_ip = None):
     self.session = None
     self.logger = logging.getLogger(self.__class__.__name__)
     self.values = {}
-    self.host = host
-    self.base_url = self.BASE_URL.format(host = host, url = "{url}")
+    if router_ip:
+      self.router_ip = router_ip
+    else:
+      self.router_ip = self.ROUTER_IP
+    self.base_url = self.BASE_URL.format(host = self.router_ip, url = "{url}")
 
   def start(self):
     asyncio.ensure_future(self._run())
@@ -136,7 +141,10 @@ async def debug(e3372_controller):
     await asyncio.sleep(1)
 
 def main():
-  e3372_controller = E3372Controller()
+  router_ip = None
+  if len(sys.argv) >= 2:
+    router_ip = sys.argv[1]
+  e3372_controller = E3372Controller(router_ip)
   task = asyncio.ensure_future(debug(e3372_controller))
   loop = asyncio.get_event_loop()
   loop.run_forever()
