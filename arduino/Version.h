@@ -1,0 +1,1 @@
+#define ArduinoVersion 1

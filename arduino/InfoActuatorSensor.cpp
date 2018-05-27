@@ -1,5 +1,6 @@
 #include "InfoActuatorSensor.h"
 #include "MemoryFree.h"
+#include "Version.h"
 
 // Sensor
 
@@ -29,6 +30,8 @@ bool InfoActuatorSensor::printValues(Stream *serial) {
   serial->print(__DATE__);
   serial->print(" ");
   serial->print(__TIME__);
+  serial->print(" ");
+  serial->print(ArduinoVersion);
   return true;
 }
 
