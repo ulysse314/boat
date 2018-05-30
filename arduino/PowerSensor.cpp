@@ -6,11 +6,11 @@
 #include <Arduino.h>
 
 #if IS_MOUSSAILLON
-const double kVoltCoef = 75.83;
-const double kAmpereCoef = 22.3;
+const double kVoltCoef = 303.32;
+const double kAmpereCoef = 89.2;
 #elif IS_TELEMAQUE
-const double kVoltCoef = 76.02;
-const double kAmpereCoef = 22.3;
+const double kVoltCoef = 304.08;
+const double kAmpereCoef = 89.2;
 #else
 #error *** No boat defined ***
 #endif

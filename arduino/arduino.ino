@@ -15,6 +15,7 @@ OneWire oneWire(ONE_WIRE_PIN);
 InfoActuatorSensor infoActuatorSensor;
 
 void setup() {
+  analogReadResolution(12);
   pinMode(LED_BUILTIN, OUTPUT);
   uint8_t address[8] = {0};
   GPSSensor *gpsSensor = new GPSSensor();
