@@ -1,7 +1,19 @@
 #include "PowerSensor.h"
 
+#include "Version.h"
+
 #include <stdio.h>
 #include <Arduino.h>
+
+#if IS_MOUSSAILLON
+const double kVoltCoef = 75.83;
+const double kAmpereCoef = 22.3;
+#elif IS_TELEMAQUE
+const double kVoltCoef = 76.02;
+const double kAmpereCoef = 22.3;
+#else
+#error *** No boat defined ***
+#endif
 
 PowerSensor::PowerSensor(uint32_t amperePin, uint32_t voltPin) {
   _amperePin = amperePin;
@@ -28,11 +40,11 @@ bool PowerSensor::readValues() {
 }
 
 bool PowerSensor::printValues(Stream *serial) {
-  serial->print(_rawAmpere);
+  serial->print((double)_rawAmpere / kAmpereCoef);
   serial->print(" ");
   serial->print(_rawAmpere);
   serial->print(" ");
-  serial->print(_rawVolt);
+  serial->print((double)_rawVolt / kVoltCoef);
   serial->print(" ");
   serial->print(_rawVolt);
   return true;
