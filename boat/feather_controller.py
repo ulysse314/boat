@@ -124,6 +124,16 @@ class FeatherController:
           sensor_id_to_remove.append(sensor_id)
         except:
           self.logger.exception("Problem to get arduino info")
+      elif sensor_id == "0  A:14,V:15":
+        try:
+          self.values["battery"] = {
+            "ampere": float(values[3]),
+            "ampere_raw": int(values[4]),
+            "volt": float(values[5]),
+            "volt_raw": int(values[6]),
+          }
+        except:
+          self.logger.exception("Problem to get arduino battery")
       elif sensor_id == "0 Motor Motor":
         self.values["motor"]["left%"] = values[3]
         self.values["motor"]["right%"] = values[4]
