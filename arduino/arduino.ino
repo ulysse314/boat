@@ -3,6 +3,7 @@
 #include "GPSSensor.h"
 #include "InfoActuatorSensor.h"
 #include "MotorActuatorSensor.h"
+#include "PowerSensor.h"
 #include "SensorList.h"
 #include "OneWire.h"
 
@@ -23,6 +24,7 @@ void setup() {
       sensorList.addSensor(new DallasSensor(address, &oneWire));
     }
   }
+  sensorList.addSensor(new PowerSensor(A0, A1));
   MotorActuatorSensor *motorActuatorSensor = new MotorActuatorSensor();
   sensorList.addSensor(motorActuatorSensor);
   sensorList.addSensor(&infoActuatorSensor);
