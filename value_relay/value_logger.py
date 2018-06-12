@@ -9,6 +9,12 @@ import pprint
 import requests
 import time
 
+async def fetch(url, data = None):
+  client = aiohttp.ClientSession()
+  resp = await client.post(url, data = data)
+  html = await resp.text()
+  return (resp.status, html)
+
 class ValueLogger:
   def __init__(self, boat_name, new_trip_url, logger_url):
     self.logger = logging.getLogger(self.__class__.__name__)
@@ -25,10 +31,9 @@ class ValueLogger:
     try_count = 0
     while True:
       try:
-        resp = await aiohttp.request("post", url, data = {"values": packet.decode("utf-8")})
-        if resp.status == 200:
-          text = await resp.text()
-          self.logger.debug("Packet sent {}".format(text))
+        (status, html) = await fetch(url, {"values": packet.decode("utf-8")})
+        if status == 200:
+          self.logger.debug("Packet sent {}".format(html))
           break
       except:
         self.logger.exception("Fail to send packet")
@@ -54,12 +59,11 @@ class ValueLogger:
     while True:
       url = self.new_trip_url + "&boat=" + requests.utils.quote(self.boat_name)
       self.logger.debug("URL: {}".format(url))
-      resp = await aiohttp.request("post", url)
-      if resp.status == 200:
+      (status, html) = await fetch(url)
+      if status == 200:
         try:
-          text = await resp.text()
-          data = json.loads(text)
-          self.logger.debug("Received " + text)
+          data = json.loads(html)
+          self.logger.debug("Received " + html)
           self.trip_id = data["trip_id"]
           self.logger.debug("Trip id: {}".format(self.trip_id))
           break
