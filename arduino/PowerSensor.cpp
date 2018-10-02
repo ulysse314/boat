@@ -15,11 +15,11 @@ const double kAmpereCoef = 89.2;
 #error *** No boat defined ***
 #endif
 
-PowerSensor::PowerSensor(uint32_t amperePin, uint32_t voltPin) {
+PowerSensor::PowerSensor(uint8_t amperePin, uint8_t voltPin) {
   _amperePin = amperePin;
   _voltPin = voltPin;
   char *address = (char *)malloc(16);
-  sprintf(address, "A:%d,V:%d", _amperePin, _voltPin);
+  sprintf(address, "A:%ud,V:%ud", _amperePin, _voltPin);
   _address = address;
 }
 

@@ -5,7 +5,7 @@
 
 class PowerSensor : public Sensor {
 public:
-  PowerSensor(uint32_t amperePin, uint32_t voltPin);
+  PowerSensor(uint8_t amperePin, uint8_t voltPin);
   ~PowerSensor();
   
   const char *sensorClass() const override { return "PowerSensor"; };
@@ -16,8 +16,8 @@ public:
   
 protected:
   const char *_address = NULL;
-  uint32_t _amperePin = 0;
-  uint32_t _voltPin = 0;
+  uint8_t _amperePin = 0;
+  uint8_t _voltPin = 0;
   uint32_t _rawAmpere = 0;
   uint32_t _rawVolt = 0;
 };
