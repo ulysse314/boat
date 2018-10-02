@@ -3,6 +3,7 @@
 
 class Actuator {
 public:
+  virtual ~Actuator() {};
   virtual const char *addressString() const = 0;
   virtual bool begin() { return true; };
   virtual bool loop() { return true;};

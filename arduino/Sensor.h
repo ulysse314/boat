@@ -5,6 +5,7 @@
 
 class Sensor {
 public:
+  virtual ~Sensor() {};
   virtual const char *sensorClass() const = 0;
   virtual const char *sensorType() const { return ""; };
   virtual const char *addressString() const { return ""; };
