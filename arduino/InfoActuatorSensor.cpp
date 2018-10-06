@@ -40,6 +40,7 @@ bool InfoActuatorSensor::readValues() {
   _ramDifference = freeRAM - _freeRAM;
   _freeRAM = freeRAM;
   _needPrintInfo = _needPrintInfo || (_ramDifference != 0);
+  return true;
 }
 
 bool InfoActuatorSensor::loop() {
@@ -57,4 +58,5 @@ bool InfoActuatorSensor::loop() {
 
 bool InfoActuatorSensor::processValues(const char *values) {
   _needPrintInfo = true;
+  return true;
 }
