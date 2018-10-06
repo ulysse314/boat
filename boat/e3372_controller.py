@@ -5,10 +5,17 @@
 import aiohttp
 import asyncio
 import logging
+import os
 import pprint
 import sys
 import time
 import xmltodict
+
+parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+if parent_dir not in sys.path:
+  sys.path.append(parent_dir)
+
+import error
 
 class E3372Controller:
   BASE_URL = 'http://{host}{url}'
@@ -65,6 +72,7 @@ class E3372Controller:
     self.session = None
     self.logger = logging.getLogger(self.__class__.__name__)
     self.values = {}
+    self.errors = {}
     if router_ip:
       self.router_ip = router_ip
     else:
@@ -82,21 +90,27 @@ class E3372Controller:
 
   async def _run(self):
     while True:
-      values = await self._get_values()
+      (errors, values) = await self._get_values()
       self.values = { "cellular": values }
+      self.errors = errors
       await asyncio.sleep(1)
 
   async def _get_values(self):
+    all_errors = []
     values = {}
     try:
       for api in self.APIS:
-        dict = await self._get(api)
-        for key,value in dict.items():
-          if key in self.KEYS:
-            values[key] = value
+        errors, dict = await self._get(api)
+        if errors:
+          all_errors.extend(errors)
+        if dict != None:
+          for key,value in dict.items():
+            if key in self.KEYS:
+              values[key] = value
     except Exception as e:
       self.logger.exception("run")
-    return values
+      all_errors.append(error.json_error(error = error.E3372Error_UnknownGetValues))
+    return (all_errors, values)
 
   async def _get(self, path):
     try:
@@ -112,32 +126,41 @@ class E3372Controller:
       self.logger.debug(url)
       resp = await self.session.get(url, timeout = 10)
       if resp.status != 200:
-        self.logger.warning("Error with URL " + url)
-        return {}
+        error_message = "Error with URL " + url + ", status: " + str(resp.status)
+        self.logger.warning(error_message)
+        return ([error.json_error(error = error.E3372Error_Status, message = error_message)], None)
       text = await resp.text()
       json = xmltodict.parse(text)
       if "error" in json:
-        self.logger.warning("Error")
-        self.logger.warning(pprint.pformat(json))
+        error_message = "Error with URL " + url + ", json received: " + pprint.pformat(json)
+        self.logger.warning(error_message)
         self.session = None
-        return {}
-      return json["response"]
+        return ([error.json_error(error = error.E3372Error_Json, message = error_message)], None)
+      return (None, json["response"])
+      
     except Exception as e:
-      self.logger.exception("get")
       self.session = None
-    return {}
+      error_message = "Error with path " + path + ", " + pprint.pformat(e)
+      self.logger.exception(error_message)
+      return ([error.json_error(error = error.E3372Error_UnknownGet, message = error_message)], None)
+    error_message = "Error with path " + path
+    return ([error.json_error(error = error.E3372Error_UnknownGet, message = error_message)], None)
 
-async def debug(e3372_controller):
-  while True:
-    values = await e3372_controller._get_values()
+async def test_apis(e3372_controller):
+  for api in e3372_controller.APIS_AVAILABLE:
+    (errors, values) = await e3372_controller._get(api)
+    print("==================================== " + api)
     pprint.pprint(values)
-    print("====================================")
-    for api in e3372_controller.APIS_AVAILABLE:
-      pprint.pprint(api)
-      values = await e3372_controller._get(api)
-      pprint.pprint(values)
-      print(" ")
+    pprint.pprint(errors)
+    print(" ")
+
+async def test_controller(e3372_controller):
+  while True:
+    (errors, values) = await e3372_controller._get_values()
     print("------------------------------------")
+    pprint.pprint(values)
+    pprint.pprint(errors)
+    print(" ")
     await asyncio.sleep(1)
 
 def main():
@@ -145,7 +168,9 @@ def main():
   if len(sys.argv) >= 2:
     router_ip = sys.argv[1]
   e3372_controller = E3372Controller(router_ip)
-  task = asyncio.ensure_future(debug(e3372_controller))
+  e3372_controller.start()
+  asyncio.ensure_future(test_apis(e3372_controller))
+  asyncio.ensure_future(test_controller(e3372_controller))
   loop = asyncio.get_event_loop()
   loop.run_forever()
 
