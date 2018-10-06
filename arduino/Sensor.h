@@ -17,7 +17,7 @@ public:
   virtual bool resetValues() { return true; };
   virtual bool printInfo(Stream *serial, int nodeID = -1);
   virtual bool printAddress(Stream *serial);
-  virtual bool printValues(Stream *serial) { return false; };
+  virtual bool printValues(Stream *serial __attribute__((unused))) { return false; };
 };
 
 #endif // Sensor_h
