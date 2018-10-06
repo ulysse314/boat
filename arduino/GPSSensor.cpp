@@ -19,7 +19,7 @@ bool GPSSensor::begin() {
 
 bool GPSSensor::loop() {
   if (GPSSerial.available()) {
-    char c = _gps->read();
+    _gps->read();
     if (_gps->newNMEAreceived()) {
       const char *nmea = _gps->lastNMEA();
       _gps->parse(nmea);
