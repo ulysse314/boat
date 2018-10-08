@@ -27,10 +27,9 @@ PowerSensor::~PowerSensor() {
   free((void *)_address);
 }
 
-bool PowerSensor::begin() {
+void PowerSensor::begin() {
   pinMode(_amperePin, INPUT);
   pinMode(_voltPin, INPUT);
-  return true;
 }
 
 bool PowerSensor::readValues() {

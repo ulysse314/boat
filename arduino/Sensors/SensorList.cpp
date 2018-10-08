@@ -62,26 +62,20 @@ Sensor *SensorList::getNextSensor(void **cursor) {
   return result;
 }
 
-bool SensorList::begin() {
-  bool result = true;
+void SensorList::begin() {
   SensorBucket *bucketCursor = _sensorBucket;
-  
   while (bucketCursor) {
-    result = bucketCursor->sensor->begin() && result;
+    bucketCursor->sensor->begin();
     bucketCursor = bucketCursor->nextBucket;
   }
-  return result;
 }
 
-bool SensorList::loop() {
-  bool result = true;
+void SensorList::loop() {
   SensorBucket *bucketCursor = _sensorBucket;
-  
   while (bucketCursor) {
-    result = bucketCursor->sensor->loop() && result;
+    bucketCursor->sensor->loop();
     bucketCursor = bucketCursor->nextBucket;
   }
-  return result;
 }
 
 bool SensorList::readValues() {

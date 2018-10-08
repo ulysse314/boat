@@ -115,7 +115,7 @@ void DallasSensor::sendReadCommand() {
   _celsius = (float)raw / 16.0;
 }
 
-bool DallasSensor::loop() {
+void DallasSensor::loop() {
   switch(_state) {
       case DallasSensorStateReset:
           this->sendConvertCommand();
@@ -132,5 +132,4 @@ bool DallasSensor::loop() {
           }
           break;
   }
-  return true;
 }

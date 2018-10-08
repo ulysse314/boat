@@ -4,7 +4,7 @@
 
 #define GPSSerial Serial1
 
-bool GPSSensor::begin() {
+void GPSSensor::begin() {
   _gps = new Adafruit_GPS(&GPSSerial);
   _gps->begin(9600);
   _gps->sendCommand(PMTK_SET_BAUD_115200);
@@ -14,10 +14,9 @@ bool GPSSensor::begin() {
   _gps->begin(115200);
   _gps->sendCommand(PMTK_SET_NMEA_UPDATE_1HZ); // 1 Hz update rate
   _gps->sendCommand(PGCMD_ANTENNA);
-  return true;
 }
 
-bool GPSSensor::loop() {
+void GPSSensor::loop() {
   if (GPSSerial.available()) {
     _gps->read();
     if (_gps->newNMEAreceived()) {
@@ -25,7 +24,6 @@ bool GPSSensor::loop() {
       _gps->parse(nmea);
     }
   }
-  return true;
 }
 
 bool GPSSensor::printAddress(Stream *serial) {

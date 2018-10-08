@@ -12,7 +12,7 @@ public:
   const char *sensorType() const  override { return "Info"; };
   const char *addressString() const override { return "Info"; };
   bool readValues() override;
-  bool loop() override;
+  void loop() override;
   bool printInfo(Stream *serial, int nodeID = -1)  override;
   bool printValues(Stream *serial) override;
 

@@ -46,9 +46,9 @@ public:
   const char *sensorClass() const override { return "DALLAS"; };
   const char *sensorType() const override;
   const char *copyAddressString() const override;
-  bool begin() override { return this->loop(); };
+  void begin() override { this->loop(); };
   bool isReady() override { return _gotFirstValue; };
-  bool loop() override;
+  void loop() override;
   bool printAddress(Stream *serial) override;
   bool printValues(Stream *serial) override;
 };

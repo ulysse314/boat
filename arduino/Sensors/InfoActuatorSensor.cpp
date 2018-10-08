@@ -43,7 +43,7 @@ bool InfoActuatorSensor::readValues() {
   return true;
 }
 
-bool InfoActuatorSensor::loop() {
+void InfoActuatorSensor::loop() {
   unsigned long currentMillis = millis();
   unsigned long difference = currentMillis - _lastMillis;
   if (difference > 1000) {
@@ -51,7 +51,6 @@ bool InfoActuatorSensor::loop() {
     _timestamp += addedSeconds;
     _lastMillis += addedSeconds * 1000;
   }
-  return true;
 }
 
 // Actuator

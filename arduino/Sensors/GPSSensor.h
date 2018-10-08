@@ -9,8 +9,8 @@ class GPSSensor : public Sensor {
 public:
   virtual const char *sensorClass() const override { return "GPS"; };
   virtual const char *sensorType() const override { return "GPS"; };
-  virtual bool begin() override;
-  virtual bool loop() override;
+  virtual void begin() override;
+  virtual void loop() override;
   virtual bool printAddress(Stream *serial) override;
   virtual bool printValues(Stream *serial) override;
 

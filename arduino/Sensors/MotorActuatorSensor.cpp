@@ -32,11 +32,10 @@ MotorActuatorSensor::~MotorActuatorSensor() {
   delete _pwmDriver;
 }
 
-bool MotorActuatorSensor::begin() {
+void MotorActuatorSensor::begin() {
   _pwmDriver->begin();
   _pwmDriver->setPWMFreq(ADAFRUIT_FREQUENCE);
   delay(10);
-  return true;
 }
 
 bool MotorActuatorSensor::processValues(const char *values) {
@@ -56,14 +55,13 @@ bool MotorActuatorSensor::processValues(const char *values) {
   return true;
 }
 
-bool MotorActuatorSensor::loop() {
+void MotorActuatorSensor::loop() {
   if ((unsigned long)(millis() - _lastUpdate) > TIME_OUT) {
     _left = 0;
     _leftResult = setValueForMotor(_left, LEFT_MOTOR_ID);
     _right = 0;
     _rightResult = setValueForMotor(_right, RIGHT_MOTOR_ID);
   }
-  return true;
 }
 
 uint8_t MotorActuatorSensor::setStringValueForMotor(const char *stringValue, int *value, int motorID) {
