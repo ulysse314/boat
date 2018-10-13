@@ -55,6 +55,7 @@ public:
 
 ActuatorList::ActuatorList() {
   _actuatorBucket = NULL;
+  _actuatorSearcher = NULL;
   _currentValue.reserve(128);
 }
 
