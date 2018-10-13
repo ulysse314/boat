@@ -13,7 +13,8 @@ public:
   virtual void loop() override;
   virtual bool printAddress(Stream *serial) override;
   virtual bool printValues(Stream *serial) override;
-
+  Adafruit_GPS *getGPS() { return _gps; };
+  
 protected:
     Adafruit_GPS *_gps;
 };
