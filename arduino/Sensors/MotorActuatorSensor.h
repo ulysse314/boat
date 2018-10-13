@@ -12,7 +12,7 @@ public:
   ~MotorActuatorSensor();
 
   const char *addressString() const override { return "Motor"; };
-  const char *sensorType() const { return "Motor"; };
+  const char *sensorType() const override { return "Motor"; };
   const char *sensorClass() const override { return "Motor"; };
   void begin() override;
   bool processValues(const char *values) override;
