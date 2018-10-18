@@ -1,7 +1,7 @@
 #ifndef Version_h
 #define Version_h
 
-#define ArduinoVersion 1
+#define ArduinoVersion 2
 
 #define MOUSSAILLON_ID 314
 #define TELEMAQUE_ID 315

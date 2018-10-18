@@ -55,7 +55,7 @@ void InfoActuatorSensor::loop() {
 
 // Actuator
 
-bool InfoActuatorSensor::processValues(const char *values __attribute__((unused))) {
+bool InfoActuatorSensor::processValues(const char *) {
   _needPrintInfo = true;
   return true;
 }
