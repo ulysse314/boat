@@ -22,6 +22,7 @@ Error::Level ArduinoError::getLevel() const {
     case CodeArduinoCodeUnknown:
     case CodeGPSValueIndex:
     case CodeGPSCodeUnknown:
+    case CodeAddingValueWithSameName:
       return Error::Level::Critical;
     case CodeComputeTimeWarning:
     case CodeMemoryDifference500:
@@ -47,6 +48,7 @@ bool ArduinoError::isPersistant() const {
     case CodeGPSCodeUnknown:
     case CodeMemoryDifference1k:
     case CodeComputeTimeCritical:
+    case CodeAddingValueWithSameName:
       return true;
     case CodeComputeTimeInfo:
     case CodeComputeTimeWarning:

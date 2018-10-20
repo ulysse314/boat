@@ -22,6 +22,7 @@ public:
     CodeArduinoCodeUnknown,            // 13
     CodeGPSValueIndex,                 // 14
     CodeGPSCodeUnknown,                // 15
+    CodeAddingValueWithSameName        // 16
   } Code;
   
   ArduinoError(Code code, const char *message = NULL);

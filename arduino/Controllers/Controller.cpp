@@ -1,5 +1,6 @@
 #include "Controller.h"
 
+#include "ArduinoController.h"
 #include "Debug.h"
 #include "Value.h"
 
@@ -46,7 +47,9 @@ bool Controller::removeErrorWithCode(Error::Domain domain, int code) {
 
 void Controller::addValue(Value *value) {
   size_t index = _valueList.indexForData(value);
-  if (index == (size_t)-1) {
-    _valueList.addData(value);
+  if (index != (size_t)-1) {
+    ArduinoController::addArduinoError(ArduinoError::CodeAddingValueWithSameName);
+    return;
   }
+  _valueList.addData(value);
 }
