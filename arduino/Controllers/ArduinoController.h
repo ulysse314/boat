@@ -7,20 +7,6 @@
 
 class ArduinoController : public Controller {
 public:
-  enum ValueIndex {
-    StartedIndex = 0,
-    CycleCountIndex,
-    LoopDurationIndex,
-    ComputeTimeIndex,
-    RAMFreeIndex,
-    RAMFreeDifferenceIndex,
-    MillisIndex,
-    TimestampIndex,
-    CompileDateIndex,
-    ArduinoVersionIndex,
-    MaxIndex,
-  };
-
   static ArduinoController *getArduinoController();
   static void addArduinoError(ArduinoError::Code code);
   
@@ -32,8 +18,6 @@ public:
   // Controller
   const char *getName() const override { return "arduino"; };
   void begin();
-  int getValueCount() const override{ return MaxIndex; };
-  const Value *getValueAtIndex(int) const override;
   void sensorsHasBeenUpdated() override;
 
 protected:

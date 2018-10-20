@@ -18,11 +18,10 @@ public:
     CodeInfoMemory,                    // 9
     CodeLowMemory,                     // 10
     CodeVeryLowMemory,                 // 11
-    CodeArduinoValueIndex,             // 12
-    CodeArduinoCodeUnknown,            // 13
-    CodeGPSValueIndex,                 // 14
-    CodeGPSCodeUnknown,                // 15
-    CodeAddingValueWithSameName        // 16
+    CodeArduinoCodeUnknown,            // 12
+    CodeGPSValueIndex,                 // 13
+    CodeGPSCodeUnknown,                // 14
+    CodeAddingValueWithSameName        // 15
   } Code;
   
   ArduinoError(Code code, const char *message = NULL);

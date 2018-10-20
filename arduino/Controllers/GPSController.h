@@ -8,24 +8,6 @@ class GPSSensor;
 
 class GPSController : public Controller {
 public:
-  enum ValueIndex {
-    AntennaIndex = 0,
-    ViewedSatellitesIndex,
-    UsedSatellitesIndex,
-    ModeIndex,
-    FixQualityIndex,
-    LatitudeDegreeIndex,
-    LongitudeDegreeIndex,
-    AltitudeIndex,
-    SpeedIndex,
-    AngleIndex,
-    GeoidHeightIndex,
-    PDOPIndex,
-    HDOPIndex,
-    VDOPIndex,
-    MaxIndex,
-  };
-
   GPSController();
   ~GPSController();
   
@@ -34,8 +16,6 @@ public:
   const char *getName() const override { return "gps"; };
   void addSensorsToList(SensorList *sensorList) override;
   void sensorsHasBeenUpdated() override;
-  int getValueCount() const override { return MaxIndex; };
-  const Value *getValueAtIndex(int index) const override;
 
 protected:
   GPSSensor *_gpsSensor;

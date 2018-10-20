@@ -58,35 +58,6 @@ void ArduinoController::begin() {
   _veryLowFreeMemory = currentFreeMemory * 0.2;
 }
 
-const Value *ArduinoController::getValueAtIndex(int index) const {
-  switch((ValueIndex)index) {
-    case StartedIndex:
-      return &_started;
-    case CycleCountIndex:
-      return &_cycleCount;
-    case LoopDurationIndex:
-      return &_loopDuration;
-    case ComputeTimeIndex:
-      return &_computeTime;
-    case RAMFreeIndex:
-      return &_ramFree;
-    case RAMFreeDifferenceIndex:
-      return &_ramFreeDifference;
-    case MillisIndex:
-      return &_millis;
-    case TimestampIndex:
-      return &_timestamp;
-    case CompileDateIndex:
-      return &_compileDate;
-    case ArduinoVersionIndex:
-      return &_arduinoVersion;
-    case MaxIndex:
-      break;
-  }
-  ArduinoController::addArduinoError(ArduinoError::CodeArduinoValueIndex);
-  return NULL;
-}
-
 void ArduinoController::sensorsHasBeenUpdated() {
   ++_loopCount;
   _millis.setInteger(millis());
