@@ -7,12 +7,17 @@
 #include "ArduinoController.h"
 #include "Error.h"
 
-Value::Value(Type type) :
+Value::Value(Type type, const char *name) :
     _type(type),
+    _name(NULL),
     _string(NULL),
     _integer(0),
     _double(0),
     _boolean(false) {
+  size_t length = strlen(name) + 1;
+  char *stringCopy = (char *)malloc(length);
+  strncpy(stringCopy, name, length);
+  _name = stringCopy;
 }
 
 Value::~Value() {

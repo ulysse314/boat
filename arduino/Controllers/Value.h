@@ -11,7 +11,7 @@ public:
     Double,
     Boolean
   };
-  Value(Type type);
+  Value(Type type, const char *name = NULL);
   ~Value();
 
   void setNull(); 
@@ -21,6 +21,7 @@ public:
   void setBoolean(bool value);
   
   Type getType() const { return _type; };
+  const char *getName() const { return _name; };
   bool isNull() const { return _null; };
   const char *getString() const;
   int32_t getInteger() const;
@@ -29,6 +30,7 @@ public:
   
 protected:
   Type _type;
+  const char *_name;
   bool _null;
   const char *_string;
   int32_t _integer;
