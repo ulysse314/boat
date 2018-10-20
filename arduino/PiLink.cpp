@@ -30,28 +30,32 @@ void PiLink::outputController(const Controller *controller) {
   for (int i = 0; i < valueCount; i++) {
     const Value *value = controller->getValueAtIndex(i);
     _stream->print(",");
-    if (!value || value->isNull()) {
-      _stream->print("null");
-    } else {
-      switch (value->getType()) {
-        case Value::Type::String:
-          _stream->print("\"");
-          _stream->print(value->getString());
-          _stream->print("\"");
-          break;
-        case Value::Type::Integer:
-          _stream->print(value->getInteger());
-          break;
-        case Value::Type::Double:
-          _stream->print(value->getDouble());
-          break;
-        case Value::Type::Boolean:
-          _stream->print(value->getBoolean() ? "true" : "false");
-          break;
-      }
-    }
+    outputValue(value);
   }
   _stream->print("]\n\r");
+}
+
+void PiLink::outputValue(const Value *value) {
+  if (!value || value->isNull()) {
+    _stream->print("null");
+  } else {
+    switch (value->getType()) {
+      case Value::Type::String:
+        _stream->print("\"");
+        _stream->print(value->getString());
+        _stream->print("\"");
+        break;
+      case Value::Type::Integer:
+        _stream->print(value->getInteger());
+        break;
+      case Value::Type::Double:
+        _stream->print(value->getDouble());
+        break;
+      case Value::Type::Boolean:
+        _stream->print(value->getBoolean() ? "true" : "false");
+        break;
+    }
+  }
 }
 
 void PiLink::outputError(const Error *error) {
