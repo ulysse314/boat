@@ -31,6 +31,23 @@ GPSController::GPSController() :
 GPSController::~GPSController() {
 }
 
+void GPSController::begin() {
+  addValue(&_antenna);
+  addValue(&_mode);
+  addValue(&_viewedSatellites);
+  addValue(&_usedSatellites);
+  addValue(&_fixQuality);
+  addValue(&_latitudeDegree);
+  addValue(&_longitudeDegree);
+  addValue(&_altitude);
+  addValue(&_speed);
+  addValue(&_angle);
+  addValue(&_geoidHeight);
+  addValue(&_pdop);
+  addValue(&_hdop);
+  addValue(&_vdop);
+}
+
 void GPSController::addSensorsToList(SensorList *sensorList) {
   sensorList->addSensor(_gpsSensor);
 }
