@@ -57,4 +57,6 @@ bool ArduinoError::isPersistant() const {
     case CodeVeryLowMemory:
       return false;
   };
+  ArduinoController::addArduinoError(ArduinoError::CodeArduinoCodeUnknown);
+  return false;
 }
