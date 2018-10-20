@@ -42,6 +42,16 @@ ArduinoController::ArduinoController() :
 }
 
 void ArduinoController::begin() {
+  addValue(&_started);
+  addValue(&_cycleCount);
+  addValue(&_loopDuration);
+  addValue(&_computeTime);
+  addValue(&_ramFree);
+  addValue(&_ramFreeDifference);
+  addValue(&_millis);
+  addValue(&_timestamp);
+  addValue(&_compileDate);
+  addValue(&_arduinoVersion);
   size_t currentFreeMemory = freeMemory();
   _infoFreeMemory = currentFreeMemory * 0.6;
   _lowFreeMemory = currentFreeMemory * 0.4;
