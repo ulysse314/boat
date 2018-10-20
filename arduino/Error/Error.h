@@ -3,8 +3,6 @@
 
 #include <stddef.h>
 
-#include "ErrorCode.h"
-
 class Error {
 public:
   enum class Level {
