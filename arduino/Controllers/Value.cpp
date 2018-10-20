@@ -6,18 +6,15 @@
 
 #include "ArduinoController.h"
 #include "Error.h"
+#include "StringUtils.h"
 
 Value::Value(Type type, const char *name) :
     _type(type),
-    _name(NULL),
+    _name(createStringCopy(name)),
     _string(NULL),
     _integer(0),
     _double(0),
     _boolean(false) {
-  size_t length = strlen(name) + 1;
-  char *stringCopy = (char *)malloc(length);
-  strncpy(stringCopy, name, length);
-  _name = stringCopy;
 }
 
 Value::~Value() {
@@ -42,10 +39,7 @@ void Value::setString(const char *value) {
     _string = NULL;
     return;
   }
-  size_t length = strlen(value) + 1;
-  char *stringCopy = (char *)malloc(length);
-  strncpy(stringCopy, value, length);
-  _string = stringCopy;
+  _string = createStringCopy(value);
   _null = false;
 }
 
