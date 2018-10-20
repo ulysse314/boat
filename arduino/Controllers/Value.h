@@ -27,7 +27,11 @@ public:
   int32_t getInteger() const;
   double getDouble() const;
   bool getBoolean() const;
-  
+
+  bool operator==(const Value &a) const {
+    return strcmp(_name, a.getName()) == 0;
+  }
+
 protected:
   Type _type;
   const char *_name;
