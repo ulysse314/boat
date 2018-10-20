@@ -23,16 +23,16 @@ ArduinoController::ArduinoController() :
     _veryLowFreeMemory(0),
     _lastMillis(0),
     _loopCount(0),
-    _started(Value::Type::Boolean),
-    _cycleCount(Value::Type::Integer),
-    _loopDuration(Value::Type::Integer),
-    _computeTime(Value::Type::Integer),
-    _ramFree(Value::Type::Integer),
-    _ramFreeDifference(Value::Type::Integer),
-    _millis(Value::Type::Integer),
-    _timestamp(Value::Type::Integer),
-    _compileDate(Value::Type::String),
-    _arduinoVersion(Value::Type::Integer) {
+    _started(Value::Type::Boolean, "stt"),
+    _cycleCount(Value::Type::Integer, "cyc"),
+    _loopDuration(Value::Type::Integer, "ld"),
+    _computeTime(Value::Type::Integer, "ct"),
+    _ramFree(Value::Type::Integer, "rf"),
+    _ramFreeDifference(Value::Type::Integer, "rfd"),
+    _millis(Value::Type::Integer, "mil"),
+    _timestamp(Value::Type::Integer, "tst"),
+    _compileDate(Value::Type::String, "cmp"),
+    _arduinoVersion(Value::Type::Integer, "ver") {
   String compileDateString;
   compileDateString.concat(__TIME__);
   compileDateString.concat(" ");

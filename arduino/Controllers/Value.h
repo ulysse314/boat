@@ -11,7 +11,7 @@ public:
     Double,
     Boolean
   };
-  Value(Type type, const char *name = NULL);
+  Value(Type type, const char *name);
   ~Value();
 
   void setNull(); 

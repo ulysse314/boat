@@ -11,20 +11,20 @@
 #define kUsedSatelliteLow 5
 
 GPSController::GPSController() :
-    _antenna(Value::Type::Integer),
-    _mode(Value::Type::Integer),
-    _viewedSatellites(Value::Type::Integer),
-    _usedSatellites(Value::Type::Integer),
-    _fixQuality(Value::Type::Integer),
-    _latitudeDegree(Value::Type::Integer),
-    _longitudeDegree(Value::Type::Integer),
-    _altitude(Value::Type::Double),
-    _speed(Value::Type::Double),
-    _angle(Value::Type::Double),
-    _geoidHeight(Value::Type::Double),
-    _pdop(Value::Type::Double),
-    _hdop(Value::Type::Double),
-    _vdop(Value::Type::Double) {
+    _antenna(Value::Type::Integer, "ant"),
+    _mode(Value::Type::Integer, "mod"),
+    _viewedSatellites(Value::Type::Integer, "vst"),
+    _usedSatellites(Value::Type::Integer, "ust"),
+    _fixQuality(Value::Type::Integer, "fxq"),
+    _latitudeDegree(Value::Type::Integer, "lat"),
+    _longitudeDegree(Value::Type::Integer, "lon"),
+    _altitude(Value::Type::Double, "alt"),
+    _speed(Value::Type::Double, "spd"),
+    _angle(Value::Type::Double, "ang"),
+    _geoidHeight(Value::Type::Double, "gh"),
+    _pdop(Value::Type::Double, "pdp"),
+    _hdop(Value::Type::Double, "hdp"),
+    _vdop(Value::Type::Double, "vdp") {
   _gpsSensor = new GPSSensor();
 }
 
