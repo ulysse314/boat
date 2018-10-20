@@ -1,10 +1,11 @@
 #include "Controller.h"
 
 #include "Debug.h"
-#include "Error.h"
+#include "Value.h"
 
 Controller::Controller() :
-  _errorList(List<Error>::WhenDataRemoved::Free) {
+    _valueList(List<Value>::WhenDataRemoved::Free),
+    _errorList(List<Error>::WhenDataRemoved::Free) {
 }
 
 Controller::~Controller() {}
@@ -41,4 +42,11 @@ bool Controller::removeErrorWithCode(Error::Domain domain, int code) {
     }
   }
   return result;
+}
+
+void Controller::addValue(Value *value) {
+  size_t index = _valueList.indexForData(value);
+  if (index == (size_t)-1) {
+    _valueList.addData(value);
+  }
 }

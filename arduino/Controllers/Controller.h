@@ -4,7 +4,6 @@
 #include "Error.h"
 #include "List.h"
 
-class Error;
 class SensorList;
 class Value;
 
@@ -27,8 +26,9 @@ public:
   bool removeErrorWithCode(Error::Domain domain, int code);
 
 protected:
-  void clearAllErrors();
+  void addValue(Value *value);
 
+  List<Value> _valueList;
   List<Error> _errorList;
 };
 
