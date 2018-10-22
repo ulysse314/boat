@@ -7,6 +7,7 @@
 #include "InfoActuatorSensor.h"
 #include "MemoryFree.h"
 #include "MotorActuatorSensor.h"
+#include "MotorController.h"
 #include "PiLink.h"
 #include "PowerSensor.h"
 #include "SensorList.h"
@@ -22,6 +23,8 @@ InfoActuatorSensor *infoActuatorSensor = NULL;
 ControllerManager *controllerManager = NULL;
 ArduinoController *arduinoController = NULL;
 GPSController *gpsController = NULL;
+MotorController *leftMotorController = NULL;
+MotorController *rightMotorController = NULL;
 
 PiLink *piLink = NULL;
 
@@ -36,6 +39,11 @@ void initGlobal() {
   controllerManager->addController(gpsController);
   arduinoController = ArduinoController::getArduinoController();
   controllerManager->addController(arduinoController);
+  leftMotorController = MotorController::LeftMotor(oneWire);
+  controllerManager->addController(leftMotorController);
+  rightMotorController = MotorController::RightMotor(oneWire);
+  controllerManager->addController(rightMotorController);
+
   controllerManager->addSensorsToList(sensorList);
 
   piLink = new PiLink(&Serial);
@@ -43,9 +51,11 @@ void initGlobal() {
 
   uint8_t address[8] = {0};
     Serial.println(__LINE__);
-  while (oneWire->find_address(address)) {
-    if (DallasSensor::sensorType(address)) {
-      sensorList->addSensor(new DallasSensor(address, oneWire));
+  if (0) {
+    while (oneWire->find_address(address)) {
+      if (DallasSensor::sensorType(address)) {
+        sensorList->addSensor(new DallasSensor(address, oneWire));
+      }
     }
   }
     sensorList->addSensor(new PowerSensor(A0, A1));
