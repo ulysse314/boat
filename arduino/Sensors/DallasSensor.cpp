@@ -1,13 +1,11 @@
 #include "Arduino.h"
 #include "DallasSensor.h"
 
-DallasSensor::DallasSensor(uint8_t address[8], OneWire *oneWire) {
-  _oneWire = oneWire;
-  memcpy(_address, address, sizeof(_address));
-  _state = DallasSensorStateReset;
-  _celsius = 20.0;
-  _gotFirstValue = false;
-}
+typedef enum {
+  DallasCommandConvertTemperature = 0x44,
+  DallasCommandMatchRom = 0x55,
+  DallasCommandReadScratchpad = 0xBE,
+} DallasCommand;
 
 static byte dallasType(uint8_t address[8]) {
   switch (address[0]) {
@@ -23,9 +21,9 @@ static byte dallasType(uint8_t address[8]) {
   } 
 }
 
+// static
 const char *DallasSensor::sensorType(const uint8_t address[8]) {
   const char *result = NULL;
-  
   switch(address[0]) {
     case DallasSensorTypeDS18S20:
       result = "DS18S20";
@@ -40,6 +38,14 @@ const char *DallasSensor::sensorType(const uint8_t address[8]) {
   return result;
 }
 
+DallasSensor::DallasSensor(const uint8_t address[8], OneWire *oneWire) :
+    _oneWire(oneWire),
+    _hasValue(false),
+    _celsius(0),
+    _timer(0) {
+  memcpy(_address, address, sizeof(_address));
+}
+
 const char *DallasSensor::sensorType() const {
   return DallasSensor::sensorType(_address);
 }
@@ -47,10 +53,8 @@ const char *DallasSensor::sensorType() const {
 const char *DallasSensor::copyAddressString() const {
   char *string;
   char *cursor;
-  char ii;
-  
   cursor = string = (char *)malloc(24);
-  for(ii = 0; ii < 8; ii++) {
+  for(unsigned char ii = 0; ii < 8; ii++) {
     sprintf(cursor, "%02x", _address[ii]);
     cursor += 2;
     cursor[0] = ':';
@@ -85,16 +89,16 @@ bool DallasSensor::printValues(Stream *serial) {
 void DallasSensor::sendConvertCommand() {
   _oneWire->reset();
   _oneWire->select(_address);    
-  _oneWire->write(0x44,1);         // Read Scratchpad
+  _oneWire->write(DallasCommandConvertTemperature,1);         // Read Scratchpad
 }
 
 void DallasSensor::sendReadCommand() {
   byte ii;
-  byte data[12];
+  byte data[9];
 
   _oneWire->reset();
   _oneWire->select(_address);    
-  _oneWire->write(0xBE);         // Read Scratchpad
+  _oneWire->write(DallasCommandReadScratchpad);         // Read Scratchpad
   for (ii = 0; ii < 9; ii++) {           // we need 9 bytes
     data[ii] = _oneWire->read();
   }
@@ -113,23 +117,24 @@ void DallasSensor::sendReadCommand() {
     // default is 12 bit resolution, 750 ms conversion time
   }
   _celsius = (float)raw / 16.0;
+  _hasValue = OneWire::crc8(data, 8) == data[8];
+}
+
+bool DallasSensor::readValues() {
+  this->sendConvertCommand();
+  _timer = millis();
+  _hasValue = false;
+  _tried = false;
+  return true;
 }
 
 void DallasSensor::loop() {
-  switch(_state) {
-      case DallasSensorStateReset:
-          this->sendConvertCommand();
-          _state = DallasSensorStateResetWait;
-          _timer = millis();
-          break;
-      case DallasSensorStateResetWait:
-          unsigned long currentTime = millis();
-          
-          if ((unsigned long)(currentTime - _timer) >= 1000) {
-              this->sendReadCommand();
-              _state = DallasSensorStateReset;
-              _gotFirstValue = true;
-          }
-          break;
+  if (_tried) {
+    return;
+  }
+  unsigned long currentTime = millis();
+  if ((unsigned long)(currentTime - _timer) >= 800) {
+    this->sendReadCommand();
+    _tried = true;
   }
 }

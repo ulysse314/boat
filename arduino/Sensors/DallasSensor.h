@@ -5,11 +5,6 @@
 #include "Sensor.h"
 
 typedef enum {
-  DallasSensorStateReset,
-  DallasSensorStateResetWait,
-} DallasSensorState;
-
-typedef enum {
   DallasSensorTypeDS18S20 = 0x10,
   DallasSensorTypeDS18B20 = 0x28,
   DallasSensorTypeDS1822 = 0x22,
@@ -19,13 +14,6 @@ class OneWire;
 
 class DallasSensor : public Sensor
 {
-  OneWire                     *_oneWire;
-  uint8_t                     _address[8];
-  DallasSensorState           _state;
-  unsigned long               _timer;
-  float                       _celsius;
-  bool                        _gotFirstValue;
-
 public:
   static const char *sensorType(const uint8_t address[8]);
   inline static int maxConversionTimeMillisForBits(int bits) {
@@ -35,22 +23,30 @@ public:
     return 750;
   };
 
-  DallasSensor(uint8_t adresse[8], OneWire *oneWire);
+  DallasSensor(const uint8_t adresse[8], OneWire *oneWire);
   
-  void sendConvertCommand();
-  void sendReadCommand();
-  
-  float celsius() { return _celsius; };
+  float celsius() const { return _celsius; };
+  bool hasValue() const { return _hasValue; };
   
   // sensor
   const char *sensorClass() const override { return "DALLAS"; };
   const char *sensorType() const override;
   const char *copyAddressString() const override;
-  void begin() override { this->loop(); };
-  bool isReady() override { return _gotFirstValue; };
+  bool readValues() override;
   void loop() override;
   bool printAddress(Stream *serial) override;
   bool printValues(Stream *serial) override;
+
+private:
+  void sendConvertCommand();
+  void sendReadCommand();
+
+  OneWire *_oneWire;
+  uint8_t _address[8];
+  bool _hasValue;
+  float _celsius;
+  unsigned long _timer;
+  bool _tried;
 };
 
 #endif // DallasSensor_h
