@@ -12,8 +12,8 @@ public:
   ~GPSController();
   
   // Controller
-  void begin() override;
   const char *getName() const override { return "gps"; };
+  void begin() override;
   void addSensorsToList(SensorList *sensorList) override;
   void sensorsHasBeenUpdated() override;
 
