@@ -15,6 +15,10 @@ uint8_t kRightDallasAddress[8] = { 0x28, 0xAB, 0xDD, 0x1E, 0x03, 0x00, 0x00, 0xC
 #error *** No boat defined ***
 #endif
 
+#define InfoTemperature 50.0
+#define WarningTemperature 60.0
+#define CriticalTemperature 70.0
+
 // static
 MotorController *MotorController::LeftMotor(OneWire *oneWire) {
   static MotorController*motor = NULL;
@@ -52,7 +56,15 @@ void MotorController::begin() {
 
 void MotorController::sensorsHasBeenUpdated() {
   if (_temperatureSensor->hasValue()) {
-    _temperature.setDouble(_temperatureSensor->celsius());
+    double temperature = _temperatureSensor->celsius();
+    _temperature.setDouble(temperature);
+    if (temperature >= InfoTemperature && temperature < WarningTemperature) {
+      addError(new MotorError(MotorError::CodeTemperatureInfo));
+    } else if (temperature < CriticalTemperature) {
+      addError(new MotorError(MotorError::CodeTemperatureWarning));
+    } else {
+      addError(new MotorError(MotorError::CodeTemperatureCritical));
+    }
   } else {
     addError(new MotorError(MotorError::CodeTemperatureUnknown));
     _temperature.setNull();
