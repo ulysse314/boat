@@ -7,11 +7,11 @@
 #include "MemoryFree.h"
 #include "MotorActuatorSensor.h"
 #include "MotorController.h"
+#include "OneWire.h"
 #include "PiLink.h"
 #include "PowerSensor.h"
+#include "PWMDriver.h"
 #include "SensorList.h"
-#include "OneWire.h"
-#include "Adafruit_PWMServoDriver.h"
 
 #define ONE_WIRE_PIN          12
 
@@ -24,7 +24,7 @@ ArduinoController *arduinoController = NULL;
 GPSController *gpsController = NULL;
 MotorController *leftMotorController = NULL;
 MotorController *rightMotorController = NULL;
-Adafruit_PWMServoDriver *pwmDriver = NULL;
+PWMDriver *pwmDriver = NULL;
 
 PiLink *piLink = NULL;
 
@@ -33,7 +33,7 @@ void initGlobal() {
   oneWire = new OneWire(ONE_WIRE_PIN);
   infoActuatorSensor = new InfoActuatorSensor();
   controllerManager = new ControllerManager();
-  pwmDriver = new Adafruit_PWMServoDriver(41);
+  pwmDriver = new PWMDriver(&Wire, 0x40);
   piLink = new PiLink(&Serial);
 
   gpsController = new GPSController();
@@ -49,6 +49,7 @@ void initGlobal() {
   piLink->setLeftMotorController(leftMotorController);
   piLink->setRightMotorController(rightMotorController);
 
+  Wire.begin();
   pwmDriver->begin();
   sensorList->begin();
   controllerManager->begin();
@@ -92,6 +93,6 @@ void loop() {
     counter = 0;
     digitalWrite(LED_BUILTIN, LOW);
   }
-  piLink->listen();
+//  piLink->listen();
   ++counter;
 }

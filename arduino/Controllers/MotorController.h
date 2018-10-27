@@ -5,15 +5,15 @@
 #include "DallasSensor.h"
 #include "Value.h"
 
-class Adafruit_PWMServoDriver;
 class OneWire;
+class PWMDriver;
 
 class MotorController : public Controller {
 public:
-  static MotorController *LeftMotor(OneWire *oneWire, Adafruit_PWMServoDriver *pwmDriver);
-  static MotorController *RightMotor(OneWire *oneWire, Adafruit_PWMServoDriver *pwmDriver);
+  static MotorController *LeftMotor(OneWire *oneWire, PWMDriver *pwmDriver);
+  static MotorController *RightMotor(OneWire *oneWire, PWMDriver *pwmDriver);
 
-  MotorController(const char *name, OneWire *oneWire, Adafruit_PWMServoDriver *pwmDriver, const uint8_t dallasAddress[8]);
+  MotorController(const char *name, OneWire *oneWire, PWMDriver *pwmDriver, const uint8_t dallasAddress[8]);
   ~MotorController();
 
   // Controller
@@ -25,7 +25,7 @@ public:
   
 protected:
   const char *_name;
-  Adafruit_PWMServoDriver *_pwmDriver;
+  PWMDriver *_pwmDriver;
   DallasSensor *_temperatureSensor;
   Value _temperature;
 };

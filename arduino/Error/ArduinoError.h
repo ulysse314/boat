@@ -21,7 +21,8 @@ public:
     CodeArduinoCodeUnknown,            // 12
     CodeGPSValueIndex,                 // 13
     CodeGPSCodeUnknown,                // 14
-    CodeAddingValueWithSameName        // 15
+    CodeAddingValueWithSameName,       // 15
+    CodePWMDriverNotAvailable,         // 16
   } Code;
   
   ArduinoError(Code code, const char *message = NULL);

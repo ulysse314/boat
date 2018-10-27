@@ -13,6 +13,7 @@ Error::Level MotorError::getLevel() const {
   switch(_code) {
     case CodeNone:
     case CodeTemperatureCritical:
+    case CodePWMNotAvailable:
       return Error::Level::Critical;
     case CodeTemperatureUnknown:
     case CodeTemperatureWarning:

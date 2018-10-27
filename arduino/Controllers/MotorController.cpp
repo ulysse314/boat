@@ -1,7 +1,7 @@
 #include "MotorController.h"
 
-#include "Adafruit_PWMServoDriver.h"
 #include "MotorError.h"
+#include "PWMDriver.h"
 #include "SensorList.h"
 #include "StringUtils.h"
 #include "Version.h"
@@ -21,7 +21,7 @@ uint8_t kRightDallasAddress[8] = { 0x28, 0xAB, 0xDD, 0x1E, 0x03, 0x00, 0x00, 0xC
 #define CriticalTemperature 70.0
 
 // static
-MotorController *MotorController::LeftMotor(OneWire *oneWire, Adafruit_PWMServoDriver *pwmDriver) {
+MotorController *MotorController::LeftMotor(OneWire *oneWire, PWMDriver *pwmDriver) {
   static MotorController*motor = NULL;
   if (!motor) {
     motor = new MotorController("lm", oneWire, pwmDriver, kLeftDallasAddress);
@@ -30,7 +30,7 @@ MotorController *MotorController::LeftMotor(OneWire *oneWire, Adafruit_PWMServoD
 }
 
 // static
-MotorController *MotorController::RightMotor(OneWire *oneWire, Adafruit_PWMServoDriver *pwmDriver) {
+MotorController *MotorController::RightMotor(OneWire *oneWire, PWMDriver *pwmDriver) {
   static MotorController*motor = NULL;
   if (!motor) {
     motor = new MotorController("rm", oneWire, pwmDriver, kRightDallasAddress);
@@ -38,7 +38,7 @@ MotorController *MotorController::RightMotor(OneWire *oneWire, Adafruit_PWMServo
   return motor;
 }
 
-MotorController::MotorController(const char *name, OneWire *oneWire, Adafruit_PWMServoDriver *pwmDriver, const uint8_t dallasAddress[8]) :
+MotorController::MotorController(const char *name, OneWire *oneWire, PWMDriver *pwmDriver, const uint8_t dallasAddress[8]) :
     _name(createStringCopy(name)),
     _pwmDriver(pwmDriver),
     _temperatureSensor(new DallasSensor(dallasAddress, oneWire)),
@@ -75,5 +75,5 @@ void MotorController::sensorsHasBeenUpdated() {
   }
 }
 
-void MotorController::setValue(int value) {
+void MotorController::setValue(int) {
 }
