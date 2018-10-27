@@ -1,4 +1,3 @@
-#include "ActuatorList.h"
 #include "ArduinoController.h"
 #include "ControllerManager.h"
 #include "DallasSensor.h"
@@ -12,11 +11,11 @@
 #include "PowerSensor.h"
 #include "SensorList.h"
 #include "OneWire.h"
+#include "Adafruit_PWMServoDriver.h"
 
 #define ONE_WIRE_PIN          12
 
 SensorList *sensorList = NULL;
-ActuatorList *actuatorList = NULL;
 OneWire *oneWire = NULL;
 InfoActuatorSensor *infoActuatorSensor = NULL;
 
@@ -25,51 +24,33 @@ ArduinoController *arduinoController = NULL;
 GPSController *gpsController = NULL;
 MotorController *leftMotorController = NULL;
 MotorController *rightMotorController = NULL;
+Adafruit_PWMServoDriver *pwmDriver = NULL;
 
 PiLink *piLink = NULL;
 
 void initGlobal() {
   sensorList = new SensorList();
-  actuatorList = new ActuatorList();
   oneWire = new OneWire(ONE_WIRE_PIN);
   infoActuatorSensor = new InfoActuatorSensor();
   controllerManager = new ControllerManager();
+  pwmDriver = new Adafruit_PWMServoDriver(41);
+  piLink = new PiLink(&Serial);
 
   gpsController = new GPSController();
   controllerManager->addController(gpsController);
   arduinoController = ArduinoController::getArduinoController();
   controllerManager->addController(arduinoController);
-  leftMotorController = MotorController::LeftMotor(oneWire);
+  leftMotorController = MotorController::LeftMotor(oneWire, pwmDriver);
   controllerManager->addController(leftMotorController);
-  rightMotorController = MotorController::RightMotor(oneWire);
+  rightMotorController = MotorController::RightMotor(oneWire, pwmDriver);
   controllerManager->addController(rightMotorController);
 
   controllerManager->addSensorsToList(sensorList);
 
-  piLink = new PiLink(&Serial);
-    Serial.println(__LINE__);
-
-  uint8_t address[8] = {0};
-    Serial.println(__LINE__);
-  if (0) {
-    while (oneWire->find_address(address)) {
-      if (DallasSensor::sensorType(address)) {
-        sensorList->addSensor(new DallasSensor(address, oneWire));
-      }
-    }
-  }
-    sensorList->addSensor(new PowerSensor(A0, A1));
-//  MotorActuatorSensor *motorActuatorSensor = new MotorActuatorSensor();
-//  sensorList->addSensor(motorActuatorSensor);
-  sensorList->addSensor(infoActuatorSensor);
-
+  pwmDriver->begin();
   sensorList->begin();
   controllerManager->begin();
   sensorList->loop();
-//  actuatorList->addActuator(motorActuatorSensor);
-  actuatorList->addActuator(infoActuatorSensor);
-  actuatorList->begin();
-  actuatorList->loop();
 }
 
 void setup() {
@@ -117,8 +98,6 @@ void loop() {
     sensorList->readValues();
     infoActuatorSensor->setCycleCount(counter);
     infoActuatorSensor->setLoopDuration(difference);
-    actuatorList->loop();
-    actuatorList->listen(&Serial);
 #endif
     counter = 0;
     digitalWrite(LED_BUILTIN, LOW);
