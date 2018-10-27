@@ -93,6 +93,6 @@ void loop() {
     counter = 0;
     digitalWrite(LED_BUILTIN, LOW);
   }
-//  piLink->listen();
+  piLink->listen();
   ++counter;
 }

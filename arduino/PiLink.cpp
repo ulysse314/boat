@@ -109,9 +109,9 @@ void PiLink::processInputBuffer() {
     offset = strlen("rm ");
     controller = _rightMotorController;
   }
-  if (!controller) {
-    return;
+  if (controller) {
+    char *buffer = _inputBuffer + offset;
+    controller->setValue(atoi(buffer));
   }
-  char *buffer = _inputBuffer + offset;
-  controller->setValue(atoi(buffer));
+  _inputBufferLength = 0;
 }
