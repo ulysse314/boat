@@ -30,16 +30,20 @@ void PiLink::outputController(const Controller *controller) {
         _stream->print(",");
       }
       outputError(error);
+      _stream->flush();
     }
     _stream->print("]");
   }
+  _stream->flush();
   const List<Value>::Bucket *valueBucket = controller->getFirstValueBucket();
   const Value *value = NULL;
   while (controller->nextValueBucket(valueBucket, value)) {
     _stream->print(",");
     outputValue(value);
+  _stream->flush();
   }
   _stream->print("}\n\r");
+  _stream->flush();
 }
 
 void PiLink::listen() {
