@@ -16,7 +16,7 @@ public:
   MotorError(Code code, const char *message = NULL);
   ~MotorError();
 
-  virtual Error::Domain getDomain() const override { return Error::DomainGPS; };
+  virtual Error::Domain getDomain() const override { return Error::DomainMotor; };
   virtual int getCode() const override { return _code; };
   virtual Level getLevel() const override;
   virtual bool isPersistant() const override { return false; };
