@@ -13,19 +13,22 @@ PiLink::PiLink(Stream *stream) :
 void PiLink::outputController(const Controller *controller) {
   _stream->print("{\"name\":\"");
   _stream->print(controller->getName());
-  _stream->print("\",\"err\":[");
-  bool firstError = true;
+  _stream->print("\"");
   const List<Error>::Bucket *errorBucket = controller->getFirstErrorBucket();
-  const Error *error = NULL;
-  while (controller->nextErrorBucket(errorBucket, error)) {
-    if (firstError) {
-      firstError = false;
-    } else {
-      _stream->print(",");
+  if (errorBucket) {
+    _stream->print(",\"err\":[");
+    bool firstError = true;
+    const Error *error = NULL;
+    while (controller->nextErrorBucket(errorBucket, error)) {
+      if (firstError) {
+        firstError = false;
+      } else {
+        _stream->print(",");
+      }
+      outputError(error);
     }
-    outputError(error);
+    _stream->print("]");
   }
-  _stream->print("]");
   const List<Value>::Bucket *valueBucket = controller->getFirstValueBucket();
   const Value *value = NULL;
   while (controller->nextValueBucket(valueBucket, value)) {
