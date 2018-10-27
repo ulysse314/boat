@@ -46,6 +46,8 @@ void initGlobal() {
   controllerManager->addController(rightMotorController);
 
   controllerManager->addSensorsToList(sensorList);
+  piLink->setLeftMotorController(leftMotorController);
+  piLink->setRightMotorController(rightMotorController);
 
   pwmDriver->begin();
   sensorList->begin();
@@ -87,20 +89,9 @@ void loop() {
     controllerManager->outputControllers(piLink);
     sensorList->readValues();
     arduinoController->setComputeTime(millis() - currentTime);
-#if 0
-    sensorList->printInfo(&Serial, 0);
-    Serial.print("-- ");
-    Serial.print(difference);
-    Serial.print(" ");
-    Serial.println(counter);
-    controllerManager->sensorsHasBeenUpdated();
-    Serial.flush();
-    sensorList->readValues();
-    infoActuatorSensor->setCycleCount(counter);
-    infoActuatorSensor->setLoopDuration(difference);
-#endif
     counter = 0;
     digitalWrite(LED_BUILTIN, LOW);
   }
+  piLink->listen();
   ++counter;
 }

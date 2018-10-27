@@ -74,3 +74,6 @@ void MotorController::sensorsHasBeenUpdated() {
     _temperature.setNull();
   }
 }
+
+void MotorController::setValue(int value) {
+}

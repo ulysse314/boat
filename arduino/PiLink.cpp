@@ -7,7 +7,11 @@
 #include "Value.h"
 
 PiLink::PiLink(Stream *stream) :
-    _stream(stream) {
+    _stream(stream),
+    _inputBuffer{0},
+    _inputBufferLength(0),
+    _leftMotorController(NULL),
+    _rightMotorController(NULL) {
 }
 
 void PiLink::outputController(const Controller *controller) {
@@ -36,6 +40,21 @@ void PiLink::outputController(const Controller *controller) {
     outputValue(value);
   }
   _stream->print("}\n\r");
+}
+
+void PiLink::listen() {
+  while (_stream->available()) {
+    char character = _stream->read();
+    if (character == '\r' || character == '\n') {
+      processInputBuffer();
+      continue;
+    }
+    _inputBuffer[_inputBufferLength] = character;
+    ++_inputBufferLength;
+    if (_inputBufferLength == sizeof(_inputBuffer) -1) {
+      processInputBuffer();
+    }
+  }
 }
 
 void PiLink::outputValue(const Value *value) {
@@ -77,4 +96,22 @@ void PiLink::outputError(const Error *error) {
     _stream->print("\"");
   }
   _stream->print("]");
+}
+
+void PiLink::processInputBuffer() {
+  _inputBuffer[_inputBufferLength] = 0;
+  size_t offset = 0;
+  Controller *controller = NULL;
+  if (strncmp(_inputBuffer, "lm ", strlen("lm ")) == 0) {
+    offset = strlen("lm ");
+    controller = _leftMotorController;
+  } else if (strncmp(_inputBuffer, "rm ", strlen("rm ")) == 0) {
+    offset = strlen("rm ");
+    controller = _rightMotorController;
+  }
+  if (!controller) {
+    return;
+  }
+  char *buffer = _inputBuffer + offset;
+  controller->setValue(atoi(buffer));
 }

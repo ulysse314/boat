@@ -16,6 +16,7 @@ public:
   virtual void addSensorsToList(SensorList *) {};
   virtual void begin() {};
   virtual void sensorsHasBeenUpdated() {};
+  virtual void setValue(int) {};
 
   const List<Value>::Bucket *getFirstValueBucket() const { return _valueList.getFirstBucket(); };
   bool nextValueBucket(const List<Value>::Bucket *&bucket, const Value *&value) const {   return _valueList.nextDataWithBucket(bucket, value); };
