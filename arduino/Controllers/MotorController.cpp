@@ -60,7 +60,9 @@ void MotorController::sensorsHasBeenUpdated() {
   if (_temperatureSensor->hasValue()) {
     double temperature = _temperatureSensor->celsius();
     _temperature.setDouble(temperature);
-    if (temperature >= InfoTemperature && temperature < WarningTemperature) {
+    if (temperature < InfoTemperature) {
+      // No error.
+    } else if (temperature < WarningTemperature) {
       addError(new MotorError(MotorError::CodeTemperatureInfo));
     } else if (temperature < CriticalTemperature) {
       addError(new MotorError(MotorError::CodeTemperatureWarning));
