@@ -11,10 +11,18 @@ ArduinoController *ArduinoController::getArduinoController() {
   return arduinoController;
 }
 
-void ArduinoController::addArduinoError(ArduinoError::Code code) {
+// static
+bool ArduinoController::addArduinoError(ArduinoError::Code code) {
   ArduinoController *arduinoController = ArduinoController::getArduinoController();
   Error *error = new ArduinoError(code, NULL);
-  arduinoController->addError(error);
+  return arduinoController->addError(error);
+}
+
+// static
+bool ArduinoController::removeArduinoError(ArduinoError::Code code) {
+  ArduinoController *arduinoController = ArduinoController::getArduinoController();
+  Error *error = new ArduinoError(code, NULL);
+  return arduinoController->removeError(error);
 }
 
 ArduinoController::ArduinoController() :

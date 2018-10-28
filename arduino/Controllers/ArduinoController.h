@@ -8,7 +8,8 @@
 class ArduinoController : public Controller {
 public:
   static ArduinoController *getArduinoController();
-  static void addArduinoError(ArduinoError::Code code);
+  static bool addArduinoError(ArduinoError::Code code);
+  static bool removeArduinoError(ArduinoError::Code code);
   
 public:
   void setCycleCount(long int cycleCount) { _cycleCount.setInteger(cycleCount); };
