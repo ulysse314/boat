@@ -11,13 +11,15 @@ Controller::Controller() :
 
 Controller::~Controller() {}
 
-void Controller::addError(Error *error) {
+bool Controller::addError(Error *error) {
   size_t index = _errorList.indexForData(error);
   if (index == (size_t)-1) {
     _errorList.addData(error);
+    return true;
   } else {
     delete error;
   }
+  return false;
 }
 
 void Controller::clearNonPersistantErrors() {
