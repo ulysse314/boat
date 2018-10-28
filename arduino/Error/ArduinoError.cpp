@@ -48,6 +48,7 @@ bool ArduinoError::isPersistant() const {
     case CodeMemoryDifference1k:
     case CodeComputeTimeCritical:
     case CodeAddingValueWithSameName:
+    case CodePWMDriverNotAvailable:
       return true;
     case CodeComputeTimeInfo:
     case CodeComputeTimeWarning:
@@ -56,7 +57,6 @@ bool ArduinoError::isPersistant() const {
     case CodeInfoMemory:
     case CodeLowMemory:
     case CodeVeryLowMemory:
-    case CodePWMDriverNotAvailable:
       return false;
   };
   ArduinoController::addArduinoError(ArduinoError::CodeArduinoCodeUnknown);
