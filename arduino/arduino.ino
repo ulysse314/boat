@@ -78,6 +78,8 @@ unsigned long counter = 0;
 
 void loop() {
   sensorList->loop();
+  piLink->listen();
+  pwmDriver->loop();
   unsigned long currentTime = millis();
   unsigned long difference = currentTime - lastPrint;
   if (difference > 1000) {
@@ -93,6 +95,5 @@ void loop() {
     counter = 0;
     digitalWrite(LED_BUILTIN, LOW);
   }
-  piLink->listen();
   ++counter;
 }
