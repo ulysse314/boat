@@ -15,6 +15,8 @@ void Controller::addError(Error *error) {
   size_t index = _errorList.indexForData(error);
   if (index == (size_t)-1) {
     _errorList.addData(error);
+  } else {
+    delete error;
   }
 }
 
