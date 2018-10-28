@@ -22,6 +22,7 @@ public:
   bool nextValueBucket(const List<Value>::Bucket *&bucket, const Value *&value) const {   return _valueList.nextDataWithBucket(bucket, value); };
 
   bool addError(Error *error);
+  bool removeError(Error *error);
   void clearNonPersistantErrors();
   const List<Error>::Bucket *getFirstErrorBucket() const { return _errorList.getFirstBucket(); };
   bool nextErrorBucket(const List<Error>::Bucket *&bucket, const Error *&error) const {   return _errorList.nextDataWithBucket(bucket, error); };

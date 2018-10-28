@@ -22,6 +22,12 @@ bool Controller::addError(Error *error) {
   return false;
 }
 
+bool Controller::removeError(Error *error) {
+  bool result = _errorList.removeData(error);
+  delete error;
+  return result;
+}
+
 void Controller::clearNonPersistantErrors() {
   const List<Error>::Bucket *bucket = _errorList.getFirstBucket();
   Error *error = NULL;
