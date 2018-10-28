@@ -6,10 +6,22 @@
 #include "Error.h"
 #include "Value.h"
 
+#define TIMEOUT           4000
+
+// static
+PiLink *PiLink::getPiLink() {
+  static PiLink *piLink = NULL;
+  if (!piLink) {
+    piLink = new PiLink(&Serial);
+  }
+  return piLink;
+}
+
 PiLink::PiLink(Stream *stream) :
     _stream(stream),
     _inputBuffer{0},
     _inputBufferLength(0),
+    _nextTimeOut(millis() + TIMEOUT),
     _leftMotorController(NULL),
     _rightMotorController(NULL) {
 }
@@ -59,6 +71,10 @@ void PiLink::listen() {
       processInputBuffer();
     }
   }
+}
+
+bool PiLink::hasTimedOut() {
+  return millis() - _nextTimeOut;
 }
 
 void PiLink::outputValue(const Value *value) {
@@ -118,4 +134,5 @@ void PiLink::processInputBuffer() {
     controller->setValue(atoi(buffer));
   }
   _inputBufferLength = 0;
+  _nextTimeOut = millis() + TIMEOUT;
 }

@@ -16,8 +16,6 @@
 #define REAL_FREQUENCE 238
 #define LEFT_MOTOR_ID 0
 #define RIGHT_MOTOR_ID 1
-// Time out in msec
-#define TIME_OUT 4000
 
 #define FORWARD() (PWM_FORWARD_S * 4096.0 * REAL_FREQUENCE)
 #define STOPPED() (PWM_STOPPED_S * 4096.0 * REAL_FREQUENCE)

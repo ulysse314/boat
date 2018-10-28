@@ -3,6 +3,7 @@
 #include <Arduino.h>
 
 #include "MemoryFree.h"
+#include "PiLink.h"
 #include "Version.h"
 
 // static
@@ -104,5 +105,8 @@ void ArduinoController::sensorsHasBeenUpdated() {
     addError(new ArduinoError(ArduinoError::CodeComputeTimeWarning));
   } else {
     addError(new ArduinoError(ArduinoError::CodeComputeTimeCritical));
+  }
+  if (PiLink::getPiLink()->hasTimedOut()) {
+    addError(new ArduinoError(ArduinoError::CodePiLinkConnectionTimeOut));
   }
 }

@@ -23,6 +23,7 @@ Error::Level ArduinoError::getLevel() const {
     case CodeGPSCodeUnknown:
     case CodeAddingValueWithSameName:
     case CodePWMDriverNotAvailable:
+    case CodePiLinkConnectionTimeOut:
       return Error::Level::Critical;
     case CodeComputeTimeWarning:
     case CodeMemoryDifference500:
@@ -57,6 +58,7 @@ bool ArduinoError::isPersistant() const {
     case CodeInfoMemory:
     case CodeLowMemory:
     case CodeVeryLowMemory:
+    case CodePiLinkConnectionTimeOut:
       return false;
   };
   ArduinoController::addArduinoError(ArduinoError::CodeArduinoCodeUnknown);

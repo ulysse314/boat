@@ -12,6 +12,7 @@ public:
   void loop();
   void setLeftMotorValue(int8_t value);
   void setRightMotorValue(int8_t value);
+  void ping();
 
 private:
   bool setValueForMotor(int8_t value, uint8_t motorID);

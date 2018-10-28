@@ -23,6 +23,7 @@ public:
     CodeGPSCodeUnknown,                // 14
     CodeAddingValueWithSameName,       // 15
     CodePWMDriverNotAvailable,         // 16
+    CodePiLinkConnectionTimeOut,       // 17
   } Code;
   
   ArduinoError(Code code, const char *message = NULL);

@@ -34,7 +34,7 @@ void initGlobal() {
   infoActuatorSensor = new InfoActuatorSensor();
   controllerManager = new ControllerManager();
   pwmDriver = new PWMDriver(&Wire, 0x40);
-  piLink = new PiLink(&Serial);
+  piLink = PiLink::getPiLink();
 
   gpsController = new GPSController();
   controllerManager->addController(gpsController);
@@ -49,7 +49,6 @@ void initGlobal() {
   piLink->setLeftMotorController(leftMotorController);
   piLink->setRightMotorController(rightMotorController);
 
-  Wire.begin();
   pwmDriver->begin();
   sensorList->begin();
   controllerManager->begin();
@@ -61,6 +60,7 @@ void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
   
   Serial.begin(115200);
+  Wire.begin();
   for (int i = 0; i < 4; i++) {
     digitalWrite(LED_BUILTIN, HIGH);   // turn the LED on (HIGH is the voltage level)
     delay(500);                       // wait for a second

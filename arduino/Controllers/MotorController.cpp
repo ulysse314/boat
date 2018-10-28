@@ -1,6 +1,7 @@
 #include "MotorController.h"
 
 #include "MotorError.h"
+#include "PiLink.h"
 #include "PWMDriver.h"
 #include "SensorList.h"
 #include "StringUtils.h"
@@ -72,6 +73,9 @@ void MotorController::sensorsHasBeenUpdated() {
   } else {
     addError(new MotorError(MotorError::CodeTemperatureUnknown));
     _temperature.setNull();
+  }
+  if (PiLink::getPiLink()->hasTimedOut()) {
+    setValue(0);
   }
 }
 
