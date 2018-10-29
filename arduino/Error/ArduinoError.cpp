@@ -24,14 +24,17 @@ Error::Level ArduinoError::getLevel() const {
     case CodeAddingValueWithSameName:
     case CodePWMDriverNotAvailable:
     case CodePiLinkConnectionTimeOut:
+    case CodeLoopCycleLowCritical:
       return Error::Level::Critical;
     case CodeComputeTimeWarning:
     case CodeMemoryDifference500:
     case CodeLowMemory:
+    case CodeLoopCycleLowWarning:
       return Error::Level::Warning;
     case CodeComputeTimeInfo:
     case CodeMemoryDifference100:
     case CodeInfoMemory:
+    case CodeLoopCycleLowInfo:
       return Error::Level::Info;
   };
   ArduinoController::addArduinoError(ArduinoError::CodeArduinoCodeUnknown);
@@ -59,6 +62,9 @@ bool ArduinoError::isPersistant() const {
     case CodeLowMemory:
     case CodeVeryLowMemory:
     case CodePiLinkConnectionTimeOut:
+    case CodeLoopCycleLowInfo:
+    case CodeLoopCycleLowWarning:
+    case CodeLoopCycleLowCritical:
       return false;
   };
   ArduinoController::addArduinoError(ArduinoError::CodeArduinoCodeUnknown);

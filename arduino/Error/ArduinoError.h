@@ -24,6 +24,9 @@ public:
     CodeAddingValueWithSameName,       // 15
     CodePWMDriverNotAvailable,         // 16
     CodePiLinkConnectionTimeOut,       // 17
+    CodeLoopCycleLowInfo,              // 18
+    CodeLoopCycleLowWarning,           // 19
+    CodeLoopCycleLowCritical,          // 20
   } Code;
   
   ArduinoError(Code code, const char *message = NULL);
