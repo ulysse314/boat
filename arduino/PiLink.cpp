@@ -74,7 +74,7 @@ void PiLink::listen() {
 }
 
 bool PiLink::hasTimedOut() {
-  return millis() - _nextTimeOut;
+  return (long int)(_nextTimeOut - millis()) < 0;
 }
 
 void PiLink::outputValue(const Value *value) {
