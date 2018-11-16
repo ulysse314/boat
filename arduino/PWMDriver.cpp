@@ -14,8 +14,6 @@
 #define PWM_REVERSE_S 0.0011
 // Frequency mesured
 #define REAL_FREQUENCE 238
-#define LEFT_MOTOR_ID 0
-#define RIGHT_MOTOR_ID 1
 
 #define FORWARD() (PWM_FORWARD_S * 4096.0 * REAL_FREQUENCE)
 #define STOPPED() (PWM_STOPPED_S * 4096.0 * REAL_FREQUENCE)
@@ -23,9 +21,7 @@
 
 PWMDriver::PWMDriver(TwoWire *i2c, int address) :
     _adafruitDriver(i2c, address),
-    _available(false),
-    _leftMotorValue(0),
-    _rightMotorValue(0) {
+    _available(false) {
 }
 
 void PWMDriver::begin() {
@@ -33,8 +29,6 @@ void PWMDriver::begin() {
   _available = _available && _adafruitDriver.setPWMFreq(ADAFRUIT_FREQUENCE);
   if (_available) {
     ArduinoController::removeArduinoError(ArduinoError::CodePWMDriverNotAvailable);
-    setValueForMotor(_leftMotorValue, LEFT_MOTOR_ID);
-    setValueForMotor(_rightMotorValue, RIGHT_MOTOR_ID);
   } else {
     ArduinoController::addArduinoError(ArduinoError::CodePWMDriverNotAvailable);
   }
@@ -44,16 +38,6 @@ void PWMDriver::loop() {
   if (!_available) {
     begin();
   }
-}
-
-void PWMDriver::setLeftMotorValue(int8_t value) {
-  _leftMotorValue = value;
-  setValueForMotor(_leftMotorValue, LEFT_MOTOR_ID);
-}
-
-void PWMDriver::setRightMotorValue(int8_t value) {
-  _rightMotorValue = value;
-  setValueForMotor(_rightMotorValue, RIGHT_MOTOR_ID);
 }
 
 bool PWMDriver::setValueForMotor(int8_t value, uint8_t motorID) {

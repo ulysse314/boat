@@ -10,17 +10,11 @@ public:
   void begin();
   void sensorsHasBeenUpdated();
   void loop();
-  void setLeftMotorValue(int8_t value);
-  void setRightMotorValue(int8_t value);
-  void ping();
-
-private:
   bool setValueForMotor(int8_t value, uint8_t motorID);
 
+private:
   Adafruit_PWMServoDriver _adafruitDriver;
   bool _available;
-  int8_t _leftMotorValue;
-  int8_t _rightMotorValue;
 };
 
 #endif // PWMDriver_h
