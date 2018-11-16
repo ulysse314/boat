@@ -108,8 +108,10 @@ void PiLink::outputError(const Error *error) {
   _stream->print(error->getDomain());
   _stream->print(",");
   _stream->print(error->getCode());
-  _stream->print(",");
-  _stream->print(error->isPersistant() ? "true" : "false" );
+  if (error->isPersistant() || error->getMessage()) {
+    _stream->print(",");
+    _stream->print(error->isPersistant() ? "true" : "false" );
+  }
   if (error->getMessage()) {
     _stream->print(",\"");
     _stream->print(error->getMessage());
