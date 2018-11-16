@@ -17,15 +17,18 @@ uint8_t kRightDallasAddress[8] = { 0x28, 0xAB, 0xDD, 0x1E, 0x03, 0x00, 0x00, 0xC
 #error *** No boat defined ***
 #endif
 
-#define InfoTemperature 50.0
-#define WarningTemperature 60.0
-#define CriticalTemperature 70.0
+#define LEFT_MOTOR_ID                   0
+#define RIGHT_MOTOR_ID                  1
+
+#define InfoTemperature                 50.0
+#define WarningTemperature              60.0
+#define CriticalTemperature             70.0
 
 // static
 MotorController *MotorController::LeftMotor(OneWire *oneWire, PWMDriver *pwmDriver) {
   static MotorController*motor = NULL;
   if (!motor) {
-    motor = new MotorController("lm", oneWire, pwmDriver, kLeftDallasAddress);
+    motor = new MotorController("lm", oneWire, pwmDriver, LEFT_MOTOR_ID, kLeftDallasAddress);
   }
   return motor;
 }
@@ -34,15 +37,17 @@ MotorController *MotorController::LeftMotor(OneWire *oneWire, PWMDriver *pwmDriv
 MotorController *MotorController::RightMotor(OneWire *oneWire, PWMDriver *pwmDriver) {
   static MotorController*motor = NULL;
   if (!motor) {
-    motor = new MotorController("rm", oneWire, pwmDriver, kRightDallasAddress);
+    motor = new MotorController("rm", oneWire, pwmDriver, RIGHT_MOTOR_ID, kRightDallasAddress);
   }
   return motor;
 }
 
-MotorController::MotorController(const char *name, OneWire *oneWire, PWMDriver *pwmDriver, const uint8_t dallasAddress[8]) :
+MotorController::MotorController(const char *name, OneWire *oneWire, PWMDriver *pwmDriver, uint8_t motorID, const uint8_t dallasAddress[8]) :
     _name(createStringCopy(name)),
     _pwmDriver(pwmDriver),
     _temperatureSensor(new DallasSensor(dallasAddress, oneWire)),
+    _motorID(motorID),
+    _power(Value::Type::Integer, "pwr"),
     _temperature(Value::Type::Double, "t") {
 }
 
@@ -54,6 +59,7 @@ void MotorController::addSensorsToList(SensorList *sensorList) {
 }
 
 void MotorController::begin() {
+  addValue(&_power);
   addValue(&_temperature);
 }
 
@@ -79,5 +85,12 @@ void MotorController::sensorsHasBeenUpdated() {
   }
 }
 
-void MotorController::setValue(int) {
+void MotorController::setValue(int value) {
+  if (value > 100) {
+    value = 100;
+  } else if (value < -100) {
+    value = -100;
+  }
+  _power.setInteger(value);
+  _pwmDriver->setValueForMotor(value, _motorID);
 }

@@ -13,7 +13,7 @@ public:
   static MotorController *LeftMotor(OneWire *oneWire, PWMDriver *pwmDriver);
   static MotorController *RightMotor(OneWire *oneWire, PWMDriver *pwmDriver);
 
-  MotorController(const char *name, OneWire *oneWire, PWMDriver *pwmDriver, const uint8_t dallasAddress[8]);
+  MotorController(const char *name, OneWire *oneWire, PWMDriver *pwmDriver, uint8_t motorID, const uint8_t dallasAddress[8]);
   ~MotorController();
 
   // Controller
@@ -27,6 +27,8 @@ protected:
   const char *_name;
   PWMDriver *_pwmDriver;
   DallasSensor *_temperatureSensor;
+  uint8_t _motorID;
+  Value _power;
   Value _temperature;
 };
 
