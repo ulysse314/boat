@@ -248,7 +248,7 @@ public:
     if (bucket == _lastBucket) {
       _lastBucket = bucket->previousBucket;
     } else {
-      _lastBucket->nextBucket->previousBucket = bucket->previousBucket;
+      bucket->nextBucket->previousBucket = bucket->previousBucket;
     }
     if (_whenDataRemoved == WhenDataRemoved::Free && bucket->data) {
       delete bucket->data;
