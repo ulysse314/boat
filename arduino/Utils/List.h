@@ -107,8 +107,9 @@ public:
       Serial.println((unsigned int)bucket->nextBucket, HEX);
       Serial.print("  bucket->previousBucket: ");
       Serial.println((unsigned int)bucket->previousBucket, HEX);
+      Serial.println("  ");
+      Serial.flush();
       bucket = bucket->nextBucket;
-    delay(2000);
     }
     Serial.println("-- done --");
   }
