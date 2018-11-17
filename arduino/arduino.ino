@@ -14,6 +14,7 @@
 #include "SensorList.h"
 
 #define ONE_WIRE_PIN          12
+#define PWM_ADDRESS           0x40
 
 SensorList *sensorList = NULL;
 OneWire *oneWire = NULL;
@@ -33,7 +34,7 @@ void initGlobal() {
   oneWire = new OneWire(ONE_WIRE_PIN);
   infoActuatorSensor = new InfoActuatorSensor();
   controllerManager = new ControllerManager();
-  pwmDriver = new PWMDriver(&Wire, 0x40);
+  pwmDriver = new PWMDriver(&Wire, PWM_ADDRESS);
   piLink = PiLink::getPiLink();
 
   gpsController = new GPSController();
