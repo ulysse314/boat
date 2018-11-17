@@ -25,8 +25,7 @@ PWMDriver::PWMDriver(TwoWire *i2c, int address) :
 }
 
 void PWMDriver::begin() {
-  _available = _adafruitDriver.reset();
-  _available = _available && _adafruitDriver.setPWMFreq(ADAFRUIT_FREQUENCE);
+  _available = _adafruitDriver.begin() && _adafruitDriver.reset() && _adafruitDriver.setPWMFreq(ADAFRUIT_FREQUENCE);
   if (_available) {
     ArduinoController::removeArduinoError(ArduinoError::CodePWMDriverNotAvailable);
   } else {
