@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import asyncio
+import json
 import logging
 import pprint
 import os
@@ -92,61 +93,44 @@ class FeatherController:
         self.logger.exception("connection failed")
       await asyncio.sleep(1)
 
-  def _update_values(self):
-    self.values = { "gps": {}, "motor": {} }
-    sensor_id_to_remove = []
-    for sensor_id in self.received_values:
-      values = self.received_values[sensor_id]['values']
-      if sensor_id == '0 GPS serial1':
-        try:
-          if len(values) >= 4: self.values["gps"]["antenne"] = int(values[3]);
-          if len(values) >= 5: self.values["gps"]["sat"] = int(values[4])
-          if len(values) >= 6: self.values["gps"]["tracked"] = int(values[5])
-          if len(values) >= 7: self.values["gps"]["mode"] = int(values[6])
-          if len(values) >= 8: self.values["gps"]["fix"] = int(values[7])
-          if len(values) >= 9: self.values["gps"]["lat"] = float(values[8]) / 10000000
-          if len(values) >= 10: self.values["gps"]["lon"] = float(values[9]) / 10000000
-          if len(values) >= 11: self.values["gps"]["alt"] = float(values[10])
-          if len(values) >= 12: self.values["gps"]["speed"] = float(values[11])
-          if len(values) >= 13: self.values["gps"]["angle"] = float(values[12])
-        except:
-          self.logger.exception("Problem to get gps")
-      elif sensor_id == "0 Info Info":
-        try:
-          self.values["arduino"] = {
-            "free_memory": int(values[3]),
-            "memory_diff": int(values[4]),
-            "cycle_count": int(values[5]),
-            "loop_duration": int(values[6]),
-            "boot_timestamp": int(values[8]),
-            "compiled_date": values[9] + " " + values[10] + " " + values[11] + " " + values[12]
-          }
-          sensor_id_to_remove.append(sensor_id)
-        except:
-          self.logger.exception("Problem to get arduino info")
-      elif sensor_id == "0  A:14,V:15":
-        try:
-          self.values["battery"] = {
-            "ampere": float(values[3]),
-            "ampere_raw": int(values[4]),
-            "volt": float(values[5]),
-            "volt_raw": int(values[6]),
-          }
-        except:
-          self.logger.exception("Problem to get arduino battery")
-      elif sensor_id == "0 Motor Motor":
-        self.values["motor"]["left%"] = values[3]
-        self.values["motor"]["right%"] = values[4]
-        self.values["motor"]["leftresult"] = values[5]
-        self.values["motor"]["rightresult%"] = values[6]
-      elif sensor_id in self.sensors:
-        sensor = self.sensors[sensor_id]
-        if sensor["type"] == "dallas":
-          self._add_values(sensor["keys"], float(values[3]))
-      else:
-        self.logger.debug("Unknown line: " + self.received_values[sensor_id]['line'])
-    for sensor_id in sensor_id_to_remove:
-      del self.received_values[sensor_id]
+  def _update_arduino_values(self, values):
+    self.values['arduino'] = {}
+    if values["stt"] != None: self.values["arduino"]["started"] = values["stt"]
+    if values["cyc"] != None: self.values["arduino"]["cyclecout"] = values["cyc"]
+    if values["ld"] != None: self.values["arduino"]["loopduration"] = values["ld"]
+    if values["ct"] != None: self.values["arduino"]["computertime"] = values["ct"]
+    if values["rf"] != None: self.values["arduino"]["ramfree"] = values["rf"]
+    if values["rfd"] != None: self.values["arduino"]["ramfreediff"] = values["rfd"]
+    if values["mil"] != None: self.values["arduino"]["millis"] = values["mil"]
+    if values["tst"] != None: self.values["arduino"]["timestamp"] = values["tst"]
+    if values["cmp"] != None: self.values["arduino"]["compiledate"] = values["cmp"]
+    if values["ver"] != None: self.values["arduino"]["version"] = values["ver"]
+    if "err" in values: self.values["arduino"]["errors"] = values["err"]
+
+  def _update_gps_values(self, values):
+    self.values['gps'] = {}
+    if values["ant"] != None: self.values["gps"]["antenne"] = values["ant"]
+    if values["vst"] != None: self.values["gps"]["sat"] = values["vst"]
+    if values["ust"] != None: self.values["gps"]["tracked"] = values["ust"]
+    if values["mod"] != None: self.values["gps"]["mode"] = values["mod"]
+    if values["fxq"] != None: self.values["gps"]["fix"] = values["fxq"]
+    if values["lat"] != None: self.values["gps"]["lat"] = values["lat"] / 10000000
+    if values["lon"] != None: self.values["gps"]["lon"] = values["lon"] / 10000000
+    if values["alt"] != None: self.values["gps"]["alt"] = values["alt"]
+    if values["spd"] != None: self.values["gps"]["speed"] = values["spd"]
+    if values["ang"] != None: self.values["gps"]["angle"] = values["ang"]
+    if values["hdp"] != None: self.values["gps"]["hdop"] = values["hdp"]
+    if values["pdp"] != None: self.values["gps"]["pdop"] = values["pdp"]
+    if values["vdp"] != None: self.values["gps"]["vdop"] = values["vdp"]
+    if values["gh"] != None: self.values["gps"]["geoidheight"] = values["gh"]
+    if "err" in values: self.values["gps"]["errors"] = values["err"]
+
+  def _update_motor_values(self, values):
+    motor_name = values["name"]
+    self.values[motor_name] = {}
+    if values["pwr"] != None: self.values[motor_name]["pwr"] = values["pwr"]
+    if values["t"] != None: self.values[motor_name]["temp"] = values["t"]
+    if "err" in values: self.values[motor_name]["errors"] = values["err"]
 
   def _add_values(self, keys, value):
     array = self.values
@@ -155,21 +139,6 @@ class FeatherController:
         array[key] = {}
       array = array[key]
     array[keys[-1]] = value
-
-  def _parse_line(self, line):
-    line = line.strip("\r\n \t")
-    elements = line.split(" ")
-    if len(elements) >= 4:
-      try:
-        key = "{} {} {}".format(elements[self.NODE_INDEX], elements[self.TYPE_INDEX], elements[self.ADDRESS_INDEX])
-        self.received_values[key] = { "values": elements, "line": line, "update_time": time.time() }
-      except:
-        self.logger.exception("Problem to parse line")
-    if line.startswith("-- "):
-      result = True
-    else:
-      result = False
-    return result
 
   async def _ping(self):
     while True:
@@ -195,8 +164,21 @@ class FeatherController:
     asyncio.ensure_future(self._connect())
 
   def received_message(self, line):
-    if self._parse_line(line):
-      self._update_values()
+    line = line.strip("\r\n \t")
+    try:
+      values = json.loads(line)
+    except:
+      self.logger.exception("Cannot parse " + pprint.pformat(line))
+    if values["name"] == "arduino":
+      self._update_arduino_values(values)
+    elif values["name"] == "gps":
+      self._update_gps_values(values)
+    elif values["name"] == "lm":
+      self._update_motor_values(values)
+    elif values["name"] == "rm":
+      self._update_motor_values(values)
+    else:
+      self.logger.warning("Unknown values " + pprint.pformat(values))
 
   def eof_received(self):
     self.serial_transport.close()
