@@ -38,13 +38,10 @@ RELAY_SERVER = config.values["value_relay_server"]
 
 sender = value_sender.ValueSender(BOAT_NAME, RELAY_SERVER, BOAT_PORT, config.values["boat_key"])
 
-#pwm = pwm_controller.PWMController()
-#arduino = arduino_controller.ArduinoController()
 feather = feather_controller.FeatherController(config.values["sensors"])
 commnand = command_controller.CommandController(feather)
 controllers = [ e3372_controller.E3372Controller(),
                 feather,
-                gps_controller.GPSController(),
                 pi_controller.PiController(),
                 commnand ]
 started_controllers = []
