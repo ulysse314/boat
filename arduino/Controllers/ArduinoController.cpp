@@ -81,6 +81,7 @@ void ArduinoController::sensorsHasBeenUpdated() {
   _ramFreeDifference.setInteger(currentFreeMemory - _ramFree.getInteger());
   _ramFree.setInteger(currentFreeMemory);
   if (_loopCount < 5 && !_started.getBoolean()) {
+    addError(new ArduinoError(ArduinoError::CodeNotStarted));
     return;
   }
   _started.setBoolean(true);

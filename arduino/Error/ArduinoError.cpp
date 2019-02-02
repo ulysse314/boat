@@ -65,6 +65,7 @@ bool ArduinoError::isPersistant() const {
     case CodeLoopCycleLowInfo:
     case CodeLoopCycleLowWarning:
     case CodeLoopCycleLowCritical:
+    case CodeNotStarted:
       return false;
   };
   ArduinoController::addArduinoError(ArduinoError::CodeArduinoCodeUnknown);
