@@ -96,9 +96,9 @@ class FeatherController:
   def _update_arduino_values(self, values):
     self.values['arduino'] = {}
     if values["stt"] != None: self.values["arduino"]["started"] = values["stt"]
-    if values["cyc"] != None: self.values["arduino"]["cyclecout"] = values["cyc"]
+    if values["cyc"] != None: self.values["arduino"]["cyclecount"] = values["cyc"]
     if values["ld"] != None: self.values["arduino"]["loopduration"] = values["ld"]
-    if values["ct"] != None: self.values["arduino"]["computertime"] = values["ct"]
+    if values["ct"] != None: self.values["arduino"]["computetime"] = values["ct"]
     if values["rf"] != None: self.values["arduino"]["ramfree"] = values["rf"]
     if values["rfd"] != None: self.values["arduino"]["ramfreediff"] = values["rfd"]
     if values["mil"] != None: self.values["arduino"]["millis"] = values["mil"]
