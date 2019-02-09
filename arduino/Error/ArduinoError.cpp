@@ -35,6 +35,7 @@ Error::Level ArduinoError::getLevel() const {
     case CodeMemoryDifference100:
     case CodeInfoMemory:
     case CodeLoopCycleLowInfo:
+    case CodeNotStarted:
       return Error::Level::Info;
   };
   ArduinoController::addArduinoError(ArduinoError::CodeArduinoCodeUnknown);
