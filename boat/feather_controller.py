@@ -119,9 +119,9 @@ class FeatherController:
     if values["alt"] != None: self.values["gps"]["alt"] = values["alt"]
     if values["spd"] != None: self.values["gps"]["speed"] = values["spd"]
     if values["ang"] != None: self.values["gps"]["angle"] = values["ang"]
-    if values["hdp"] != None: self.values["gps"]["hdop"] = values["hdp"]
-    if values["pdp"] != None: self.values["gps"]["pdop"] = values["pdp"]
-    if values["vdp"] != None: self.values["gps"]["vdop"] = values["vdp"]
+    if values["hdp"] != None: self.values["gps"]["dop.h"] = values["hdp"]
+    if values["pdp"] != None: self.values["gps"]["dop.p"] = values["pdp"]
+    if values["vdp"] != None: self.values["gps"]["dop.v"] = values["vdp"]
     if values["gh"] != None: self.values["gps"]["geoidheight"] = values["gh"]
     if "err" in values: self.values["gps"]["errors"] = values["err"]
 
