@@ -24,7 +24,9 @@ class PiController:
 
   async def _get_values(self):
     try:
-      self.values["pi"] = { "temp": self._get_cpu_temperature(), "ram": self._get_ram_info(), "cpu%": psutil.cpu_percent(), "disk": self._get_disk_space() }
+      self.values["pi"] = { "temp": self._get_cpu_temperature(), "cpu%": psutil.cpu_percent() }
+      self.values["pi"].update(self._get_disk_space())
+      self.values["pi"].update(self._get_ram_info())
     except:
       self.logger.exception("Get values")
 
@@ -41,7 +43,7 @@ class PiController:
   def _get_ram_info(self):
     ram = psutil.virtual_memory()
     unit = 2**20
-    return { "total": ram.total / unit, "used": ram.used / unit, "free": ram.free / unit, "used%": ram.percent }
+    return { "ram.total": ram.total / unit, "ram.used": ram.used / unit, "ram.free": ram.free / unit, "ram.used%": ram.percent }
 
   # Return % of CPU used by user as a character string                                
   def _get_cpu_use(self):
@@ -51,7 +53,7 @@ class PiController:
   def _get_disk_space(self):
     disk = psutil.disk_usage('/')
     unit = 2**20
-    return { "size": disk.total / unit, "used": disk.used / unit, "available": disk.free / unit, "used%": disk.percent }
+    return { "disk.size": disk.total / unit, "disk.used": disk.used / unit, "disk.available": disk.free / unit, "disk.used%": disk.percent }
 
 async def debug(pi_controller):
   while True:
