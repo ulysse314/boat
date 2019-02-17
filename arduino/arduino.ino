@@ -1,4 +1,5 @@
 #include "ArduinoController.h"
+#include "BatteryController.h"
 #include "ControllerManager.h"
 #include "DallasSensor.h"
 #include "GPSController.h"
@@ -22,6 +23,7 @@ InfoActuatorSensor *infoActuatorSensor = NULL;
 
 ControllerManager *controllerManager = NULL;
 ArduinoController *arduinoController = NULL;
+BatteryController *batteryController = NULL;
 GPSController *gpsController = NULL;
 MotorController *leftMotorController = NULL;
 MotorController *rightMotorController = NULL;
@@ -39,8 +41,10 @@ void initGlobal() {
 
   gpsController = new GPSController();
   controllerManager->addController(gpsController);
-  arduinoController = ArduinoController::getArduinoController();
+  arduinoController = new ArduinoController();
   controllerManager->addController(arduinoController);
+  batteryController = new BatteryController(&Wire, oneWire);
+  controllerManager->addController(batteryController);
   leftMotorController = MotorController::LeftMotor(oneWire, pwmDriver);
   controllerManager->addController(leftMotorController);
   rightMotorController = MotorController::RightMotor(oneWire, pwmDriver);

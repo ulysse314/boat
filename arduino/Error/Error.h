@@ -16,6 +16,7 @@ public:
     DomainArduino,                            // 1
     DomainGPS,                                // 2
     DomainMotor,                              // 3
+    DomainBattery,                            // 4
   } Domain;
 
   Error(const char *message = NULL);

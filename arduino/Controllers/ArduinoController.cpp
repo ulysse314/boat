@@ -6,9 +6,10 @@
 #include "PiLink.h"
 #include "Version.h"
 
+static ArduinoController *arduinoController = NULL;
+
 // static
 ArduinoController *ArduinoController::getArduinoController() {
-  static ArduinoController *arduinoController = new ArduinoController();
   return arduinoController;
 }
 
@@ -48,6 +49,7 @@ ArduinoController::ArduinoController() :
   compileDateString.concat(__DATE__);
   _compileDate.setString(compileDateString.c_str());
   _arduinoVersion.setInteger(ArduinoVersion);
+  arduinoController = this;
 }
 
 void ArduinoController::begin() {

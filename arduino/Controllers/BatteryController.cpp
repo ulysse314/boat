@@ -1,39 +1,95 @@
 #include "BatteryController.h"
 
-#include "AnalogSensor.h"
-#include "DallasSensor.h"
+#include "BatteryError.h"
 #include "SensorList.h"
 #include "Version.h"
 
 #if IS_MOUSSAILLON
-const double kVoltCoef = 303.32;
-const double kAmpereCoef = 89.2;
-uint8_t kDallasAddress[8] = { 0x28, 0x6F, 0x04, 0x1F, 0x03, 0x00, 0x00, 0xA0 };
+#define INA219ShuntValue 0.0015
+#define INA219MaxCurrent 50.
+const uint8_t kDallasAddress[8] = { 0x28, 0x6F, 0x04, 0x1F, 0x03, 0x00, 0x00, 0xA0 };
 #elif IS_TELEMAQUE
-const double kVoltCoef = 304.08;
-const double kAmpereCoef = 89.2;
-uint8_t kDallasAddress[8] = { 0x28, 0x58, 0xDB, 0x1E, 0x03, 0x00, 0x00, 0x76 };
+#define INA219ShuntValue 0.00125
+#define INA219MaxCurrent 60.
+const uint8_t kDallasAddress[8] = { 0x28, 0x58, 0xDB, 0x1E, 0x03, 0x00, 0x00, 0x76 };
 #else
 #error *** No boat defined ***
 #endif
 
-#define CurrentSensorPin A0
-#define TensionSensorPin A1
+#define kINA219Address 0x41
+#define kInfoTemperature                 50.0
+#define kWarningTemperature              60.0
+#define kCriticalTemperature             70.0
 
-BatteryController::BatteryController(OneWire *oneWire) {
-  _temperatureSensor = new DallasSensor(kDallasAddress, oneWire);
-  _currentSensor = new AnalogSensor(CurrentSensorPin);
-  _tensionSensor = new AnalogSensor(TensionSensorPin);
+static BatteryController *batteryController = NULL;
+
+// static
+BatteryController *BatteryController::getBatteryController() {
+  return batteryController;
+}
+
+// static
+bool BatteryController::addBatteryError(BatteryError::Code code) {
+  BatteryController *BatteryController = BatteryController::getBatteryController();
+  Error *error = new BatteryError(code, NULL);
+  return BatteryController->addError(error);
+}
+
+// static
+bool BatteryController::removeBatteryError(BatteryError::Code code) {
+  BatteryController *BatteryController = BatteryController::getBatteryController();
+  Error *error = new BatteryError(code, NULL);
+  return BatteryController->removeError(error);
+}
+
+BatteryController::BatteryController(TwoWire *i2c, OneWire *oneWire) :
+    _ina219Sensor(i2c, kINA219Address, INA219ShuntValue, INA219MaxCurrent),
+    _temperatureSensor(kDallasAddress, oneWire),
+    _voltage(Value::Type::Double, "volt"),
+    _current(Value::Type::Double, "amp"),
+    _temperature(Value::Type::Double, "temp") {
+  batteryController = this;
 }
 
 BatteryController::~BatteryController() {
-  delete _temperatureSensor;
-  delete _currentSensor;
-  delete _tensionSensor;
+}
+
+void BatteryController::begin() {
+  addValue(&_voltage);
+  addValue(&_current);
+  addValue(&_temperature);
 }
 
 void BatteryController::addSensorsToList(SensorList *sensorList) {
-  sensorList->addSensor(_temperatureSensor);
-  sensorList->addSensor(_currentSensor);
-  sensorList->addSensor(_tensionSensor);
+  sensorList->addSensor(&_ina219Sensor);
+  sensorList->addSensor(&_temperatureSensor);
+}
+
+void BatteryController::sensorsHasBeenUpdated() {
+  if (_ina219Sensor.hasValue()) {
+    double voltage = _ina219Sensor.getVoltage();
+    _voltage.setDouble(voltage);
+    double current = _ina219Sensor.getCurrent();
+    _current.setDouble(current);
+  } else {
+    addError(new BatteryError(BatteryError::CodeINA219NotFound));
+    _voltage.setNull();
+    _current.setNull();
+  }
+  if (_temperatureSensor.hasValue()) {
+    double temperature = _temperatureSensor.celsius();
+    _temperature.setDouble(temperature);
+    if (temperature < kInfoTemperature) {
+      // No error.
+    } else if (temperature < kWarningTemperature) {
+      addError(new BatteryError(BatteryError::CodeTemperatureInfo));
+    } else if (temperature < kCriticalTemperature) {
+      addError(new BatteryError(BatteryError::CodeTemperatureWarning));
+    } else {
+      addError(new BatteryError(BatteryError::CodeTemperatureCritical));
+    }
+  } else {
+    addError(new BatteryError(BatteryError::CodeTemperatureUnknown));
+    _temperature.setNull();
+  }
 }

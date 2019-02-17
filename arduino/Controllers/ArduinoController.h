@@ -12,18 +12,18 @@ public:
   static bool removeArduinoError(ArduinoError::Code code);
   
 public:
+  ArduinoController();
+
   void setCycleCount(long int cycleCount) { _cycleCount.setInteger(cycleCount); };
   void setLoopDuration(long int loopDuration) { _loopDuration.setInteger(loopDuration); };
   void setComputeTime(long int computeTime) { _computeTime.setInteger(computeTime); };
 
   // Controller
   const char *getName() const override { return "arduino"; };
-  void begin();
+  void begin() override;
   void sensorsHasBeenUpdated() override;
 
 protected:
-  ArduinoController();
-
   size_t _infoFreeMemory;
   size_t _lowFreeMemory;
   size_t _veryLowFreeMemory;
