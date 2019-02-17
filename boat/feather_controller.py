@@ -107,6 +107,13 @@ class FeatherController:
     if values["ver"] != None: self.values["arduino"]["version"] = values["ver"]
     if "err" in values: self.values["arduino"]["errors"] = values["err"]
 
+  def _update_battery_values(self, values):
+    self.values['battery'] = {}
+    if values["volt"] != None: self.values["battery"]["volt"] = values["volt"]
+    if values["amp"] != None: self.values["battery"]["amp"] = values["amp"]
+    if values["temp"] != None: self.values["battery"]["temp"] = values["temp"]
+    if "err" in values: self.values["battery"]["errors"] = values["err"]
+
   def _update_gps_values(self, values):
     self.values['gps'] = {}
     if values["ant"] != None: self.values["gps"]["antenne"] = values["ant"]
@@ -171,6 +178,8 @@ class FeatherController:
       self.logger.exception("Cannot parse " + pprint.pformat(line))
     if values["name"] == "arduino":
       self._update_arduino_values(values)
+    elif values["name"] == "bat":
+      self._update_battery_values(values)
     elif values["name"] == "gps":
       self._update_gps_values(values)
     elif values["name"] == "lm":
