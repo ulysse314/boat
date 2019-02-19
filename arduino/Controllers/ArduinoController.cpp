@@ -42,7 +42,8 @@ ArduinoController::ArduinoController() :
     _millis(Value::Type::Integer, "mil"),
     _timestamp(Value::Type::Integer, "tst"),
     _compileDate(Value::Type::String, "cmp"),
-    _arduinoVersion(Value::Type::Integer, "ver") {
+    _arduinoVersion(Value::Type::Integer, "ver"),
+    _debugString(Value::Type::String, "debug") {
   String compileDateString;
   compileDateString.concat(__TIME__);
   compileDateString.concat(" ");
@@ -63,6 +64,7 @@ void ArduinoController::begin() {
   addValue(&_timestamp);
   addValue(&_compileDate);
   addValue(&_arduinoVersion);
+  addValue(&_debugString);
   size_t currentFreeMemory = freeMemory();
   _infoFreeMemory = currentFreeMemory * 0.6;
   _lowFreeMemory = currentFreeMemory * 0.4;

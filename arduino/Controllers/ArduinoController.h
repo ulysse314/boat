@@ -40,6 +40,7 @@ protected:
   Value _timestamp;
   Value _compileDate;
   Value _arduinoVersion;
+  Value _debugString;
 };
 
 #endif // ArduinoController_h
