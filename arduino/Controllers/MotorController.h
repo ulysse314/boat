@@ -21,7 +21,8 @@ public:
   void addSensorsToList(SensorList *sensorList) override;
   void sensorsHasBeenUpdated() override;
   void begin() override;
-  void setValue(int value) override;
+
+  void setValue(int);
   
 protected:
   const char *_name;

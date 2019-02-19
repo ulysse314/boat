@@ -2,8 +2,10 @@
 
 #include <Arduino.h>
 
+#include "ArduinoController.h"
 #include "Controller.h"
 #include "Error.h"
+#include "MotorController.h"
 #include "Value.h"
 
 #define TIMEOUT           4000
@@ -122,18 +124,15 @@ void PiLink::outputError(const Error *error) {
 
 void PiLink::processInputBuffer() {
   _inputBuffer[_inputBufferLength] = 0;
-  size_t offset = 0;
-  Controller *controller = NULL;
   if (strncmp(_inputBuffer, "lm ", strlen("lm ")) == 0) {
-    offset = strlen("lm ");
-    controller = _leftMotorController;
+    char *buffer = _inputBuffer + strlen("lm ");
+    _leftMotorController->setValue(atoi(buffer));
   } else if (strncmp(_inputBuffer, "rm ", strlen("rm ")) == 0) {
-    offset = strlen("rm ");
-    controller = _rightMotorController;
-  }
-  if (controller) {
-    char *buffer = _inputBuffer + offset;
-    controller->setValue(atoi(buffer));
+    char *buffer = _inputBuffer + strlen("rm ");
+    _rightMotorController->setValue(atoi(buffer));
+  } else if (strncmp(_inputBuffer, "arduino ", strlen("arduino ")) == 0) {
+    char *buffer = _inputBuffer + strlen("arduino ");
+    _arduinoController->setCommand(buffer);
   }
   _inputBufferLength = 0;
   _nextTimeOut = millis() + TIMEOUT;

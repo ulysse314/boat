@@ -17,6 +17,7 @@ public:
   void setCycleCount(long int cycleCount) { _cycleCount.setInteger(cycleCount); };
   void setLoopDuration(long int loopDuration) { _loopDuration.setInteger(loopDuration); };
   void setComputeTime(long int computeTime) { _computeTime.setInteger(computeTime); };
+  void setCommand(const char *command);
 
   // Controller
   const char *getName() const override { return "arduino"; };

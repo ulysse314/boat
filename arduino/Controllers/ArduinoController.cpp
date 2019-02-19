@@ -120,3 +120,6 @@ void ArduinoController::sensorsHasBeenUpdated() {
     addError(new ArduinoError(ArduinoError::CodePiLinkConnectionTimeOut));
   }
 }
+
+void ArduinoController::setCommand(const char *command) {
+}

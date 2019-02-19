@@ -3,8 +3,10 @@
 
 #include <Arduino.h>
 
+class ArduinoController;
 class Controller;
 class Error;
+class MotorController;
 class PWMDriver;
 class Value;
 
@@ -14,8 +16,9 @@ class PiLink {
 public:
   static PiLink *getPiLink();
 
-  void setLeftMotorController(Controller *motorController) { _leftMotorController = motorController; };
-  void setRightMotorController(Controller *motorController) { _rightMotorController = motorController; };
+  void setLeftMotorController(MotorController *motorController) { _leftMotorController = motorController; };
+  void setRightMotorController(MotorController *motorController) { _rightMotorController = motorController; };
+  void setArduinoController(ArduinoController *arduinoController) { _arduinoController = arduinoController; };
 
   void outputController(const Controller *controller);
   void listen();
@@ -34,8 +37,9 @@ protected:
   size_t _inputBufferLength;
   unsigned long int _nextTimeOut;
 
-  Controller *_leftMotorController;
-  Controller *_rightMotorController;
+  MotorController *_leftMotorController;
+  MotorController *_rightMotorController;
+  ArduinoController *_arduinoController;
 };
 
 #endif // PiLink_h
