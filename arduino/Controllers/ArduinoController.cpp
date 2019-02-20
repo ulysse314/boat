@@ -129,7 +129,7 @@ void ArduinoController::sensorsHasBeenUpdated() {
 
 void ArduinoController::setCommand(const char *command) {
   String result;
-  if (strcmp(command, "onewirescan") == 0) {
+  if (strcmp(command, "dallasscan") == 0) {
     byte addr[8];
     while(_oneWire->search(addr)) {
       if (OneWire::crc8(addr, 7) != addr[7]) {
@@ -149,6 +149,7 @@ void ArduinoController::setCommand(const char *command) {
       result = result + sensor.celsius();
     }
     _oneWire->reset_search();
+    result = "Dallas " + result;
     _debugInfo.setString(result.c_str());
   } else if (strcmp(command, "i2cscan") == 0) {
   }
