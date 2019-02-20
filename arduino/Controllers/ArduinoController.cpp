@@ -1,6 +1,7 @@
 #include "ArduinoController.h"
 
 #include <Arduino.h>
+#include <Wire.h>
 
 #include "DallasSensor.h"
 #include "MemoryFree.h"
@@ -127,6 +128,10 @@ void ArduinoController::sensorsHasBeenUpdated() {
   }
 }
 
+char hexFromByte(byte value) {
+  return (value > 9) ? (value - 10 + 'A') : (value + '0');
+}
+
 void ArduinoController::setCommand(const char *command) {
   String result;
   if (strcmp(command, "dallasscan") == 0) {
@@ -136,7 +141,7 @@ void ArduinoController::setCommand(const char *command) {
         continue;
       }
       if (result.length() > 0) {
-        result = result + "/";
+        result = result + ", ";
       }
       DallasSensor sensor(addr, _oneWire);
       sensor.readValues();
@@ -149,8 +154,22 @@ void ArduinoController::setCommand(const char *command) {
       result = result + sensor.celsius();
     }
     _oneWire->reset_search();
-    result = "Dallas " + result;
-    _debugInfo.setString(result.c_str());
+    result = "Dallas: " + result;
   } else if (strcmp(command, "i2cscan") == 0) {
+    for(byte address = 1; address < 127; address++ ) {
+      _ic2->beginTransmission(address);
+      byte error = _ic2->endTransmission();
+      if (error != 0) {
+        continue;
+      }
+      if (result.length() > 0) {
+        result = result + ", ";
+      }
+      result = result + "0x";
+      result = result + hexFromByte(address >> 4);
+      result = result + hexFromByte(address & 0xF);
+    }
+    result = "I2C: " + result;
   }
+  _debugInfo.setString(result.c_str());
 }
