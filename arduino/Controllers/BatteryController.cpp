@@ -7,7 +7,7 @@
 #if IS_MOUSSAILLON
 #define INA219ShuntValue 0.0015
 #define INA219MaxCurrent 50.
-const uint8_t kDallasAddress[8] = { 0x28, 0x6F, 0x04, 0x1F, 0x03, 0x00, 0x00, 0xA0 };
+const uint8_t kDallasAddress[8] = { 0x28, 0x66, 0x05, 0x1F, 0x03, 0x00, 0x00, 0xFB };
 #elif IS_TELEMAQUE
 #define INA219ShuntValue 0.00125
 #define INA219MaxCurrent 60.
