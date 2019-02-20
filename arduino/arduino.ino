@@ -53,6 +53,7 @@ void initGlobal() {
   controllerManager->addSensorsToList(sensorList);
   piLink->setLeftMotorController(leftMotorController);
   piLink->setRightMotorController(rightMotorController);
+  piLink->setArduinoController(arduinoController);
 
   pwmDriver->begin();
   sensorList->begin();
