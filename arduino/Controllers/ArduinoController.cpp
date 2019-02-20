@@ -2,7 +2,9 @@
 
 #include <Arduino.h>
 
+#include "DallasSensor.h"
 #include "MemoryFree.h"
+#include "OneWire.h"
 #include "PiLink.h"
 #include "Version.h"
 
@@ -27,7 +29,9 @@ bool ArduinoController::removeArduinoError(ArduinoError::Code code) {
   return arduinoController->removeError(error);
 }
 
-ArduinoController::ArduinoController() :
+ArduinoController::ArduinoController(TwoWire *ic2, OneWire *oneWire) :
+    _ic2(ic2),
+    _oneWire(oneWire),
     _infoFreeMemory(0),
     _lowFreeMemory(0),
     _veryLowFreeMemory(0),
@@ -124,5 +128,28 @@ void ArduinoController::sensorsHasBeenUpdated() {
 }
 
 void ArduinoController::setCommand(const char *command) {
-  _debugInfo.setString(command);
+  String result;
+  if (strcmp(command, "onewirescan") == 0) {
+    byte addr[8];
+    while(_oneWire->search(addr)) {
+      if (OneWire::crc8(addr, 7) != addr[7]) {
+        continue;
+      }
+      if (result.length() > 0) {
+        result = result + "/";
+      }
+      DallasSensor sensor(addr, _oneWire);
+      sensor.readValues();
+      const char *address = sensor.copyAddressString();
+      result = result + address;
+      free((void *)address);
+      delay(1000);
+      sensor.loop();
+      result = result + "->";
+      result = result + sensor.celsius();
+    }
+    _oneWire->reset_search();
+    _debugInfo.setString(result.c_str());
+  } else if (strcmp(command, "i2cscan") == 0) {
+  }
 }

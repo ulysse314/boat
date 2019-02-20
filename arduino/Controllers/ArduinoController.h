@@ -5,6 +5,9 @@
 #include "Controller.h"
 #include "Value.h"
 
+class OneWire;
+class TwoWire;
+
 class ArduinoController : public Controller {
 public:
   static ArduinoController *getArduinoController();
@@ -12,7 +15,7 @@ public:
   static bool removeArduinoError(ArduinoError::Code code);
   
 public:
-  ArduinoController();
+  ArduinoController(TwoWire *ic2, OneWire *oneWire);
 
   void setCycleCount(long int cycleCount) { _cycleCount.setInteger(cycleCount); };
   void setLoopDuration(long int loopDuration) { _loopDuration.setInteger(loopDuration); };
@@ -25,6 +28,8 @@ public:
   void sensorsHasBeenUpdated() override;
 
 protected:
+  TwoWire *_ic2;
+  OneWire *_oneWire;
   size_t _infoFreeMemory;
   size_t _lowFreeMemory;
   size_t _veryLowFreeMemory;

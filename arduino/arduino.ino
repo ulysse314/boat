@@ -41,7 +41,7 @@ void initGlobal() {
 
   gpsController = new GPSController();
   controllerManager->addController(gpsController);
-  arduinoController = new ArduinoController();
+  arduinoController = new ArduinoController(&Wire, oneWire);
   controllerManager->addController(arduinoController);
   batteryController = new BatteryController(&Wire, oneWire);
   controllerManager->addController(batteryController);
