@@ -91,8 +91,10 @@ class E3372Controller:
   async def _run(self):
     while True:
       (errors, values) = await self._get_values()
-      self.values = { "cellular": values }
-      self.errors = errors
+      merged_values = {}
+      merged_values.update(values)
+      merged_values.update({"errors": errors})
+      self.values = { "cellular": merged_values }
       await asyncio.sleep(1)
 
   async def _get_values(self):
