@@ -4,6 +4,7 @@
 
 import aiohttp
 import asyncio
+import netifaces
 import logging
 import os
 import pprint
@@ -18,11 +19,23 @@ if parent_dir not in sys.path:
 import error
 
 class E3372Controller:
+  ERROR_DOMAIN = 5
+  class Error:
+    NoError = 0
+    GenericError = 1
+    NoInterface = 2
+    SignalURLFailed = 3
+    StatusURLFailed = 4
+    TrafficStatURLFailed = 5
+
+  INTERFACE = "eth1"
   BASE_URL = 'http://{host}{url}'
   COOKIE_URL = '/html/index.html'
-  APIS = [ '/api/device/signal',
-    '/api/monitoring/status',
-    '/api/monitoring/traffic-statistics' ]
+  APIS = {
+    '/api/device/signal': Error.SignalURLFailed,
+    '/api/monitoring/status': Error.StatusURLFailed,
+    '/api/monitoring/traffic-statistics': Error.TrafficStatURLFailed,
+  }
   APIS_AVAILABLE = [
     '/api/device/information',
     '/api/device/signal',
@@ -32,6 +45,7 @@ class E3372Controller:
     '/api/global/module-switch',
     '/api/net/current-plmn',
     '/api/net/net-mode',
+    '/api/monitoring/check-notifications',
   ]
   KEYS = [
     # /api/monitoring/status
@@ -90,29 +104,31 @@ class E3372Controller:
 
   async def _run(self):
     while True:
-      (errors, values) = await self._get_values()
-      merged_values = {}
-      merged_values.update(values)
-      merged_values.update({"errors": errors})
-      self.values = { "cellular": merged_values }
+      values = await self._get_values()
+      self.values = { "cellular": values }
       await asyncio.sleep(1)
 
   async def _get_values(self):
-    all_errors = []
     values = {}
     try:
-      for api in self.APIS:
-        errors, dict = await self._get(api)
-        if errors:
-          all_errors.extend(errors)
+      if not self.INTERFACE in netifaces.interfaces():
+        values["errors"] = [[ self.ERROR_DOMAIN, self.Error.NoInterface, self.INTERFACE ]]
+        return values
+      for api, apiError in self.APIS.items():
+        error_message, dict = await self._get(api)
+        if error_message:
+          if not "errors" in values:
+            values["errors"] = []
+          values["errors"].append([ self.ERROR_DOMAIN, apiError, error_message ])
         if dict != None:
           for key,value in dict.items():
             if key in self.KEYS:
               values[key] = value
     except Exception as e:
-      self.logger.exception("run")
-      all_errors.append(error.json_error(error = error.E3372Error_UnknownGetValues))
-    return (all_errors, values)
+      error_message = pprint.pformat(e)
+      self.logger.exception(error_message)
+      values = { "errors": [[ self.ERROR_DOMAIN, self.Error.GenericError, error_message ]] }
+    return values
 
   async def _get(self, path):
     try:
@@ -122,6 +138,8 @@ class E3372Controller:
         resp = await self.session.get(self.base_url.format(url = self.COOKIE_URL), timeout = 10)
         if not resp.cookies["SessionID"]:
           self.logger.warning("No session cookie")
+          if self.session and not self.session.closed:
+            await self.session.close()
           self.session = None
       # get a session cookie by requesting the COOKIE_URL
       url = self.base_url.format(url = path)
@@ -130,23 +148,23 @@ class E3372Controller:
       if resp.status != 200:
         error_message = "Error with URL " + url + ", status: " + str(resp.status)
         self.logger.warning(error_message)
-        return ([error.json_error(error = error.E3372Error_Status, message = error_message)], None)
+        return ("Error with status: " + str(resp.status), None)
       text = await resp.text()
       json = xmltodict.parse(text)
       if "error" in json:
         error_message = "Error with URL " + url + ", json received: " + pprint.pformat(json)
         self.logger.warning(error_message)
+        if self.session and not self.session.closed:
+          await self.session.close()
         self.session = None
-        return ([error.json_error(error = error.E3372Error_Json, message = error_message)], None)
+        return ("Error json: " + pprint.pformat(text), None)
       return (None, json["response"])
-      
     except Exception as e:
+      if self.session and not self.session.closed:
+        await self.session.close()
       self.session = None
       error_message = "Error with path " + path + ", " + pprint.pformat(e)
-      self.logger.exception(error_message)
-      return ([error.json_error(error = error.E3372Error_UnknownGet, message = error_message)], None)
-    error_message = "Error with path " + path
-    return ([error.json_error(error = error.E3372Error_UnknownGet, message = error_message)], None)
+      return (error_message, None)
 
 async def test_apis(e3372_controller):
   for api in e3372_controller.APIS_AVAILABLE:
@@ -155,13 +173,13 @@ async def test_apis(e3372_controller):
     pprint.pprint(values)
     pprint.pprint(errors)
     print(" ")
+  asyncio.ensure_future(test_controller(e3372_controller))
 
 async def test_controller(e3372_controller):
   while True:
-    (errors, values) = await e3372_controller._get_values()
+    values = await e3372_controller._get_values()
     print("------------------------------------")
     pprint.pprint(values)
-    pprint.pprint(errors)
     print(" ")
     await asyncio.sleep(1)
 
@@ -172,7 +190,6 @@ def main():
   e3372_controller = E3372Controller(router_ip)
   e3372_controller.start()
   asyncio.ensure_future(test_apis(e3372_controller))
-  asyncio.ensure_future(test_controller(e3372_controller))
   loop = asyncio.get_event_loop()
   loop.run_forever()
 
