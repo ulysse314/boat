@@ -27,6 +27,10 @@ class E3372Controller:
     SignalURLFailed = 3
     StatusURLFailed = 4
     TrafficStatURLFailed = 5
+    NotConnected = 6
+    LowSignal = 7
+    VeryLowSignal = 8
+    SimLocked = 9
 
   INTERFACE = "eth1"
   BASE_URL = 'http://{host}{url}'
@@ -110,6 +114,7 @@ class E3372Controller:
 
   async def _get_values(self):
     values = {}
+    errors = []
     try:
       if not self.INTERFACE in netifaces.interfaces():
         values["errors"] = [[ self.ERROR_DOMAIN, self.Error.NoInterface, self.INTERFACE ]]
@@ -117,9 +122,7 @@ class E3372Controller:
       for api, apiError in self.APIS.items():
         error_message, dict = await self._get(api)
         if error_message:
-          if not "errors" in values:
-            values["errors"] = []
-          values["errors"].append([ self.ERROR_DOMAIN, apiError, error_message ])
+          errors.append([ self.ERROR_DOMAIN, apiError, error_message ])
         if dict != None:
           for key,value in dict.items():
             if key in self.KEYS:
@@ -128,6 +131,25 @@ class E3372Controller:
       error_message = pprint.pformat(e)
       self.logger.exception(error_message)
       values = { "errors": [[ self.ERROR_DOMAIN, self.Error.GenericError, error_message ]] }
+    try:
+      if "ConnectionStatus" in values and values["ConnectionStatus"] != "901":
+        errors.append([ self.ERROR_DOMAIN, self.Error.NotConnected, error_message ])
+    except Exception as e:
+      pass
+    try:
+      if "SignalIcon" in values:
+        signal = int(values["SignalIcon"])
+        error = None
+        if signal == 2:
+          errors.append([ self.ERROR_DOMAIN, self.Error.LowSignal, error_message ])
+        elif signal < 2:
+          errors.append([ self.ERROR_DOMAIN, self.Error.VeryLowSignal, error_message ])
+    except Exception as e:
+      pass
+    if "SimStatus" in values and values["SimStatus"] != "1":
+      errors.append([ self.ERROR_DOMAIN, self.Error.SimLocked, error_message ])
+    if len(errors) > 0:
+      values["errors"] = errors
     return values
 
   async def _get(self, path):
