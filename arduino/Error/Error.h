@@ -17,6 +17,7 @@ public:
     DomainGPS,                                // 2
     DomainMotor,                              // 3
     DomainBattery,                            // 4
+    DomainCellular,                           // 5 (only used in python code)
   } Domain;
 
   Error(const char *message = NULL);
