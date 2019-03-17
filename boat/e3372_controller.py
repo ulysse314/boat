@@ -156,14 +156,8 @@ class E3372Controller:
     try:
       if self.session == None:
         # cookie jar should be unsafe since the domain is an ip.
-        self.session = aiohttp.ClientSession(cookie_jar = aiohttp.CookieJar(unsafe = True))
-        resp = await self.session.get(self.base_url.format(url = self.COOKIE_URL), timeout = 10)
-        if not resp.cookies["SessionID"]:
-          self.logger.warning("No session cookie")
-          if self.session and not self.session.closed:
-            await self.session.close()
-          self.session = None
-      # get a session cookie by requesting the COOKIE_URL
+        if not await self._open():
+          return ("Cannot open session", None)
       url = self.base_url.format(url = path)
       self.logger.debug(url)
       resp = await self.session.get(url, timeout = 10)
@@ -176,17 +170,27 @@ class E3372Controller:
       if "error" in json:
         error_message = "Error with URL " + url + ", json received: " + pprint.pformat(json)
         self.logger.warning(error_message)
-        if self.session and not self.session.closed:
-          await self.session.close()
-        self.session = None
+        await self._close()
         return ("Error json: " + pprint.pformat(text), None)
       return (None, json["response"])
     except Exception as e:
-      if self.session and not self.session.closed:
-        await self.session.close()
-      self.session = None
+      await self._close()
       error_message = "Error with path " + path + ", " + pprint.pformat(e)
       return (error_message, None)
+
+  async def _open(self):
+    self.session = aiohttp.ClientSession(cookie_jar = aiohttp.CookieJar(unsafe = True))
+    resp = await self.session.get(self.base_url.format(url = self.COOKIE_URL), timeout = 10)
+    if not resp.cookies["SessionID"]:
+      self.logger.warning("No session cookie")
+      await self._close()
+      return False
+    return True
+
+  async def _close(self):
+    if self.session and not self.session.closed:
+      await self.session.close()
+    self.session = None
 
 async def test_apis(e3372_controller):
   for api in e3372_controller.APIS_AVAILABLE:
@@ -195,6 +199,7 @@ async def test_apis(e3372_controller):
     pprint.pprint(values)
     pprint.pprint(errors)
     print(" ")
+  e3372_controller.start()
   asyncio.ensure_future(test_controller(e3372_controller))
 
 async def test_controller(e3372_controller):
@@ -210,7 +215,6 @@ def main():
   if len(sys.argv) >= 2:
     router_ip = sys.argv[1]
   e3372_controller = E3372Controller(router_ip)
-  e3372_controller.start()
   asyncio.ensure_future(test_apis(e3372_controller))
   loop = asyncio.get_event_loop()
   loop.run_forever()
