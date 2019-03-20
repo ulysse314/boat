@@ -15,6 +15,7 @@ parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 if parent_dir not in sys.path:
   sys.path.append(parent_dir)
 
+import boat_error
 import config
 import line_protocol
 
@@ -89,7 +90,10 @@ class ArduinoController:
           loop = asyncio.get_event_loop()
           await serial_asyncio.create_serial_connection(loop, lambda: line_protocol.LineProtocol(self), self.dev_port, baudrate = self.port_speed)
           break
+        else:
+          self.values['arduino'] = { 'errors': [[ boat_error.ArduinoDomain, boat_error.Arduino.DevNotFound ]] }
       except:
+        self.values['arduino'] = { 'errors': [[ boat_error.ArduinoDomain, boat_error.Arduino.ConnectionError ]] }
         self.logger.exception("connection failed")
       await asyncio.sleep(1)
 

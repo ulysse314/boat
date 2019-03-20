@@ -6,6 +6,8 @@ E3372Domain = 5
 
 class Arduino:
   NoError = 0
+  DevNotFound = 100
+  ConnectionError = 101
 
 class E3372:
   NoError = 0
