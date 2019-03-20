@@ -18,6 +18,7 @@ public:
     DomainMotor,                              // 3
     DomainBattery,                            // 4
     DomainCellular,                           // 5 (only used in python code)
+    DomainPi,                                 // 6 (only used in python code)
   } Domain;
 
   Error(const char *message = NULL);
