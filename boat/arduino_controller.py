@@ -18,7 +18,7 @@ if parent_dir not in sys.path:
 import config
 import line_protocol
 
-class FeatherController:
+class ArduinoController:
   NODE_INDEX = 0
   TYPE_INDEX = 1
   ADDRESS_INDEX = 2
@@ -199,7 +199,7 @@ async def debug(arduino_controller):
 
 def main(sensors, port):
   logging.basicConfig(level=logging.DEBUG)
-  arduino_controller = FeatherController(sensors, port)
+  arduino_controller = ArduinoController(sensors, port)
   arduino_controller.start()
   task = asyncio.ensure_future(debug(arduino_controller))
   loop = asyncio.get_event_loop()

@@ -13,11 +13,11 @@ parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 if parent_dir not in sys.path:
   sys.path.append(parent_dir)
 
+import arduino_controller
 import boat_controller
 import command_controller
 import config
 import e3372_controller
-import feather_controller
 import gps_controller
 import munin_server
 import pi_controller
@@ -37,10 +37,10 @@ RELAY_SERVER = config.values["value_relay_server"]
 
 sender = value_sender.ValueSender(BOAT_NAME, RELAY_SERVER, BOAT_PORT, config.values["boat_key"])
 
-feather = feather_controller.FeatherController(config.values["sensors"])
-commnand = command_controller.CommandController(feather)
+arduino = arduino_controller.ArduinoController(config.values["sensors"])
+commnand = command_controller.CommandController(arduino)
 controllers = [ e3372_controller.E3372Controller(),
-                feather,
+                arduino,
                 pi_controller.PiController(),
                 commnand ]
 started_controllers = []
@@ -52,7 +52,7 @@ for controller in controllers:
   except:
     logging.exception("{} not started !!!!".format(controller.__class__.__name__))
 
-boat = boat_controller.BoatController(started_controllers, feather, commnand, sender)
+boat = boat_controller.BoatController(started_controllers, arduino, commnand, sender)
 sender.delegate = boat
 boat.start()
 sender.start()

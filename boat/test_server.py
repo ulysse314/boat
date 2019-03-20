@@ -13,11 +13,11 @@ parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 if parent_dir not in sys.path:
   sys.path.append(parent_dir)
 
+import arduino_controller
 import boat_controller
 import command_controller
 import config
 import e3372_controller
-import feather_controller
 import gps_controller
 import pi_controller
 import pwm_controller
@@ -33,8 +33,8 @@ RELAY_SERVER = config.values["value_relay_server"]
 
 sender = value_sender.ValueSender(BOAT_NAME, RELAY_SERVER, BOAT_PORT, config.values["boat_key"])
 
-if sys.argv[1] == "feather":
-  controller = feather_controller.FeatherController(config.values["sensors"])
+if sys.argv[1] == "arduino":
+  controller = arduino_controller.ArduinoController(config.values["sensors"])
 elif sys.argv[1] == "e3372":
   controller = e3372_controller.E3372Controller()
 elif sys.argv[1] == "pi":
