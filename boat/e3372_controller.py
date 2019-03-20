@@ -16,27 +16,16 @@ parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 if parent_dir not in sys.path:
   sys.path.append(parent_dir)
 
-class E3372Controller:
-  ERROR_DOMAIN = 5
-  class Error:
-    NoError = 0
-    GenericError = 1
-    NoInterface = 2
-    SignalURLFailed = 3
-    StatusURLFailed = 4
-    TrafficStatURLFailed = 5
-    NotConnected = 6
-    LowSignal = 7
-    VeryLowSignal = 8
-    SimLocked = 9
+import boat_error
 
+class E3372Controller:
   INTERFACE = "eth1"
   BASE_URL = 'http://{host}{url}'
   COOKIE_URL = '/html/index.html'
   APIS = {
-    '/api/device/signal': Error.SignalURLFailed,
-    '/api/monitoring/status': Error.StatusURLFailed,
-    '/api/monitoring/traffic-statistics': Error.TrafficStatURLFailed,
+    '/api/device/signal': boat_error.E3372.SignalURLFailed,
+    '/api/monitoring/status': boat_error.E3372.StatusURLFailed,
+    '/api/monitoring/traffic-statistics': boat_error.E3372.TrafficStatURLFailed,
   }
   APIS_AVAILABLE = [
     '/api/device/information',
@@ -115,23 +104,23 @@ class E3372Controller:
     errors = []
     try:
       if not self.INTERFACE in netifaces.interfaces():
-        values["errors"] = [[ self.ERROR_DOMAIN, self.Error.NoInterface, self.INTERFACE ]]
+        values["errors"] = [[ boat_error.E3372Domain, boat_error.E3372.NoInterface, self.INTERFACE ]]
         return values
       for api, apiError in self.APIS.items():
         error_message, dict = await self._get(api)
         if error_message:
-          errors.append([ self.ERROR_DOMAIN, apiError, error_message ])
+          errors.append([ boat_error.E3372Domain, apiError, error_message ])
         if dict != None:
           for key,value in dict.items():
             if key in self.KEYS:
               values[key] = value
     except Exception as e:
-      error_message = pprint.pformat(e)
+      error_message = "Get values error " + pprint.pformat(e)
       self.logger.exception(error_message)
-      values = { "errors": [[ self.ERROR_DOMAIN, self.Error.GenericError, error_message ]] }
+      values = { "errors": [[ boat_error.E3372Domain, boat_error.E3372.GenericError, error_message ]] }
     try:
       if "ConnectionStatus" in values and values["ConnectionStatus"] != "901":
-        errors.append([ self.ERROR_DOMAIN, self.Error.NotConnected, error_message ])
+        errors.append([ boat_error.E3372Domain, boat_error.E3372.NotConnected, error_message ])
     except Exception as e:
       pass
     try:
@@ -139,13 +128,13 @@ class E3372Controller:
         signal = int(values["SignalIcon"])
         error = None
         if signal == 2:
-          errors.append([ self.ERROR_DOMAIN, self.Error.LowSignal, error_message ])
+          errors.append([ boat_error.E3372Domain, boat_error.E3372.LowSignal, error_message ])
         elif signal < 2:
-          errors.append([ self.ERROR_DOMAIN, self.Error.VeryLowSignal, error_message ])
+          errors.append([ boat_error.E3372Domain, boat_error.E3372.VeryLowSignal, error_message ])
     except Exception as e:
       pass
     if "SimStatus" in values and values["SimStatus"] != "1":
-      errors.append([ self.ERROR_DOMAIN, self.Error.SimLocked, error_message ])
+      errors.append([ boat_error.E3372Domain, boat_error.E3372.SimLocked, error_message ])
     if len(errors) > 0:
       values["errors"] = errors
     return values
