@@ -3,6 +3,7 @@
 
 ArduinoDomain = 1
 E3372Domain = 5
+PiDomain = 6
 
 class Arduino:
   NoError = 0
@@ -20,3 +21,18 @@ class E3372:
   LowSignal = 7
   VeryLowSignal = 8
   SimLocked = 9
+
+class Pi:
+  noError = 0
+  temperatureInfo = 1
+  temperatureWarning = 2
+  temperatureCritical = 3
+  memoryInfo = 4
+  memoryWarning = 5
+  memoryCritical = 6
+  diskInfo = 7
+  diskWarning = 8
+  diskCritical = 9
+  cpuInfo = 10
+  cpuWarning = 11
+  cpuCritical = 12

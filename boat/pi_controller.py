@@ -8,6 +8,12 @@ import pprint
 import psutil
 import subprocess
 
+parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+if parent_dir not in sys.path:
+  sys.path.append(parent_dir)
+
+import boat_error
+
 class PiController:
   def __init__(self):
     self.values = {}
@@ -27,6 +33,33 @@ class PiController:
       self.values["pi"] = { "temp": self._get_cpu_temperature(), "cpu%": psutil.cpu_percent() }
       self.values["pi"].update(self._get_disk_space())
       self.values["pi"].update(self._get_ram_info())
+      errors = []
+      if self.values["pi"]["temp"] > 90:
+        errors.append([boat_error.PiDomain, boat_error.Pi.temperatureCritical, str(self.values["pi"]["temp"]) ])
+      elif self.values["pi"]["temp"] > 75:
+        errors.append([boat_error.PiDomain, boat_error.Pi.temperatureWarning, str(self.values["pi"]["temp"]) ])
+      elif self.values["pi"]["temp"] > 60:
+        errors.append([boat_error.PiDomain, boat_error.Pi.temperatureInfo, str(self.values["pi"]["temp"]) ])
+      if self.values["pi"]["cpu%"] > 90:
+        errors.append([boat_error.PiDomain, boat_error.Pi.cpuCritical, str(self.values["pi"]["cpu%"]) ])
+      elif self.values["pi"]["cpu%"] > 70:
+        errors.append([boat_error.PiDomain, boat_error.Pi.cpuWarning, str(self.values["pi"]["cpu%"]) ])
+      elif self.values["pi"]["cpu%"] > 50:
+        errors.append([boat_error.PiDomain, boat_error.Pi.cpuInfo, str(self.values["pi"]["cpu%"]) ])
+      if self.values["pi"]["ram.used%"] > 90:
+        errors.append([boat_error.PiDomain, boat_error.Pi.memoryCritical, str(self.values["pi"]["ram.used%"]) ])
+      elif self.values["pi"]["ram.used%"] > 70:
+        errors.append([boat_error.PiDomain, boat_error.Pi.memoryWarning, str(self.values["pi"]["ram.used%"]) ])
+      elif self.values["pi"]["ram.used%"] > 50:
+        errors.append([boat_error.PiDomain, boat_error.Pi.memoryInfo, str(self.values["pi"]["ram.used%"]) ])
+      if self.values["pi"]["disk.used%"] > 90:
+        errors.append([boat_error.PiDomain, boat_error.Pi.diskCritical, str(self.values["pi"]["disk.used%"]) ])
+      elif self.values["pi"]["disk.used%"] > 70:
+        errors.append([boat_error.PiDomain, boat_error.Pi.diskWarning, str(self.values["pi"]["disk.used%"]) ])
+      elif self.values["pi"]["disk.used%"] > 50:
+        errors.append([boat_error.PiDomain, boat_error.Pi.diskInfo, str(self.values["pi"]["disk.used%"]) ])
+      if len(errors) > 0:
+        self.values["pi"]["errors"] = errors
     except:
       self.logger.exception("Get values")
 
