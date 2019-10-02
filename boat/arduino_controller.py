@@ -50,7 +50,7 @@ class ArduinoController:
     if "right%" in values:
       right = values["right%"]
     if self.serial_transport:
-      self.next_motor_line = "Motor " + str(left) + " " + str(right) + "\n"
+      self.next_motor_line = "lm " + str(left) + "\n" + "rm " + str(right) + "\n"
       asyncio.ensure_future(self._send_motor_line())
 
   async def _send_motor_line(self):
