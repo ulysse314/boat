@@ -11,13 +11,13 @@ import munin_server
 import value_sender
 
 class BoatController:
-  def __init__(self, controllers, pwm, commnand, value_sender):
+  def __init__(self, controllers, arduino, commnand, value_sender):
     self.logger = logging.getLogger(self.__class__.__name__)
     self.record = False
     self.boot_timestamp = time.time()
     self.value_id = 0
     self.controllers = controllers
-    self.pwm_controller = pwm
+    self.arduino_controller = arduino
     self.command_controller = commnand
     self.value_sender = value_sender
 
@@ -75,9 +75,9 @@ class BoatController:
         if key == "record":
           self.record = value
         elif key == "motor" and type(value) is dict:
-          self.pwm_controller.set_motors(value)
+          self.arduino_controller.set_motors(value)
         elif key == "led" and type(value) is dict:
-          self.pwm_controller.set_leds(value)
+          self.arduino_controller.set_leds(value)
         elif key == "controller" and value == 0:
           self._turn_off_motors()
         elif key == "command":
