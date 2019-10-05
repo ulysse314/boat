@@ -28,7 +28,7 @@ uint8_t kRightDallasAddress[8] = { 0x28, 0xAB, 0xDD, 0x1E, 0x03, 0x00, 0x00, 0xC
 MotorController *MotorController::LeftMotor(OneWire *oneWire, PWMDriver *pwmDriver) {
   static MotorController*motor = NULL;
   if (!motor) {
-    motor = new MotorController("lm", oneWire, pwmDriver, LEFT_MOTOR_ID, kLeftDallasAddress);
+    motor = new MotorController("motor-l", oneWire, pwmDriver, LEFT_MOTOR_ID, kLeftDallasAddress);
   }
   return motor;
 }
@@ -37,7 +37,7 @@ MotorController *MotorController::LeftMotor(OneWire *oneWire, PWMDriver *pwmDriv
 MotorController *MotorController::RightMotor(OneWire *oneWire, PWMDriver *pwmDriver) {
   static MotorController*motor = NULL;
   if (!motor) {
-    motor = new MotorController("rm", oneWire, pwmDriver, RIGHT_MOTOR_ID, kRightDallasAddress);
+    motor = new MotorController("motor-r", oneWire, pwmDriver, RIGHT_MOTOR_ID, kRightDallasAddress);
   }
   return motor;
 }

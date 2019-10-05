@@ -186,9 +186,7 @@ class ArduinoController:
       self._update_battery_values(values)
     elif values["name"] == "gps":
       self._update_gps_values(values)
-    elif values["name"] == "lm":
-      self._update_motor_values(values)
-    elif values["name"] == "rm":
+    elif values["name"].startswith("motor-"):
       self._update_motor_values(values)
     else:
       self.logger.warning("Unknown values " + pprint.pformat(values))
