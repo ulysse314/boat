@@ -47,6 +47,7 @@ class PiController:
         errors.append([boat_error.PiDomain, boat_error.Pi.cpuWarning, str(self.values["pi"]["cpu%"]) ])
       elif self.values["pi"]["cpu%"] > 50:
         errors.append([boat_error.PiDomain, boat_error.Pi.cpuInfo, str(self.values["pi"]["cpu%"]) ])
+        self.saveProcesses()
       if self.values["pi"]["ram.used%"] > 90:
         errors.append([boat_error.PiDomain, boat_error.Pi.memoryCritical, str(self.values["pi"]["ram.used%"]) ])
       elif self.values["pi"]["ram.used%"] > 70:
@@ -63,6 +64,12 @@ class PiController:
         self.values["pi"]["errors"] = errors
     except:
       self.logger.exception("Get values")
+
+  def saveProcesses(self):
+    list = subprocess.Popen(['ps', 'auxww'], stdout=subprocess.PIPE).communicate()[0]
+    file = open("/tmp/processes.txt",'a+')
+    file.write(list)
+    file.close()
 
   def _get_cpu_temperature(self):
     process = subprocess.Popen(['vcgencmd', 'measure_temp'], stdout=subprocess.PIPE)
