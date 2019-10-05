@@ -67,7 +67,7 @@ class PiController:
 
   def saveProcesses(self):
     list = subprocess.Popen(['ps', 'auxww'], stdout=subprocess.PIPE).communicate()[0]
-    file = open("/tmp/processes.txt",'a+')
+    file = open("/tmp/processes.txt",'a+b')
     file.write(list)
     file.close()
 
