@@ -126,11 +126,17 @@ class E3372Controller:
     try:
       if "SignalIcon" in values:
         signal = int(values["SignalIcon"])
+        values["SignalIcon"] = signal
         error = None
         if signal == 2:
           errors.append([ boat_error.E3372Domain, boat_error.E3372.LowSignal, error_message ])
         elif signal < 2:
           errors.append([ boat_error.E3372Domain, boat_error.E3372.VeryLowSignal, error_message ])
+    except Exception as e:
+      pass
+    try:
+      if "CurrentNetworkType" in values:
+        values["CurrentNetworkType"] = int(values["CurrentNetworkType"])
     except Exception as e:
       pass
     if "SimStatus" in values and values["SimStatus"] != "1":
