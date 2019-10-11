@@ -113,20 +113,26 @@ class E3372Controller:
         if dict != None:
           for key,value in dict.items():
             if key in self.KEYS:
+              try:
+                value = float(value)
+                if value.is_integer():
+                  value = int(value)
+              except Exception as e:
+                pass
               values[key] = value
     except Exception as e:
       error_message = "Get values error " + pprint.pformat(e)
       self.logger.exception(error_message)
       values = { "errors": [[ boat_error.E3372Domain, boat_error.E3372.GenericError, error_message ]] }
     try:
-      if "ConnectionStatus" in values and values["ConnectionStatus"] != "901":
-        errors.append([ boat_error.E3372Domain, boat_error.E3372.NotConnected, error_message ])
+      if "ConnectionStatus" in values:
+        if values["ConnectionStatus"] != 901:
+          errors.append([ boat_error.E3372Domain, boat_error.E3372.NotConnected, error_message ])
     except Exception as e:
       pass
     try:
       if "SignalIcon" in values:
-        signal = int(values["SignalIcon"])
-        values["SignalIcon"] = signal
+        signal = values["SignalIcon"]
         error = None
         if signal == 2:
           errors.append([ boat_error.E3372Domain, boat_error.E3372.LowSignal, error_message ])
@@ -134,12 +140,7 @@ class E3372Controller:
           errors.append([ boat_error.E3372Domain, boat_error.E3372.VeryLowSignal, error_message ])
     except Exception as e:
       pass
-    try:
-      if "CurrentNetworkType" in values:
-        values["CurrentNetworkType"] = int(values["CurrentNetworkType"])
-    except Exception as e:
-      pass
-    if "SimStatus" in values and values["SimStatus"] != "1":
+    if "SimStatus" in values and values["SimStatus"] != 1:
       errors.append([ boat_error.E3372Domain, boat_error.E3372.SimLocked, error_message ])
     if len(errors) > 0:
       values["errors"] = errors
