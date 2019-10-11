@@ -66,7 +66,7 @@ class PiController:
       self.logger.exception("Get values")
 
   def saveProcesses(self):
-    list = subprocess.Popen(['ps', 'auxww'], stdout=subprocess.PIPE).communicate()[0]
+    list = subprocess.Popen(['ps', 'auxww', '--sort=-pcpu'], stdout=subprocess.PIPE).communicate()[0]
     file = open("/tmp/processes.txt",'a+b')
     file.write(list)
     file.close()
