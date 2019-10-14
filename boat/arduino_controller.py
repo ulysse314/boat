@@ -120,7 +120,7 @@ class ArduinoController:
 
   def _update_gps_values(self, values):
     self.values['gps'] = {}
-    if values["ant"] != None: self.values["gps"]["antenne"] = values["ant"]
+    if values["ant"] != None: self.values["gps"]["antenna"] = values["ant"]
     if values["vst"] != None: self.values["gps"]["sat"] = values["vst"]
     if values["ust"] != None: self.values["gps"]["tracked"] = values["ust"]
     if values["mod"] != None: self.values["gps"]["mode"] = values["mod"]
