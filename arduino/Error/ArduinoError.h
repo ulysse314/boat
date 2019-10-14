@@ -24,9 +24,9 @@ public:
     CodeAddingValueWithSameName,       // 15
     CodePWMDriverNotAvailable,         // 16
     CodePiLinkConnectionTimeOut,       // 17
-    CodeLoopCycleLowInfo,              // 18
-    CodeLoopCycleLowWarning,           // 19
-    CodeLoopCycleLowCritical,          // 20
+    CodeMainLoopCounterLowInfo,        // 18
+    CodeMainLoopCounterLowWarning,     // 19
+    CodeMainLoopCounterLowCritical,    // 20
     CodeNotStarted,                    // 21
   } Code;
   
