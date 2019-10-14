@@ -33,9 +33,9 @@ bool ArduinoController::removeArduinoError(ArduinoError::Code code) {
 ArduinoController::ArduinoController(TwoWire *ic2, OneWire *oneWire) :
     _ic2(ic2),
     _oneWire(oneWire),
-    _infoFreeMemory(0),
-    _lowFreeMemory(0),
-    _veryLowFreeMemory(0),
+    _infoFreeRAM(0),
+    _warningFreeRAM(0),
+    _criticalFreeRAM(0),
     _lastMillis(0),
     _loopCount(0),
     _started(Value::Type::Boolean, "stt"),
@@ -70,10 +70,10 @@ void ArduinoController::begin() {
   addValue(&_compileDate);
   addValue(&_arduinoVersion);
   addValue(&_debugInfo);
-  size_t currentFreeMemory = freeMemory();
-  _infoFreeMemory = currentFreeMemory * 0.6;
-  _lowFreeMemory = currentFreeMemory * 0.4;
-  _veryLowFreeMemory = currentFreeMemory * 0.2;
+  size_t currentFreeRAM = freeMemory();
+  _infoFreeRAM = currentFreeRAM * 0.6;
+  _warningFreeRAM = currentFreeRAM * 0.4;
+  _criticalFreeRAM = currentFreeRAM * 0.2;
 }
 
 void ArduinoController::sensorsHasBeenUpdated() {
@@ -86,27 +86,27 @@ void ArduinoController::sensorsHasBeenUpdated() {
     _timestamp.setInteger(addedSeconds + _timestamp.getInteger());
     _lastMillis += addedSeconds * 1000;
   }
-  size_t currentFreeMemory = freeMemory();
-  _ramFreeDifference.setInteger(currentFreeMemory - _ramFree.getInteger());
-  _ramFree.setInteger(currentFreeMemory);
+  size_t currentFreeRAM = freeMemory();
+  _ramFreeDifference.setInteger(currentFreeRAM - _ramFree.getInteger());
+  _ramFree.setInteger(currentFreeRAM);
   if (_loopCount < 5 && !_started.getBoolean()) {
     addError(new ArduinoError(ArduinoError::CodeNotStarted));
     return;
   }
   _started.setBoolean(true);
   if (_ramFreeDifference.getInteger() >= 1000) {
-    addError(new ArduinoError(ArduinoError::CodeMemoryDifference1k));
+    addError(new ArduinoError(ArduinoError::CodeRAMDifference1k));
   } else if (_ramFreeDifference.getInteger() >= 500) {
-    addError(new ArduinoError(ArduinoError::CodeMemoryDifference500));
+    addError(new ArduinoError(ArduinoError::CodeRAMDifference500));
   } else if (_ramFreeDifference.getInteger() >= 100) {
-    addError(new ArduinoError(ArduinoError::CodeMemoryDifference100));
+    addError(new ArduinoError(ArduinoError::CodeRAMDifference100));
   }
-  if (currentFreeMemory <= _veryLowFreeMemory) {
-    addError(new ArduinoError(ArduinoError::CodeVeryLowMemory));
-  } else if (currentFreeMemory <= _lowFreeMemory) {
-    addError(new ArduinoError(ArduinoError::CodeLowMemory));
-  } else if (currentFreeMemory <= _infoFreeMemory) {
-    addError(new ArduinoError(ArduinoError::CodeInfoMemory));
+  if (currentFreeRAM <= _criticalFreeRAM) {
+    addError(new ArduinoError(ArduinoError::CodeCriticalRAM));
+  } else if (currentFreeRAM <= _warningFreeRAM) {
+    addError(new ArduinoError(ArduinoError::CodeWarningRAM));
+  } else if (currentFreeRAM <= _infoFreeRAM) {
+    addError(new ArduinoError(ArduinoError::CodeInfoRAM));
   }
   if (_computeTime.getInteger() < 200) {
   } else if (_computeTime.getInteger() < 500) {

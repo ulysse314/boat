@@ -12,12 +12,12 @@ public:
     CodeComputeTimeInfo,               // 3
     CodeComputeTimeWarning,            // 4
     CodeComputeTimeCritical,           // 5
-    CodeMemoryDifference100,           // 6
-    CodeMemoryDifference500,           // 7
-    CodeMemoryDifference1k,            // 8
-    CodeInfoMemory,                    // 9
-    CodeLowMemory,                     // 10
-    CodeVeryLowMemory,                 // 11
+    CodeRAMDifference100,              // 6
+    CodeRAMDifference500,              // 7
+    CodeRAMDifference1k,               // 8
+    CodeInfoRAM,                       // 9
+    CodeWarningRAM,                    // 10
+    CodeCriticalRAM,                   // 11
     CodeArduinoCodeUnknown,            // 12
     CodeGPSValueIndex,                 // 13
     CodeGPSCodeUnknown,                // 14

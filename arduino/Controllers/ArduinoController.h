@@ -30,9 +30,9 @@ public:
 protected:
   TwoWire *_ic2;
   OneWire *_oneWire;
-  size_t _infoFreeMemory;
-  size_t _lowFreeMemory;
-  size_t _veryLowFreeMemory;
+  size_t _infoFreeRAM;
+  size_t _warningFreeRAM;
+  size_t _criticalFreeRAM;
   unsigned long _lastMillis;
   unsigned long _loopCount;
   Value _started;

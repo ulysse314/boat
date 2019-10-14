@@ -16,8 +16,8 @@ Error::Level ArduinoError::getLevel() const {
     case CodeSetValueWithWrongType:
     case CodeGetValueWithWrongType:
     case CodeComputeTimeCritical:
-    case CodeMemoryDifference1k:
-    case CodeVeryLowMemory:
+    case CodeRAMDifference1k:
+    case CodeCriticalRAM:
     case CodeArduinoCodeUnknown:
     case CodeGPSValueIndex:
     case CodeGPSCodeUnknown:
@@ -27,13 +27,13 @@ Error::Level ArduinoError::getLevel() const {
     case CodeMainLoopCounterLowCritical:
       return Error::Level::Critical;
     case CodeComputeTimeWarning:
-    case CodeMemoryDifference500:
-    case CodeLowMemory:
+    case CodeRAMDifference500:
+    case CodeWarningRAM:
     case CodeMainLoopCounterLowWarning:
       return Error::Level::Warning;
     case CodeComputeTimeInfo:
-    case CodeMemoryDifference100:
-    case CodeInfoMemory:
+    case CodeRAMDifference100:
+    case CodeInfoRAM:
     case CodeMainLoopCounterLowInfo:
     case CodeNotStarted:
       return Error::Level::Info;
@@ -50,18 +50,18 @@ bool ArduinoError::isPersistant() const {
     case CodeArduinoCodeUnknown:
     case CodeGPSValueIndex:
     case CodeGPSCodeUnknown:
-    case CodeMemoryDifference1k:
+    case CodeRAMDifference1k:
     case CodeComputeTimeCritical:
     case CodeAddingValueWithSameName:
     case CodePWMDriverNotAvailable:
       return true;
     case CodeComputeTimeInfo:
     case CodeComputeTimeWarning:
-    case CodeMemoryDifference100:
-    case CodeMemoryDifference500:
-    case CodeInfoMemory:
-    case CodeLowMemory:
-    case CodeVeryLowMemory:
+    case CodeRAMDifference100:
+    case CodeRAMDifference500:
+    case CodeInfoRAM:
+    case CodeWarningRAM:
+    case CodeCriticalRAM:
     case CodePiLinkConnectionTimeOut:
     case CodeMainLoopCounterLowInfo:
     case CodeMainLoopCounterLowWarning:
