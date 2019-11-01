@@ -9,7 +9,7 @@ public:
     CodeNone,                              // 0
     CodeUnknownAntenna,                    // 1
     CodeExternalAntennaProblem,            // 2
-    CodeInternalAntenna,                   // 3
+    CodeUsingInternalAntenna,              // 3
     CodeNoFixMode,                         // 4
     Code2DMode,                            // 5
     CodeUsedSatellitesTooLow,              // 6

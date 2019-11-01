@@ -18,7 +18,7 @@ Error::Level GPSError::getLevel() const {
     case CodeNoFixMode:
     case CodeUsedSatellitesTooLow:
       return Error::Level::Critical;
-    case CodeInternalAntenna:
+    case CodeUsingInternalAntenna:
     case Code2DMode:
     case CodeUsedSatellitesLow:
       return Error::Level::Warning;

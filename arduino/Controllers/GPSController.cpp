@@ -62,7 +62,7 @@ void GPSController::sensorsHasBeenUpdated() {
       addError(new GPSError(GPSError::CodeExternalAntennaProblem));
       break;
     case Adafruit_GPS::AntennaUsingInternal:
-      addError(new GPSError(GPSError::CodeInternalAntenna));
+      addError(new GPSError(GPSError::CodeUsingInternalAntenna));
       break;
     case Adafruit_GPS::AntennaUsingExternal:
       break;
