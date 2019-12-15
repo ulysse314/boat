@@ -7,18 +7,17 @@ class BatteryError : public Error {
 public:
   typedef enum {
     CodeNone,                          // 0
-    CodeBatteryCodeUnknown,            // 1
-    CodeINA219NotFound,                // 2
-    CodeVoltageInfo,                   // 3
-    CodeVoltageWarning,                // 4
-    CodeVoltageCritical,               // 5
-    CodeAmpereInfo,                    // 6
-    CodeAmpereWarning,                 // 7
-    CodeAmpereCritical,                // 8
-    CodeTemperatureUnknown,            // 9
-    CodeTemperatureInfo,               // 10
-    CodeTemperatureWarning,            // 11
-    CodeTemperatureCritical,           // 12
+    CodeINA219NotFound,                // 1
+    CodeVoltageInfo,                   // 2
+    CodeVoltageWarning,                // 3
+    CodeVoltageCritical,               // 4
+    CodeAmpereInfo,                    // 5
+    CodeAmpereWarning,                 // 6
+    CodeAmpereCritical,                // 7
+    CodeTemperatureUnknown,            // 8
+    CodeTemperatureInfo,               // 9
+    CodeTemperatureWarning,            // 10
+    CodeTemperatureCritical,           // 11
   } Code;
   
   BatteryError(Code code, const char *message = NULL);

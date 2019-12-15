@@ -21,6 +21,7 @@ Error::Level MotorError::getLevel() const {
     case CodeTemperatureInfo:
       return Error::Level::Info;
   };
-  ArduinoController::addArduinoError(ArduinoError::CodeGPSCodeUnknown);
+  Error *error = new ArduinoError(ArduinoError::CodeMotorCodeUnknown, NULL);
+  ArduinoController::sharedController()->addError(error);
   return Error::Level::Critical;
 }

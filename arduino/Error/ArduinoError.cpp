@@ -25,6 +25,8 @@ Error::Level ArduinoError::getLevel() const {
     case CodePWMDriverNotAvailable:
     case CodePiLinkConnectionTimeOut:
     case CodeMainLoopCounterLowCritical:
+    case CodeMotorCodeUnknown:
+    case CodeBatteryCodeUnknown:
       return Error::Level::Critical;
     case CodeComputeTimeWarning:
     case CodeRAMDifference500:
@@ -38,7 +40,8 @@ Error::Level ArduinoError::getLevel() const {
     case CodeNotStarted:
       return Error::Level::Info;
   };
-  ArduinoController::addArduinoError(ArduinoError::CodeArduinoCodeUnknown);
+  Error *error = new ArduinoError(ArduinoError::CodeArduinoCodeUnknown, NULL);
+  ArduinoController::sharedController()->addError(error);
   return Error::Level::Critical;
 }
 
@@ -54,6 +57,8 @@ bool ArduinoError::isPersistant() const {
     case CodeComputeTimeCritical:
     case CodeAddingValueWithSameName:
     case CodePWMDriverNotAvailable:
+    case CodeMotorCodeUnknown:
+    case CodeBatteryCodeUnknown:
       return true;
     case CodeComputeTimeInfo:
     case CodeComputeTimeWarning:
@@ -69,6 +74,7 @@ bool ArduinoError::isPersistant() const {
     case CodeNotStarted:
       return false;
   };
-  ArduinoController::addArduinoError(ArduinoError::CodeArduinoCodeUnknown);
+  Error *error = new ArduinoError(ArduinoError::CodeArduinoCodeUnknown, NULL);
+  ArduinoController::sharedController()->addError(error);
   return false;
 }

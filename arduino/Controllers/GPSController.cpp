@@ -2,7 +2,6 @@
 
 #include <Adafruit_GPS.h>
 
-#include "ArduinoController.h"
 #include "GPSError.h"
 #include "GPSSensor.h"
 #include "SensorList.h"

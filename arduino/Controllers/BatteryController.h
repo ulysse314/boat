@@ -12,12 +12,8 @@ class TwoWire;
 
 class BatteryController : public Controller {
 public:
-  static BatteryController *getBatteryController();
-  static bool addBatteryError(BatteryError::Code code);
-  static bool removeBatteryError(BatteryError::Code code);
-
   BatteryController(TwoWire *i2c, OneWire *oneWire);
-  virtual ~BatteryController();
+  ~BatteryController();
 
   // Controller.
   const char *getName() const override { return "bat"; };

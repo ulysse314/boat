@@ -58,7 +58,8 @@ bool Controller::removeErrorWithCode(Error::Domain domain, int code) {
 void Controller::addValue(Value *value) {
   size_t index = _valueList.indexForData(value);
   if (index != (size_t)-1) {
-    ArduinoController::addArduinoError(ArduinoError::CodeAddingValueWithSameName);
+    Error *error = new ArduinoError(ArduinoError::CodeAddingValueWithSameName, NULL);
+    ArduinoController::sharedController()->addError(error);
     return;
   }
   _valueList.addData(value);

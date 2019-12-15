@@ -24,6 +24,7 @@ Error::Level GPSError::getLevel() const {
       return Error::Level::Warning;
     
   };
-  ArduinoController::addArduinoError(ArduinoError::CodeGPSCodeUnknown);
+  Error *error = new ArduinoError(ArduinoError::CodeGPSCodeUnknown, NULL);
+  ArduinoController::sharedController()->addError(error);
   return Error::Level::Critical;
 }

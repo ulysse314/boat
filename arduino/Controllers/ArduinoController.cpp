@@ -9,25 +9,19 @@
 #include "PiLink.h"
 #include "Version.h"
 
-static ArduinoController *arduinoController = NULL;
+static ArduinoController *sharedArduinoController = NULL;
 
 // static
-ArduinoController *ArduinoController::getArduinoController() {
-  return arduinoController;
+ArduinoController *ArduinoController::generateController(TwoWire *i2c, OneWire *oneWire) {
+  if (!sharedArduinoController) {
+    sharedArduinoController = new ArduinoController(i2c, oneWire);
+  }
+  return sharedArduinoController;
 }
 
 // static
-bool ArduinoController::addArduinoError(ArduinoError::Code code) {
-  ArduinoController *arduinoController = ArduinoController::getArduinoController();
-  Error *error = new ArduinoError(code, NULL);
-  return arduinoController->addError(error);
-}
-
-// static
-bool ArduinoController::removeArduinoError(ArduinoError::Code code) {
-  ArduinoController *arduinoController = ArduinoController::getArduinoController();
-  Error *error = new ArduinoError(code, NULL);
-  return arduinoController->removeError(error);
+ArduinoController *ArduinoController::sharedController() {
+  return sharedArduinoController;
 }
 
 ArduinoController::ArduinoController(TwoWire *ic2, OneWire *oneWire) :
@@ -55,7 +49,9 @@ ArduinoController::ArduinoController(TwoWire *ic2, OneWire *oneWire) :
   compileDateString.concat(__DATE__);
   _compileDate.setString(compileDateString.c_str());
   _arduinoVersion.setInteger(ArduinoVersion);
-  arduinoController = this;
+}
+
+ArduinoController::~ArduinoController() {
 }
 
 void ArduinoController::begin() {

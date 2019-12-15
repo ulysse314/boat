@@ -10,12 +10,10 @@ class TwoWire;
 
 class ArduinoController : public Controller {
 public:
-  static ArduinoController *getArduinoController();
-  static bool addArduinoError(ArduinoError::Code code);
-  static bool removeArduinoError(ArduinoError::Code code);
+  static ArduinoController *generateController(TwoWire *i2c, OneWire *oneWire);
+  static ArduinoController *sharedController();
   
-public:
-  ArduinoController(TwoWire *ic2, OneWire *oneWire);
+  ~ArduinoController();
 
   void setCycleCount(long int cycleCount) { _cycleCount.setInteger(cycleCount); };
   void setLoopDuration(long int loopDuration) { _loopDuration.setInteger(loopDuration); };
@@ -28,6 +26,8 @@ public:
   void sensorsHasBeenUpdated() override;
 
 protected:
+  ArduinoController(TwoWire *ic2, OneWire *oneWire);
+
   TwoWire *_ic2;
   OneWire *_oneWire;
   size_t _infoFreeRAM;

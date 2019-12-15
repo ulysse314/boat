@@ -28,6 +28,8 @@ public:
     CodeMainLoopCounterLowWarning,     // 19
     CodeMainLoopCounterLowCritical,    // 20
     CodeNotStarted,                    // 21
+    CodeMotorCodeUnknown,              // 22
+    CodeBatteryCodeUnknown,            // 23
   } Code;
   
   ArduinoError(Code code, const char *message = NULL);

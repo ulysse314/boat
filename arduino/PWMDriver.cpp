@@ -26,10 +26,11 @@ PWMDriver::PWMDriver(TwoWire *i2c, int address) :
 
 void PWMDriver::begin() {
   _available = _adafruitDriver.begin() && _adafruitDriver.setPWMFreq(ADAFRUIT_FREQUENCE);
+  Error *error = new ArduinoError(ArduinoError::CodePWMDriverNotAvailable, NULL);
   if (_available) {
-    ArduinoController::removeArduinoError(ArduinoError::CodePWMDriverNotAvailable);
+    ArduinoController::sharedController()->removeError(error);
   } else {
-    ArduinoController::addArduinoError(ArduinoError::CodePWMDriverNotAvailable);
+    ArduinoController::sharedController()->addError(error);
   }
 }
 
@@ -53,7 +54,8 @@ bool PWMDriver::setValueForMotor(int8_t value, uint8_t motorID) {
   }
   _available = _adafruitDriver.setPWM(motorID, 0, realValue);
   if (!_available) {
-    ArduinoController::addArduinoError(ArduinoError::CodePWMDriverNotAvailable);
+    Error *error = new ArduinoError(ArduinoError::CodePWMDriverNotAvailable, NULL);
+    ArduinoController::sharedController()->addError(error);
   }
   return _available;
 }

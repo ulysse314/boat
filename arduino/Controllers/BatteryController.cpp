@@ -21,34 +21,12 @@ const uint8_t kDallasAddress[8] = { 0x28, 0x58, 0xDB, 0x1E, 0x03, 0x00, 0x00, 0x
 #define kWarningTemperature              60.0
 #define kCriticalTemperature             70.0
 
-static BatteryController *batteryController = NULL;
-
-// static
-BatteryController *BatteryController::getBatteryController() {
-  return batteryController;
-}
-
-// static
-bool BatteryController::addBatteryError(BatteryError::Code code) {
-  BatteryController *BatteryController = BatteryController::getBatteryController();
-  Error *error = new BatteryError(code, NULL);
-  return BatteryController->addError(error);
-}
-
-// static
-bool BatteryController::removeBatteryError(BatteryError::Code code) {
-  BatteryController *BatteryController = BatteryController::getBatteryController();
-  Error *error = new BatteryError(code, NULL);
-  return BatteryController->removeError(error);
-}
-
 BatteryController::BatteryController(TwoWire *i2c, OneWire *oneWire) :
     _ina219Sensor(i2c, kINA219Address, INA219ShuntValue, INA219MaxCurrent),
     _temperatureSensor(kDallasAddress, oneWire),
     _voltage(Value::Type::Double, "volt"),
     _current(Value::Type::Double, "amp"),
     _temperature(Value::Type::Double, "temp") {
-  batteryController = this;
 }
 
 BatteryController::~BatteryController() {

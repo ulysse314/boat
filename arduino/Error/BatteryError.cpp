@@ -1,6 +1,6 @@
 #include "BatteryError.h"
 
-#include "BatteryController.h"
+#include "ArduinoController.h"
 
 BatteryError::BatteryError(Code code, const char *message) :
     Error(message),
@@ -13,7 +13,6 @@ BatteryError::~BatteryError() {
 Error::Level BatteryError::getLevel() const {
   switch(_code) {
     case CodeNone:
-    case CodeBatteryCodeUnknown:
     case CodeINA219NotFound:
     case CodeVoltageCritical:
     case CodeAmpereCritical:
@@ -29,14 +28,14 @@ Error::Level BatteryError::getLevel() const {
     case CodeTemperatureInfo:
       return Error::Level::Info;
   };
-  BatteryController::addBatteryError(BatteryError::CodeBatteryCodeUnknown);
+  Error *error = new ArduinoError(ArduinoError::CodeBatteryCodeUnknown, NULL);
+  ArduinoController::sharedController()->addError(error);
   return Error::Level::Critical;
 }
 
 bool BatteryError::isPersistant() const {
   switch(_code) {
     case CodeNone:
-    case CodeBatteryCodeUnknown:
       return true;
     case CodeINA219NotFound:
     case CodeVoltageInfo:
@@ -51,6 +50,7 @@ bool BatteryError::isPersistant() const {
     case CodeTemperatureCritical:
       return false;
   };
-  BatteryController::addBatteryError(BatteryError::CodeBatteryCodeUnknown);
+  Error *error = new ArduinoError(ArduinoError::CodeBatteryCodeUnknown, NULL);
+  ArduinoController::sharedController()->addError(error);
   return false;
 }
