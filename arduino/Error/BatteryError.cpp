@@ -22,6 +22,7 @@ Error::Level BatteryError::getLevel() const {
     case CodeVoltageWarning:
     case CodeAmpereWarning:
     case CodeTemperatureWarning:
+    case CodeADS1115NotFound:
       return Error::Level::Warning;
     case CodeVoltageInfo:
     case CodeAmpereInfo:
@@ -48,6 +49,7 @@ bool BatteryError::isPersistant() const {
     case CodeTemperatureInfo:
     case CodeTemperatureWarning:
     case CodeTemperatureCritical:
+    case CodeADS1115NotFound:
       return false;
   };
   Error *error = new ArduinoError(ArduinoError::CodeBatteryCodeUnknown, NULL);

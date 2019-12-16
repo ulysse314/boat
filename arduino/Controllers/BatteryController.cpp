@@ -90,7 +90,14 @@ void BatteryController::sensorsHasBeenUpdated() {
     addError(new BatteryError(BatteryError::CodeTemperatureUnknown));
     _temperature.setNull();
   }
-  _balancer0.setInteger(_ads1115Driver->getValue1());
-  _balancer1.setInteger(_ads1115Driver->getValue2());
-  _balancer2.setInteger(_ads1115Driver->getValue3());
+  if (_ads1115Driver->getAvailable()) {
+    _balancer0.setInteger(_ads1115Driver->getValue1());
+    _balancer1.setInteger(_ads1115Driver->getValue2());
+    _balancer2.setInteger(_ads1115Driver->getValue3());
+  } else {
+    addError(new BatteryError(BatteryError::CodeADS1115NotFound));
+    _balancer0.setNull();
+    _balancer1.setNull();
+    _balancer2.setNull();
+  }
 }

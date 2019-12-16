@@ -3,6 +3,7 @@
 
 class Driver {
 public:
+  virtual ~Driver() {};
   virtual void begin() = 0;
   virtual void loop() = 0;
   virtual bool getAvailable() { return _available; };

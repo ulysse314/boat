@@ -27,6 +27,7 @@ Error::Level ArduinoError::getLevel() const {
     case CodeMainLoopCounterLowCritical:
     case CodeMotorCodeUnknown:
     case CodeBatteryCodeUnknown:
+    case CodeHullCodeUnknown:
       return Error::Level::Critical;
     case CodeComputeTimeWarning:
     case CodeRAMDifference500:
@@ -59,6 +60,7 @@ bool ArduinoError::isPersistant() const {
     case CodePWMDriverNotAvailable:
     case CodeMotorCodeUnknown:
     case CodeBatteryCodeUnknown:
+    case CodeHullCodeUnknown:
       return true;
     case CodeComputeTimeInfo:
     case CodeComputeTimeWarning:

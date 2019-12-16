@@ -18,6 +18,7 @@ public:
     CodeTemperatureInfo,               // 9
     CodeTemperatureWarning,            // 10
     CodeTemperatureCritical,           // 11
+    CodeADS1115NotFound,               // 12
   } Code;
   
   BatteryError(Code code, const char *message = NULL);
