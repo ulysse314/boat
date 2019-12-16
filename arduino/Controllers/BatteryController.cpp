@@ -18,6 +18,9 @@ const uint8_t kDallasAddress[8] = { 0x28, 0x58, 0xDB, 0x1E, 0x03, 0x00, 0x00, 0x
 #endif
 
 #define kINA219Address 0x41
+#define kInfoVoltage                     12.4
+#define kWarningVoltage                  12.
+#define kCriticalVoltage                 11.6
 #define kInfoTemperature                 50.0
 #define kWarningTemperature              60.0
 #define kCriticalTemperature             70.0
@@ -55,6 +58,15 @@ void BatteryController::sensorsHasBeenUpdated() {
   if (_ina219Sensor.hasValue()) {
     double voltage = _ina219Sensor.getVoltage();
     _voltage.setDouble(voltage);
+    if (voltage > kInfoVoltage) {
+      // No error.
+    } else if (voltage > kWarningVoltage) {
+      addError(new BatteryError(BatteryError::CodeVoltageInfo));
+    } else if (voltage > kCriticalVoltage) {
+      addError(new BatteryError(BatteryError::CodeVoltageWarning));
+    } else {
+      addError(new BatteryError(BatteryError::CodeVoltageCritical));
+    }
     double current = _ina219Sensor.getCurrent();
     _current.setDouble(current);
   } else {
