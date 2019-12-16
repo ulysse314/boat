@@ -20,6 +20,10 @@ void DriverManager::loop() {
   const List<Driver>::Bucket *bucket = _driverList.getFirstBucket();
   Driver *driver = NULL;
   while (_driverList.nextDataWithBucket(bucket, driver)) {
-    driver->loop();
+    if (driver->available()) {
+      driver->loop();
+    } else {
+      driver->begin();
+    }
   }
 }

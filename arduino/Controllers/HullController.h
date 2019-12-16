@@ -1,18 +1,22 @@
 #ifndef HullController_h
 #define HullController_h
 
+#include "ADS1115Driver.h"
 #include "Controller.h"
-
-class AnalogSensor;
+#include "Value.h"
 
 class HullController : public Controller {
 public:
-  HullController();
+  HullController(ADS1115Driver *ads1115Driver);
   virtual ~HullController();
-  virtual void addSensorsToList(SensorList *sensorList) override;
+
+  const char *getName() const override { return "hull"; };
+  void begin() override;
+  void sensorsHasBeenUpdated() override;
   
 protected:
-  AnalogSensor *_waterSensor;
+  ADS1115Driver *_ads1115Driver;
+  Value _water;
 };
 
 #endif // HullController_h

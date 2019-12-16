@@ -20,8 +20,7 @@
 #define REVERSED() (PWM_REVERSE_S * 4096.0 * REAL_FREQUENCE)
 
 PWMDriver::PWMDriver(TwoWire *i2c, int address) :
-    _adafruitDriver(i2c, address),
-    _available(false) {
+    _adafruitDriver(i2c, address) {
 }
 
 void PWMDriver::begin() {
