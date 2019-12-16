@@ -2,6 +2,7 @@
 #include "BatteryController.h"
 #include "ControllerManager.h"
 #include "DallasSensor.h"
+#include "DriverManager.h"
 #include "GPSController.h"
 #include "GPSSensor.h"
 #include "InfoActuatorSensor.h"
@@ -27,6 +28,8 @@ BatteryController *batteryController = NULL;
 GPSController *gpsController = NULL;
 MotorController *leftMotorController = NULL;
 MotorController *rightMotorController = NULL;
+
+DriverManager *driverManager = NULL;
 PWMDriver *pwmDriver = NULL;
 
 PiLink *piLink = NULL;
@@ -36,8 +39,11 @@ void initGlobal() {
   oneWire = new OneWire(ONE_WIRE_PIN);
   infoActuatorSensor = new InfoActuatorSensor();
   controllerManager = new ControllerManager();
-  pwmDriver = new PWMDriver(&Wire, PWM_ADDRESS);
+  driverManager = new DriverManager();
   piLink = PiLink::getPiLink();
+
+  pwmDriver = new PWMDriver(&Wire, PWM_ADDRESS);
+  driverManager->addDriver(pwmDriver);
 
   gpsController = new GPSController();
   controllerManager->addController(gpsController);
@@ -55,7 +61,7 @@ void initGlobal() {
   piLink->setRightMotorController(rightMotorController);
   piLink->setArduinoController(arduinoController);
 
-  pwmDriver->begin();
+  driverManager->begin();
   sensorList->begin();
   controllerManager->begin();
   sensorList->loop();
@@ -85,7 +91,7 @@ unsigned long counter = 0;
 void loop() {
   sensorList->loop();
   piLink->listen();
-  pwmDriver->loop();
+  driverManager->loop();
   unsigned long currentTime = millis();
   unsigned long difference = currentTime - lastPrint;
   if (difference > 1000) {

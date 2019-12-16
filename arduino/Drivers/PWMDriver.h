@@ -3,13 +3,15 @@
 
 #include <Adafruit_PWMServoDriver.h>
 
-class PWMDriver {
+#include "Driver.h"
+
+class PWMDriver : public Driver {
 public:
   PWMDriver(TwoWire *i2c, int address);
 
-  void begin();
+  void begin() override;
   void sensorsHasBeenUpdated();
-  void loop();
+  void loop() override;
   bool setValueForMotor(int8_t value, uint8_t motorID);
 
 private:
