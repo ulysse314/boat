@@ -7,13 +7,13 @@
 #include "INA219Sensor.h"
 #include "Value.h"
 
-class ADS1115Driver;
+class ADS1115Sensor;
 class OneWire;
 class TwoWire;
 
 class BatteryController : public Controller {
 public:
-  BatteryController(ADS1115Driver *ads1115Driver, TwoWire *i2c, OneWire *oneWire);
+  BatteryController(ADS1115Sensor *ads1115Sensor, TwoWire *i2c, OneWire *oneWire);
   ~BatteryController();
 
   // Controller.
@@ -23,7 +23,7 @@ public:
   void sensorsHasBeenUpdated() override;
   
 protected:
-  ADS1115Driver *_ads1115Driver;
+  ADS1115Sensor *_ads1115Sensor;
   INA219Sensor _ina219Sensor;
   DallasSensor _temperatureSensor;
   Value _voltage;

@@ -1,6 +1,6 @@
 #include "BatteryController.h"
 
-#include "ADS1115Driver.h"
+#include "ADS1115Sensor.h"
 #include "BatteryError.h"
 #include "SensorList.h"
 #include "Version.h"
@@ -25,8 +25,8 @@ const uint8_t kDallasAddress[8] = { 0x28, 0x58, 0xDB, 0x1E, 0x03, 0x00, 0x00, 0x
 #define kWarningTemperature              60.0
 #define kCriticalTemperature             70.0
 
-BatteryController::BatteryController(ADS1115Driver *ads1115Driver, TwoWire *i2c, OneWire *oneWire) :
-    _ads1115Driver(ads1115Driver),
+BatteryController::BatteryController(ADS1115Sensor *ads1115Sensor, TwoWire *i2c, OneWire *oneWire) :
+    _ads1115Sensor(ads1115Sensor),
     _ina219Sensor(i2c, kINA219Address, INA219ShuntValue, INA219MaxCurrent),
     _temperatureSensor(kDallasAddress, oneWire),
     _voltage(Value::Type::Double, "volt"),
@@ -90,10 +90,10 @@ void BatteryController::sensorsHasBeenUpdated() {
     addError(new BatteryError(BatteryError::CodeTemperatureUnknown));
     _temperature.setNull();
   }
-  if (_ads1115Driver->getAvailable()) {
-    _balancer0.setInteger(_ads1115Driver->getValue1());
-    _balancer1.setInteger(_ads1115Driver->getValue2());
-    _balancer2.setInteger(_ads1115Driver->getValue3());
+  if (_ads1115Sensor->getAvailable()) {
+    _balancer0.setInteger(_ads1115Sensor->getValue1());
+    _balancer1.setInteger(_ads1115Sensor->getValue2());
+    _balancer2.setInteger(_ads1115Sensor->getValue3());
   } else {
     addError(new BatteryError(BatteryError::CodeADS1115NotFound));
     _balancer0.setNull();

@@ -1,4 +1,4 @@
-#include "ADS1115Driver.h"
+#include "ADS1115Sensor.h"
 #include "ArduinoController.h"
 #include "BatteryController.h"
 #include "ControllerManager.h"
@@ -23,9 +23,9 @@
 SensorList *sensorList = NULL;
 OneWire *oneWire = NULL;
 InfoActuatorSensor *infoActuatorSensor = NULL;
+ADS1115Sensor *ads1115Sensor = NULL;
 
 DriverManager *driverManager = NULL;
-ADS1115Driver *ads1115Driver = NULL;
 PWMDriver *pwmDriver = NULL;
 
 ControllerManager *controllerManager = NULL;
@@ -39,25 +39,26 @@ MotorController *rightMotorController = NULL;
 PiLink *piLink = NULL;
 
 void initGlobal() {
-  sensorList = new SensorList();
   oneWire = new OneWire(ONE_WIRE_PIN);
   infoActuatorSensor = new InfoActuatorSensor();
   controllerManager = new ControllerManager();
   driverManager = new DriverManager();
   piLink = PiLink::getPiLink();
 
+  sensorList = new SensorList();
+  ads1115Sensor = new ADS1115Sensor();
+  sensorList->addSensor(ads1115Sensor);
+
   pwmDriver = new PWMDriver(&Wire, PWM_ADDRESS);
   driverManager->addDriver(pwmDriver);
-  ads1115Driver = new ADS1115Driver();
-  driverManager->addDriver(ads1115Driver);
 
   gpsController = new GPSController();
   controllerManager->addController(gpsController);
   arduinoController = ArduinoController::generateController(&Wire, oneWire);
   controllerManager->addController(arduinoController);
-  batteryController = new BatteryController(ads1115Driver, &Wire, oneWire);
+  batteryController = new BatteryController(ads1115Sensor, &Wire, oneWire);
   controllerManager->addController(batteryController);
-  hullController = new HullController(ads1115Driver);
+  hullController = new HullController(ads1115Sensor, &Wire);
   controllerManager->addController(hullController);
   leftMotorController = MotorController::LeftMotor(oneWire, pwmDriver);
   controllerManager->addController(leftMotorController);
