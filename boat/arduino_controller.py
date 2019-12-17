@@ -116,6 +116,9 @@ class ArduinoController:
     if values["volt"] != None: self.values["battery"]["volt"] = values["volt"]
     if values["amp"] != None: self.values["battery"]["amp"] = values["amp"]
     if values["temp"] != None: self.values["battery"]["temp"] = values["temp"]
+    if values["bal0"] != None: self.values["battery"]["bal0"] = values["bal0"]
+    if values["bal1"] != None: self.values["battery"]["bal1"] = values["bal1"]
+    if values["bal2"] != None: self.values["battery"]["bal2"] = values["bal2"]
     if "err" in values: self.values["battery"]["errors"] = values["err"]
 
   def _update_gps_values(self, values):
@@ -135,6 +138,14 @@ class ArduinoController:
     if values["vdp"] != None: self.values["gps"]["dop.v"] = values["vdp"]
     if values["gh"] != None: self.values["gps"]["geoidheight"] = values["gh"]
     if "err" in values: self.values["gps"]["errors"] = values["err"]
+
+  def _update_hull_values(self, values):
+    self.values['hull'] = {}
+    if values["water"] != None: self.values["hull"]["water"] = values["water"]
+    if values["temp"] != None: self.values["hull"]["temp"] = values["temp"]
+    if values["humi"] != None: self.values["hull"]["humi"] = values["humi"]
+    if values["press"] != None: self.values["hull"]["press"] = values["press"]
+    if "err" in values: self.values["hull"]["errors"] = values["err"]
 
   def _update_motor_values(self, values):
     motor_name = values["name"]
@@ -186,6 +197,8 @@ class ArduinoController:
       self._update_battery_values(values)
     elif values["name"] == "gps":
       self._update_gps_values(values)
+    elif values["name"] == "hull":
+      self._update_hull_values(values)
     elif values["name"].startswith("motor-"):
       self._update_motor_values(values)
     else:
