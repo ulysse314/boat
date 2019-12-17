@@ -3,7 +3,12 @@
 #include "Arduino.h"
 
 BME680Sensor::BME680Sensor(TwoWire *i2cBus) :
-    _bme680(i2cBus) {
+    _bme680(i2cBus),
+    _available(false),
+    _waitingForData(false),
+    _temperature(0),
+    _humidity(0),
+    _pressure(0) {
 }
 
 void BME680Sensor::begin() {
@@ -13,6 +18,13 @@ void BME680Sensor::begin() {
 void BME680Sensor::loop() {
   if (!_available) {
     _available = _bme680.begin(0x76);
+    return;
+  }
+  if (_waitingForData && _bme680.remainingReadingMillis() == _bme680.reading_complete) {
+    _waitingForData = false;
+    _temperature = _bme680.temperature;
+    _humidity = _bme680.humidity;
+    _pressure = _bme680.pressure;
   }
 }
 
@@ -32,9 +44,8 @@ bool BME680Sensor::printValues(Stream *serial) {
 
 bool BME680Sensor::readValues() {
   if (_available) {
-    _temperature = _bme680.readTemperature();
-    _pressure = _bme680.readPressure();
-    _humidity = _bme680.readHumidity();
+    _bme680.beginReading();
+    _waitingForData = true;
   }
   return _available;
 }

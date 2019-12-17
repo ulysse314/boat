@@ -25,9 +25,10 @@ public:
 protected:
   Adafruit_BME680 _bme680;
   bool _available;
+  bool _waitingForData;
   float _temperature;
-  float _pressure;
   float _humidity;
+  float _pressure;
 };
 
 #endif // BME680Sensor_h
