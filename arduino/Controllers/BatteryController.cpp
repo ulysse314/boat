@@ -8,11 +8,13 @@
 #if IS_MOUSSAILLON
 #define INA219ShuntValue 0.0015
 #define INA219MaxCurrent 50.
-const uint8_t kDallasAddress[8] = { 0x28, 0x66, 0x05, 0x1F, 0x03, 0x00, 0x00, 0xFB };
+const uint8_t kBalancerDallasAddress[8] = { 0x28, 0xAA, 0x73, 0x4E, 0x55, 0x14, 0x01, 0x9C };
+const uint8_t kBatteryDallasAddress[8] = { 0x28, 0x66, 0x05, 0x1F, 0x03, 0x00, 0x00, 0xFB };
 #elif IS_TELEMAQUE
 #define INA219ShuntValue 0.00125
 #define INA219MaxCurrent 60.
-const uint8_t kDallasAddress[8] = { 0x28, 0x58, 0xDB, 0x1E, 0x03, 0x00, 0x00, 0x76 };
+const uint8_t kBalancerDallasAddress[8] = { 0x28, 0xAA, 0x73, 0x4E, 0x55, 0x14, 0x01, 0x9C };
+const uint8_t kBatteryDallasAddress[8] = { 0x28, 0x58, 0xDB, 0x1E, 0x03, 0x00, 0x00, 0x76 };
 #else
 #error *** No boat defined ***
 #endif
@@ -28,10 +30,12 @@ const uint8_t kDallasAddress[8] = { 0x28, 0x58, 0xDB, 0x1E, 0x03, 0x00, 0x00, 0x
 BatteryController::BatteryController(ADS1115Sensor *ads1115Sensor, TwoWire *i2c, OneWire *oneWire) :
     _ads1115Sensor(ads1115Sensor),
     _ina219Sensor(i2c, kINA219Address, INA219ShuntValue, INA219MaxCurrent),
-    _temperatureSensor(kDallasAddress, oneWire),
+    _batteryTemperatureSensor(kBatteryDallasAddress, oneWire),
+    _balancerTemperatureSensor(kBalancerDallasAddress, oneWire),
     _voltage(Value::Type::Double, "volt"),
     _current(Value::Type::Double, "amp"),
-    _temperature(Value::Type::Double, "temp"),
+    _batteryTemperature(Value::Type::Double, "batT"),
+    _balancerTemperature(Value::Type::Double, "balT"),
     _balancer0(Value::Type::Integer, "bal0"),
     _balancer1(Value::Type::Integer, "bal1"),
     _balancer2(Value::Type::Integer, "bal2") {
@@ -43,7 +47,8 @@ BatteryController::~BatteryController() {
 void BatteryController::begin() {
   addValue(&_voltage);
   addValue(&_current);
-  addValue(&_temperature);
+  addValue(&_batteryTemperature);
+  addValue(&_balancerTemperature);
   addValue(&_balancer0);
   addValue(&_balancer1);
   addValue(&_balancer2);
@@ -51,7 +56,8 @@ void BatteryController::begin() {
 
 void BatteryController::addSensorsToList(SensorList *sensorList) {
   sensorList->addSensor(&_ina219Sensor);
-  sensorList->addSensor(&_temperatureSensor);
+  sensorList->addSensor(&_batteryTemperatureSensor);
+  sensorList->addSensor(&_balancerTemperatureSensor);
 }
 
 void BatteryController::sensorsHasBeenUpdated() {
@@ -74,9 +80,9 @@ void BatteryController::sensorsHasBeenUpdated() {
     _voltage.setNull();
     _current.setNull();
   }
-  if (_temperatureSensor.hasValue()) {
-    double temperature = _temperatureSensor.celsius();
-    _temperature.setDouble(temperature);
+  if (_batteryTemperatureSensor.hasValue()) {
+    double temperature = _batteryTemperatureSensor.celsius();
+    _batteryTemperature.setDouble(temperature);
     if (temperature < kInfoTemperature) {
       // No error.
     } else if (temperature < kWarningTemperature) {
@@ -88,7 +94,23 @@ void BatteryController::sensorsHasBeenUpdated() {
     }
   } else {
     addError(new BatteryError(BatteryError::CodeTemperatureUnknown));
-    _temperature.setNull();
+    _batteryTemperature.setNull();
+  }
+  if (_balancerTemperatureSensor.hasValue()) {
+    double temperature = _balancerTemperatureSensor.celsius();
+    _balancerTemperature.setDouble(temperature);
+    if (temperature < kInfoTemperature) {
+      // No error.
+    } else if (temperature < kWarningTemperature) {
+      addError(new BatteryError(BatteryError::CodeTemperatureInfo));
+    } else if (temperature < kCriticalTemperature) {
+      addError(new BatteryError(BatteryError::CodeTemperatureWarning));
+    } else {
+      addError(new BatteryError(BatteryError::CodeTemperatureCritical));
+    }
+  } else {
+    addError(new BatteryError(BatteryError::CodeTemperatureUnknown));
+    _balancerTemperature.setNull();
   }
   if (_ads1115Sensor->getAvailable()) {
     _balancer0.setInteger(_ads1115Sensor->getValue1());
