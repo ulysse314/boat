@@ -33,7 +33,7 @@ void HullController::addSensorsToList(SensorList *sensorList) {
 
 void HullController::sensorsHasBeenUpdated() {
   if (_ads1115Sensor->getAvailable()) {
-    uint16_t water = _ads1115Sensor->getValue1();
+    uint16_t water = _ads1115Sensor->getValue0();
     _water.setInteger(water);
     if (water < kLeakThresshold) {
       addError(new HullError(HullError::CodeLeak));
