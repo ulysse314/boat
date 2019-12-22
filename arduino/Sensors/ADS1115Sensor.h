@@ -24,7 +24,7 @@ public:
   uint16_t getValue3() const { return _value3; };
 
 protected:
-  Adafruit_ADS1015 _ads1115;
+  Adafruit_ADS1115 _ads1115;
   bool _available;
   unsigned long long _lastMeasure = 0;
   uint16_t _value0 = 0;
