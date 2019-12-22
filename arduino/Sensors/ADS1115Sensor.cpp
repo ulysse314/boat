@@ -33,10 +33,10 @@ bool ADS1115Sensor::printValues(Stream *serial) {
 
 bool ADS1115Sensor::readValues() {
   if (_available) {
-    _value0 = _ads1115.readADC_SingleEnded(0);
-    _value1 = _ads1115.readADC_SingleEnded(1);
-    _value2 = _ads1115.readADC_SingleEnded(2);
-    _value3 = _ads1115.readADC_SingleEnded(3);
+    _ads1115.readADC_SingleEnded(0, &_value0);
+    _ads1115.readADC_SingleEnded(1, &_value1);
+    _ads1115.readADC_SingleEnded(2, &_value2);
+    _ads1115.readADC_SingleEnded(3, &_value3);
   }
   return _available;
 }
