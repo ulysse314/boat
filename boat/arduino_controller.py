@@ -6,6 +6,7 @@ import json
 import logging
 import pprint
 import os
+import pprint
 import serial
 import serial_asyncio
 import sys
