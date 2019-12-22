@@ -115,7 +115,8 @@ class ArduinoController:
     self.values['battery'] = {}
     if values["volt"] != None: self.values["battery"]["volt"] = values["volt"]
     if values["amp"] != None: self.values["battery"]["amp"] = values["amp"]
-    if values["temp"] != None: self.values["battery"]["temp"] = values["temp"]
+    if values["batT"] != None: self.values["battery"]["batT"] = values["batT"]
+    if values["balT"] != None: self.values["battery"]["balT"] = values["balT"]
     if values["bal0"] != None: self.values["battery"]["bal0"] = values["bal0"]
     if values["bal1"] != None: self.values["battery"]["bal1"] = values["bal1"]
     if values["bal2"] != None: self.values["battery"]["bal2"] = values["bal2"]

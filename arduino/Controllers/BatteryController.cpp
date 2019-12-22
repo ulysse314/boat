@@ -86,14 +86,14 @@ void BatteryController::sensorsHasBeenUpdated() {
     if (temperature < kInfoTemperature) {
       // No error.
     } else if (temperature < kWarningTemperature) {
-      addError(new BatteryError(BatteryError::CodeTemperatureInfo));
+      addError(new BatteryError(BatteryError::CodeBatteryTemperatureInfo));
     } else if (temperature < kCriticalTemperature) {
-      addError(new BatteryError(BatteryError::CodeTemperatureWarning));
+      addError(new BatteryError(BatteryError::CodeBatteryTemperatureWarning));
     } else {
-      addError(new BatteryError(BatteryError::CodeTemperatureCritical));
+      addError(new BatteryError(BatteryError::CodeBatteryTemperatureCritical));
     }
   } else {
-    addError(new BatteryError(BatteryError::CodeTemperatureUnknown));
+    addError(new BatteryError(BatteryError::CodeBatteryTemperatureUnknown));
     _batteryTemperature.setNull();
   }
   if (_balancerTemperatureSensor.hasValue()) {
@@ -102,14 +102,14 @@ void BatteryController::sensorsHasBeenUpdated() {
     if (temperature < kInfoTemperature) {
       // No error.
     } else if (temperature < kWarningTemperature) {
-      addError(new BatteryError(BatteryError::CodeTemperatureInfo));
+      addError(new BatteryError(BatteryError::CodeBalancerTemperatureInfo));
     } else if (temperature < kCriticalTemperature) {
-      addError(new BatteryError(BatteryError::CodeTemperatureWarning));
+      addError(new BatteryError(BatteryError::CodeBalancerTemperatureWarning));
     } else {
-      addError(new BatteryError(BatteryError::CodeTemperatureCritical));
+      addError(new BatteryError(BatteryError::CodeBalancerTemperatureCritical));
     }
   } else {
-    addError(new BatteryError(BatteryError::CodeTemperatureUnknown));
+    addError(new BatteryError(BatteryError::CodeBalancerTemperatureUnknown));
     _balancerTemperature.setNull();
   }
   if (_ads1115Sensor->getAvailable()) {

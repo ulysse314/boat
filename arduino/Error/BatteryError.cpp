@@ -16,17 +16,21 @@ Error::Level BatteryError::getLevel() const {
     case CodeINA219NotFound:
     case CodeVoltageCritical:
     case CodeAmpereCritical:
-    case CodeTemperatureUnknown:
-    case CodeTemperatureCritical:
+    case CodeBatteryTemperatureUnknown:
+    case CodeBatteryTemperatureCritical:
+    case CodeBalancerTemperatureUnknown:
+    case CodeBalancerTemperatureCritical:
       return Error::Level::Critical;
     case CodeVoltageWarning:
     case CodeAmpereWarning:
-    case CodeTemperatureWarning:
+    case CodeBatteryTemperatureWarning:
+    case CodeBalancerTemperatureWarning:
     case CodeADS1115NotFound:
       return Error::Level::Warning;
     case CodeVoltageInfo:
     case CodeAmpereInfo:
-    case CodeTemperatureInfo:
+    case CodeBatteryTemperatureInfo:
+    case CodeBalancerTemperatureInfo:
       return Error::Level::Info;
   };
   Error *error = new ArduinoError(ArduinoError::CodeBatteryCodeUnknown, NULL);
@@ -45,10 +49,14 @@ bool BatteryError::isPersistant() const {
     case CodeAmpereInfo:
     case CodeAmpereWarning:
     case CodeAmpereCritical:
-    case CodeTemperatureUnknown:
-    case CodeTemperatureInfo:
-    case CodeTemperatureWarning:
-    case CodeTemperatureCritical:
+    case CodeBatteryTemperatureUnknown:
+    case CodeBatteryTemperatureInfo:
+    case CodeBatteryTemperatureWarning:
+    case CodeBatteryTemperatureCritical:
+    case CodeBalancerTemperatureUnknown:
+    case CodeBalancerTemperatureInfo:
+    case CodeBalancerTemperatureWarning:
+    case CodeBalancerTemperatureCritical:
     case CodeADS1115NotFound:
       return false;
   };

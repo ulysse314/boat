@@ -14,11 +14,15 @@ public:
     CodeAmpereInfo,                    // 5
     CodeAmpereWarning,                 // 6
     CodeAmpereCritical,                // 7
-    CodeTemperatureUnknown,            // 8
-    CodeTemperatureInfo,               // 9
-    CodeTemperatureWarning,            // 10
-    CodeTemperatureCritical,           // 11
+    CodeBatteryTemperatureUnknown,     // 8
+    CodeBatteryTemperatureInfo,        // 9
+    CodeBatteryTemperatureWarning,     // 10
+    CodeBatteryTemperatureCritical,    // 11
     CodeADS1115NotFound,               // 12
+    CodeBalancerTemperatureUnknown,    // 13
+    CodeBalancerTemperatureInfo,       // 14
+    CodeBalancerTemperatureWarning,    // 15
+    CodeBalancerTemperatureCritical,   // 16
   } Code;
   
   BatteryError(Code code, const char *message = NULL);
