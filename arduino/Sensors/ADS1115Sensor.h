@@ -4,10 +4,11 @@
 #include "Sensor.h"
 
 class ADS1115;
+class TwoWire;
 
 class ADS1115Sensor : public Sensor {
 public:
-  ADS1115Sensor();
+  ADS1115Sensor(uint8_t address, TwoWire *i2cBus);
   ~ADS1115Sensor();
 
   virtual const char *sensorClass() const override { return "ADS"; };

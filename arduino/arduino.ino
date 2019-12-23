@@ -17,7 +17,8 @@
 #include "SensorList.h"
 
 #define ONE_WIRE_PIN          12
-#define PWM_ADDRESS           0x40
+#define PCA9685_ADDRESS       0x40
+#define ADS1115_ADDRESS       0x48
 
 SensorList *sensorList = NULL;
 OneWire *oneWire = NULL;
@@ -45,10 +46,10 @@ void initGlobal() {
   piLink = PiLink::getPiLink();
 
   sensorList = new SensorList();
-  ads1115Sensor = new ADS1115Sensor();
+  ads1115Sensor = new ADS1115Sensor(ADS1115_ADDRESS, &Wire);
   sensorList->addSensor(ads1115Sensor);
 
-  pwmDriver = new PWMDriver(PWM_ADDRESS, &Wire);
+  pwmDriver = new PWMDriver(PCA9685_ADDRESS, &Wire);
   driverManager->addDriver(pwmDriver);
 
   gpsController = new GPSController();
