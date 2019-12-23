@@ -17,12 +17,12 @@
 #define STOPPED() (PWM_STOPPED_S * 4096.0 * REAL_FREQUENCE)
 #define REVERSED() (PWM_REVERSE_S * 4096.0 * REAL_FREQUENCE)
 
-PWMDriver::PWMDriver(TwoWire *i2c, int address) :
-    _adafruitDriver(i2c, address) {
+PWMDriver::PWMDriver(uint8_t address, TwoWire *i2cBus) :
+    _pca9685(address, i2cBus) {
 }
 
 void PWMDriver::begin() {
-  _available = _adafruitDriver.begin() && _adafruitDriver.setPWMFreq(ADAFRUIT_FREQUENCE);
+  _available = _pca9685.begin() && _pca9685.setPWMFreq(ADAFRUIT_FREQUENCE);
   Error *error = new ArduinoError(ArduinoError::CodePWMDriverNotAvailable, NULL);
   if (_available) {
     ArduinoController::sharedController()->removeError(error);
@@ -49,7 +49,7 @@ bool PWMDriver::setValueForMotor(int8_t value, uint8_t motorID) {
   } else {
     realValue = STOPPED();
   }
-  _available = _adafruitDriver.setPWM(motorID, 0, realValue);
+  _available = _pca9685.setPWM(motorID, 0, realValue);
   if (!_available) {
     Error *error = new ArduinoError(ArduinoError::CodePWMDriverNotAvailable, NULL);
     ArduinoController::sharedController()->addError(error);

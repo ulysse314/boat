@@ -7,7 +7,7 @@
 
 class PWMDriver : public Driver {
 public:
-  PWMDriver(TwoWire *i2c, int address);
+  PWMDriver(uint8_t address, TwoWire *i2cBus);
 
   void sensorsHasBeenUpdated();
   bool setValueForMotor(int8_t value, uint8_t motorID);
@@ -15,7 +15,7 @@ public:
   void loop() override;
 
 private:
-  PCA9685 _adafruitDriver;
+  PCA9685 _pca9685;
 };
 
 #endif // PWMDriver_h

@@ -48,7 +48,7 @@ void initGlobal() {
   ads1115Sensor = new ADS1115Sensor();
   sensorList->addSensor(ads1115Sensor);
 
-  pwmDriver = new PWMDriver(&Wire, PWM_ADDRESS);
+  pwmDriver = new PWMDriver(PWM_ADDRESS, &Wire);
   driverManager->addDriver(pwmDriver);
 
   gpsController = new GPSController();
