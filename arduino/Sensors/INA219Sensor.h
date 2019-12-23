@@ -8,7 +8,7 @@ class TwoWire;
 
 class INA219Sensor : public Sensor {
 public:
-  INA219Sensor(TwoWire *i2c, uint8_t address, float shuntValue, float maxCurrent);
+  INA219Sensor(float shuntValue, float maxCurrent, uint8_t address, TwoWire *i2cBus);
   virtual ~INA219Sensor();
   
   virtual const char *sensorClass() const override { return "INA"; };

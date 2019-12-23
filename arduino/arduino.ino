@@ -18,6 +18,7 @@
 
 #define ONE_WIRE_PIN          12
 #define PCA9685_ADDRESS       0x40
+#define INA219_ADDRESS        0x41
 #define ADS1115_ADDRESS       0x48
 
 SensorList *sensorList = NULL;
@@ -56,7 +57,7 @@ void initGlobal() {
   controllerManager->addController(gpsController);
   arduinoController = ArduinoController::generateController(&Wire, oneWire);
   controllerManager->addController(arduinoController);
-  batteryController = new BatteryController(ads1115Sensor, &Wire, oneWire);
+  batteryController = new BatteryController(ads1115Sensor, INA219_ADDRESS, &Wire, oneWire);
   controllerManager->addController(batteryController);
   hullController = new HullController(ads1115Sensor, &Wire);
   controllerManager->addController(hullController);

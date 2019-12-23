@@ -19,7 +19,6 @@ const uint8_t kBatteryDallasAddress[8] = { 0x28, 0x58, 0xDB, 0x1E, 0x03, 0x00, 0
 #error *** No boat defined ***
 #endif
 
-#define kINA219Address 0x41
 #define kInfoVoltage                     12.4
 #define kWarningVoltage                  12.
 #define kCriticalVoltage                 11.6
@@ -27,9 +26,12 @@ const uint8_t kBatteryDallasAddress[8] = { 0x28, 0x58, 0xDB, 0x1E, 0x03, 0x00, 0
 #define kWarningTemperature              60.0
 #define kCriticalTemperature             70.0
 
-BatteryController::BatteryController(ADS1115Sensor *ads1115Sensor, TwoWire *i2c, OneWire *oneWire) :
+BatteryController::BatteryController(ADS1115Sensor *ads1115Sensor,
+                                     uint8_t ina219Address,
+                                     TwoWire *i2c,
+                                     OneWire *oneWire) :
     _ads1115Sensor(ads1115Sensor),
-    _ina219Sensor(i2c, kINA219Address, INA219ShuntValue, INA219MaxCurrent),
+    _ina219Sensor(INA219ShuntValue, ina219Address, ina219Address, i2c),
     _batteryTemperatureSensor(kBatteryDallasAddress, oneWire),
     _balancerTemperatureSensor(kBalancerDallasAddress, oneWire),
     _voltage(Value::Type::Double, "volt"),

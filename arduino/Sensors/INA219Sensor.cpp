@@ -2,8 +2,8 @@
 
 #include <INA219.h>
 
-INA219Sensor::INA219Sensor(TwoWire *i2c, uint8_t address, float shuntValue, float maxCurrent) :
-    _ina219(new INA219(i2c, address)),
+INA219Sensor::INA219Sensor(float shuntValue, float maxCurrent, uint8_t address, TwoWire *i2c) :
+    _ina219(new INA219(address, i2c)),
     _shuntValue(shuntValue),
     _maxCurrent(maxCurrent),
     _hasValue(false),
@@ -12,19 +12,21 @@ INA219Sensor::INA219Sensor(TwoWire *i2c, uint8_t address, float shuntValue, floa
 }
 
 INA219Sensor::~INA219Sensor() {
+  delete _ina219;
 }
 
 void INA219Sensor::begin() {
   _hasValue = _ina219->begin();
-  if (_hasValue) {
-    _ina219->configure(INA219::RANGE_16V, INA219::GAIN_2_80MV, INA219::ADC_64SAMP, INA219::ADC_64SAMP, INA219::CONT_SH_BUS);
-    _ina219->calibrate(_shuntValue, _maxCurrent);
+  _hasValue = _hasValue && _ina219->configure(INA219::RANGE_16V, INA219::GAIN_2_80MV, INA219::ADC_64SAMP, INA219::ADC_64SAMP, INA219::CONT_SH_BUS);
+  _hasValue = _hasValue && _ina219->calibrate(_shuntValue, _maxCurrent);
+  if (!_hasValue) {
+    _ina219->reset();
   }
 }
 
 void INA219Sensor::loop() {
   if (!_hasValue) {
-    _hasValue = _ina219->begin();
+    begin();
   }
 }
 

@@ -13,7 +13,7 @@ class TwoWire;
 
 class BatteryController : public Controller {
 public:
-  BatteryController(ADS1115Sensor *ads1115Sensor, TwoWire *i2c, OneWire *oneWire);
+  BatteryController(ADS1115Sensor *ads1115Sensor, uint8_t ina219Address, TwoWire *i2c, OneWire *oneWire);
   ~BatteryController();
 
   // Controller.
