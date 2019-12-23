@@ -1,7 +1,5 @@
 #include "PWMDriver.h"
 
-#include <Adafruit_PWMServoDriver.h>
-
 #include "ArduinoController.h"
 
 // Frequency to set for the PWM chip

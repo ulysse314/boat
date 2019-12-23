@@ -1,9 +1,9 @@
 #ifndef PWMDriver_h
 #define PWMDriver_h
 
-#include <Adafruit_PWMServoDriver.h>
-
 #include "Driver.h"
+
+#include <PCA9685.h>
 
 class PWMDriver : public Driver {
 public:
@@ -15,7 +15,7 @@ public:
   void loop() override;
 
 private:
-  Adafruit_PWMServoDriver _adafruitDriver;
+  PCA9685 _adafruitDriver;
 };
 
 #endif // PWMDriver_h
