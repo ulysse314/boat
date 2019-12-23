@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import logging
 import subprocess
 import time
 
 class CommandController:
   def __init__(self, arduino_controller):
+    self.logger = logging.getLogger(self.__class__.__name__)
     self.values = {}
     self.boot_timestamp = time.time()
     self.arduino_controller = arduino_controller
@@ -22,6 +24,7 @@ class CommandController:
 
 ## commands
   def execute(self, command):
+    self.logger.info(command)
     if command == "reboot":
       self.reboot()
     elif command == "shutdown":
