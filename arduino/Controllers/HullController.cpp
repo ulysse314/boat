@@ -5,7 +5,7 @@
 #include "HullError.h"
 #include "SensorList.h"
 
-#define kLeakThresshold      3000
+#define kLeakThresshold      10000
 
 HullController::HullController(ADS1115Sensor *ads1115Sensor, TwoWire *i2cBus) :
     _ads1115Sensor(ads1115Sensor),
@@ -33,9 +33,9 @@ void HullController::addSensorsToList(SensorList *sensorList) {
 
 void HullController::sensorsHasBeenUpdated() {
   if (_ads1115Sensor->getAvailable()) {
-    uint16_t water = _ads1115Sensor->getValue0();
+    int16_t water = _ads1115Sensor->getValue0();
     _water.setInteger(water);
-    if (water < kLeakThresshold) {
+    if (water > kLeakThresshold) {
       addError(new HullError(HullError::CodeLeak));
     }
   } else {
