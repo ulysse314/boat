@@ -9,7 +9,6 @@
 #include "InfoActuatorSensor.h"
 #include "HullController.h"
 #include "MemoryFree.h"
-#include "MotorActuatorSensor.h"
 #include "MotorController.h"
 #include "OneWire.h"
 #include "PiLink.h"
