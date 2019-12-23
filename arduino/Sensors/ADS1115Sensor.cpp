@@ -5,7 +5,7 @@
 ADS1115Sensor::ADS1115Sensor() :
     _ads1115(new ADS1115()),
     _available(false) {
-  _ads1115->setDataRate(ADS1115::DataRate::DataRate860SPS);
+  _ads1115->setDataRate(ADS1115::DataRate::SPS860);
 }
 
 ADS1115Sensor::~ADS1115Sensor() {
