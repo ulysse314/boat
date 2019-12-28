@@ -5,9 +5,11 @@
 
 #include <PCA9685.h>
 
+class HardwareConfig;
+
 class PWMDriver : public Driver {
 public:
-  PWMDriver(uint8_t address, TwoWire *i2cBus);
+  PWMDriver(HardwareConfig *hardwareConfig);
 
   void sensorsHasBeenUpdated();
   bool setValueForMotor(int8_t value, uint8_t motorID);

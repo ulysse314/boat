@@ -2,14 +2,15 @@
 
 #include "ADS1115Sensor.h"
 #include "BME680Sensor.h"
+#include "HardwareConfig.h"
 #include "HullError.h"
 #include "SensorList.h"
 
 #define kLeakThresshold      10000
 
-HullController::HullController(ADS1115Sensor *ads1115Sensor, TwoWire *i2cBus) :
+HullController::HullController(ADS1115Sensor *ads1115Sensor, HardwareConfig *hardwareConfig) :
     _ads1115Sensor(ads1115Sensor),
-    _bme680Sensor(new BME680Sensor(i2cBus)),
+    _bme680Sensor(new BME680Sensor(hardwareConfig->getI2C())),
     _water(Value::Type::Integer, "water"),
     _temperature(Value::Type::Double, "temp"),
     _humidity(Value::Type::Double, "humi"),

@@ -2,18 +2,17 @@
 #define MotorController_h
 
 #include "Controller.h"
-#include "DallasSensor.h"
 #include "Value.h"
 
-class OneWire;
+class DallasSensor;
+class HardwareConfig;
 class PWMDriver;
 
 class MotorController : public Controller {
 public:
-  static MotorController *LeftMotor(OneWire *oneWire, PWMDriver *pwmDriver);
-  static MotorController *RightMotor(OneWire *oneWire, PWMDriver *pwmDriver);
+  static MotorController *LeftMotor(PWMDriver *pwmDriver, HardwareConfig *hardwareConfig);
+  static MotorController *RightMotor(PWMDriver *pwmDriver, HardwareConfig *hardwareConfig);
 
-  MotorController(const char *name, OneWire *oneWire, PWMDriver *pwmDriver, uint8_t motorID, const uint8_t dallasAddress[8]);
   ~MotorController();
 
   // Controller
@@ -25,6 +24,8 @@ public:
   void setValue(int);
   
 protected:
+  MotorController(const char *name, PWMDriver *pwmDriver, uint8_t motorID, const uint8_t dallasAddress[8], HardwareConfig *hardwareConfig);
+
   const char *_name;
   PWMDriver *_pwmDriver;
   DallasSensor *_temperatureSensor;

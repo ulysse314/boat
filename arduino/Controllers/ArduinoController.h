@@ -5,12 +5,13 @@
 #include "Controller.h"
 #include "Value.h"
 
+class HardwareConfig;
 class OneWire;
 class TwoWire;
 
 class ArduinoController : public Controller {
 public:
-  static ArduinoController *generateController(TwoWire *i2c, OneWire *oneWire);
+  static ArduinoController *generateController(HardwareConfig *hardwareConfig);
   static ArduinoController *sharedController();
   
   ~ArduinoController();
@@ -26,10 +27,9 @@ public:
   void sensorsHasBeenUpdated() override;
 
 protected:
-  ArduinoController(TwoWire *ic2, OneWire *oneWire);
+  ArduinoController(HardwareConfig *hardwareConfig);
 
-  TwoWire *_ic2;
-  OneWire *_oneWire;
+  HardwareConfig *_hardwareConfig;
   size_t _infoFreeRAM;
   size_t _warningFreeRAM;
   size_t _criticalFreeRAM;

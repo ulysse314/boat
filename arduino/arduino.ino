@@ -6,8 +6,9 @@
 #include "DriverManager.h"
 #include "GPSController.h"
 #include "GPSSensor.h"
-#include "InfoActuatorSensor.h"
+#include "HardwareConfig.h"
 #include "HullController.h"
+#include "InfoActuatorSensor.h"
 #include "MemoryFree.h"
 #include "MotorController.h"
 #include "PiLink.h"
@@ -17,13 +18,9 @@
 
 #include <OneWire.h>
 
-#define ONE_WIRE_PIN          12
-#define PCA9685_ADDRESS       0x40
-#define INA219_ADDRESS        0x41
-#define ADS1115_ADDRESS       0x48
+HardwareConfig hardwareConfig;
 
 SensorList *sensorList = NULL;
-OneWire *oneWire = NULL;
 InfoActuatorSensor *infoActuatorSensor = NULL;
 ADS1115Sensor *ads1115Sensor = NULL;
 
@@ -41,30 +38,29 @@ MotorController *rightMotorController = NULL;
 PiLink *piLink = NULL;
 
 void initGlobal() {
-  oneWire = new OneWire(ONE_WIRE_PIN);
   infoActuatorSensor = new InfoActuatorSensor();
   controllerManager = new ControllerManager();
   driverManager = new DriverManager();
   piLink = PiLink::getPiLink();
 
   sensorList = new SensorList();
-  ads1115Sensor = new ADS1115Sensor(ADS1115_ADDRESS, &Wire);
+  ads1115Sensor = new ADS1115Sensor(hardwareConfig.getADS1115Address(), hardwareConfig.getI2C());
   sensorList->addSensor(ads1115Sensor);
 
-  pwmDriver = new PWMDriver(PCA9685_ADDRESS, &Wire);
+  pwmDriver = new PWMDriver(&hardwareConfig);
   driverManager->addDriver(pwmDriver);
 
   gpsController = new GPSController();
   controllerManager->addController(gpsController);
-  arduinoController = ArduinoController::generateController(&Wire, oneWire);
+  arduinoController = ArduinoController::generateController(&hardwareConfig);
   controllerManager->addController(arduinoController);
-  batteryController = new BatteryController(ads1115Sensor, INA219_ADDRESS, &Wire, oneWire);
+  batteryController = new BatteryController(ads1115Sensor, &hardwareConfig);
   controllerManager->addController(batteryController);
-  hullController = new HullController(ads1115Sensor, &Wire);
+  hullController = new HullController(ads1115Sensor, &hardwareConfig);
   controllerManager->addController(hullController);
-  leftMotorController = MotorController::LeftMotor(oneWire, pwmDriver);
+  leftMotorController = MotorController::LeftMotor(pwmDriver, &hardwareConfig);
   controllerManager->addController(leftMotorController);
-  rightMotorController = MotorController::RightMotor(oneWire, pwmDriver);
+  rightMotorController = MotorController::RightMotor(pwmDriver, &hardwareConfig);
   controllerManager->addController(rightMotorController);
 
   controllerManager->addSensorsToList(sensorList);
@@ -72,6 +68,7 @@ void initGlobal() {
   piLink->setRightMotorController(rightMotorController);
   piLink->setArduinoController(arduinoController);
 
+  hardwareConfig.begin();
   driverManager->begin();
   sensorList->begin();
   controllerManager->begin();

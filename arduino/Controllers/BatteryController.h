@@ -8,12 +8,11 @@
 #include "Value.h"
 
 class ADS1115Sensor;
-class OneWire;
-class TwoWire;
+class HardwareConfig;
 
 class BatteryController : public Controller {
 public:
-  BatteryController(ADS1115Sensor *ads1115Sensor, uint8_t ina219Address, TwoWire *i2c, OneWire *oneWire);
+  BatteryController(ADS1115Sensor *ads1115Sensor, HardwareConfig *hardwareConfig);
   ~BatteryController();
 
   // Controller.

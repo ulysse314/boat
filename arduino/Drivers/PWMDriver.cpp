@@ -1,6 +1,7 @@
 #include "PWMDriver.h"
 
 #include "ArduinoController.h"
+#include "HardwareConfig.h"
 
 // Frequency to set for the PWM chip
 #define ADAFRUIT_FREQUENCE 250
@@ -17,8 +18,8 @@
 #define STOPPED() (PWM_STOPPED_S * 4096.0 * REAL_FREQUENCE)
 #define REVERSED() (PWM_REVERSE_S * 4096.0 * REAL_FREQUENCE)
 
-PWMDriver::PWMDriver(uint8_t address, TwoWire *i2cBus) :
-    _pca9685(address, i2cBus) {
+PWMDriver::PWMDriver(HardwareConfig *hardwareConfig) :
+    _pca9685(hardwareConfig->getPCA9685Address(), hardwareConfig->getI2C()) {
 }
 
 void PWMDriver::begin() {

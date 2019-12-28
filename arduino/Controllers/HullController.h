@@ -5,12 +5,12 @@
 #include "Value.h"
 
 class ADS1115Sensor;
+class HardwareConfig;
 class BME680Sensor;
-class TwoWire;
 
 class HullController : public Controller {
 public:
-  HullController(ADS1115Sensor *ads1115Sensor, TwoWire *i2cBus);
+  HullController(ADS1115Sensor *ads1115Sensor, HardwareConfig *hardwareConfig);
   virtual ~HullController();
 
   const char *getName() const override { return "hull"; };

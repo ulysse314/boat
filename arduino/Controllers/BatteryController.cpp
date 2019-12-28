@@ -2,19 +2,16 @@
 
 #include "ADS1115Sensor.h"
 #include "BatteryError.h"
+#include "HardwareConfig.h"
 #include "SensorList.h"
 #include "Version.h"
 
 #if IS_MOUSSAILLON
 #define INA219ShuntValue 0.0015
 #define INA219MaxCurrent 50.
-const uint8_t kBalancerDallasAddress[8] = { 0x28, 0xAA, 0x73, 0x4E, 0x55, 0x14, 0x01, 0x9C };
-const uint8_t kBatteryDallasAddress[8] = { 0x28, 0x66, 0x05, 0x1F, 0x03, 0x00, 0x00, 0xFB };
 #elif IS_TELEMAQUE
 #define INA219ShuntValue 0.00125
 #define INA219MaxCurrent 60.
-const uint8_t kBalancerDallasAddress[8] = { 0x28, 0xAA, 0x73, 0x4E, 0x55, 0x14, 0x01, 0x9C };
-const uint8_t kBatteryDallasAddress[8] = { 0x28, 0x58, 0xDB, 0x1E, 0x03, 0x00, 0x00, 0x76 };
 #else
 #error *** No boat defined ***
 #endif
@@ -27,13 +24,11 @@ const uint8_t kBatteryDallasAddress[8] = { 0x28, 0x58, 0xDB, 0x1E, 0x03, 0x00, 0
 #define kCriticalTemperature             70.0
 
 BatteryController::BatteryController(ADS1115Sensor *ads1115Sensor,
-                                     uint8_t ina219Address,
-                                     TwoWire *i2c,
-                                     OneWire *oneWire) :
+                                     HardwareConfig *hardwareConfig) :
     _ads1115Sensor(ads1115Sensor),
-    _ina219Sensor(INA219ShuntValue, ina219Address, ina219Address, i2c),
-    _batteryTemperatureSensor(kBatteryDallasAddress, oneWire),
-    _balancerTemperatureSensor(kBalancerDallasAddress, oneWire),
+    _ina219Sensor(INA219ShuntValue, INA219MaxCurrent, hardwareConfig->getINA219Address(), hardwareConfig->getI2C()),
+    _batteryTemperatureSensor(hardwareConfig->getBatteryDallasAddress(), hardwareConfig->getOneWire()),
+    _balancerTemperatureSensor(hardwareConfig->getBalancerDallasAddress(), hardwareConfig->getOneWire()),
     _voltage(Value::Type::Double, "volt"),
     _current(Value::Type::Double, "amp"),
     _batteryTemperature(Value::Type::Double, "batT"),

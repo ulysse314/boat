@@ -1,6 +1,7 @@
 #include "ArduinoController.h"
 
 #include "DallasSensor.h"
+#include "HardwareConfig.h"
 #include "MemoryFree.h"
 #include "PiLink.h"
 #include "Version.h"
@@ -12,9 +13,9 @@
 static ArduinoController *sharedArduinoController = NULL;
 
 // static
-ArduinoController *ArduinoController::generateController(TwoWire *i2c, OneWire *oneWire) {
+ArduinoController *ArduinoController::generateController(HardwareConfig *hardwareConfig) {
   if (!sharedArduinoController) {
-    sharedArduinoController = new ArduinoController(i2c, oneWire);
+    sharedArduinoController = new ArduinoController(hardwareConfig);
   }
   return sharedArduinoController;
 }
@@ -24,9 +25,8 @@ ArduinoController *ArduinoController::sharedController() {
   return sharedArduinoController;
 }
 
-ArduinoController::ArduinoController(TwoWire *ic2, OneWire *oneWire) :
-    _ic2(ic2),
-    _oneWire(oneWire),
+ArduinoController::ArduinoController(HardwareConfig *hardwareConfig) :
+    _hardwareConfig(hardwareConfig),
     _infoFreeRAM(0),
     _warningFreeRAM(0),
     _criticalFreeRAM(0),
@@ -131,15 +131,16 @@ char hexFromByte(byte value) {
 void ArduinoController::setCommand(const char *command) {
   String result;
   if (strcmp(command, "dallasscan") == 0) {
+    OneWire *oneWire = _hardwareConfig->getOneWire();
     byte addr[8];
-    while(_oneWire->search(addr)) {
+    while(oneWire->search(addr)) {
       if (OneWire::crc8(addr, 7) != addr[7]) {
         continue;
       }
       if (result.length() > 0) {
         result = result + ", ";
       }
-      DallasSensor sensor(addr, _oneWire);
+      DallasSensor sensor(addr, oneWire);
       sensor.readValues();
       const char *address = sensor.copyAddressString();
       result = result + address;
@@ -149,12 +150,13 @@ void ArduinoController::setCommand(const char *command) {
       result = result + "->";
       result = result + sensor.celsius();
     }
-    _oneWire->reset_search();
+    oneWire->reset_search();
     result = "Dallas: " + result;
   } else if (strcmp(command, "i2cscan") == 0) {
+    TwoWire *i2c = _hardwareConfig->getI2C();
     for(byte address = 1; address < 127; address++ ) {
-      _ic2->beginTransmission(address);
-      byte error = _ic2->endTransmission();
+      i2c->beginTransmission(address);
+      byte error = i2c->endTransmission();
       if (error != 0) {
         continue;
       }
