@@ -1,13 +1,13 @@
 #include "ArduinoController.h"
 
-#include <Arduino.h>
-#include <Wire.h>
-
 #include "DallasSensor.h"
 #include "MemoryFree.h"
-#include "OneWire.h"
 #include "PiLink.h"
 #include "Version.h"
+
+#include <Arduino.h>
+#include <OneWire.h>
+#include <Wire.h>
 
 static ArduinoController *sharedArduinoController = NULL;
 

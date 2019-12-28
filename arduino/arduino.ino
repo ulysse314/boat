@@ -10,11 +10,12 @@
 #include "HullController.h"
 #include "MemoryFree.h"
 #include "MotorController.h"
-#include "OneWire.h"
 #include "PiLink.h"
 #include "PowerSensor.h"
 #include "PWMDriver.h"
 #include "SensorList.h"
+
+#include <OneWire.h>
 
 #define ONE_WIRE_PIN          12
 #define PCA9685_ADDRESS       0x40

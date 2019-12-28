@@ -1,7 +1,7 @@
 #ifndef DallasSensor_h
 #define DallasSensor_h
 
-#include "OneWire.h"
+#include <OneWire.h>
 #include "Sensor.h"
 
 typedef enum {
