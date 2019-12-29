@@ -15,9 +15,11 @@
 #define LED_PIN               13
 
 // I2C addresses
+#define BNO055_ADDRESS        0x28
 #define PCA9685_ADDRESS       0x40
 #define INA219_ADDRESS        0x41
 #define ADS1115_ADDRESS       0x48
+#define BME680_ADDRESS        0x76
 
 #if IS_MOUSSAILLON
 const OneWire::Address kBalancerDallasAddress(0x28, 0xAA, 0x73, 0x4E, 0x55, 0x14, 0x01, 0x9C);
