@@ -2,8 +2,8 @@
 
 #include "Arduino.h"
 
-BME680Sensor::BME680Sensor(TwoWire *i2cBus) :
-    _bme680(i2cBus),
+BME680Sensor::BME680Sensor(uint8_t address, TwoWire *i2cBus) :
+    _bme680(address, i2cBus),
     _available(false),
     _waitingForData(false),
     _temperature(0),
@@ -12,12 +12,12 @@ BME680Sensor::BME680Sensor(TwoWire *i2cBus) :
 }
 
 void BME680Sensor::begin() {
-  _available = _bme680.begin(0x76);
+  _available = _bme680.begin();
 }
 
 void BME680Sensor::loop() {
   if (!_available) {
-    _available = _bme680.begin(0x76);
+    _available = _bme680.begin();
     return;
   }
   if (_waitingForData && _bme680.remainingReadingMillis() == _bme680.reading_complete) {

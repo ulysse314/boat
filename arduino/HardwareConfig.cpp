@@ -75,6 +75,10 @@ uint8_t HardwareConfig::getADS1115Address() const {
   return ADS1115_ADDRESS;
 }
 
+uint8_t HardwareConfig::getBME680Address() const {
+  return BME680_ADDRESS;
+}
+
 uint8_t HardwareConfig::getLeftMotorPWMID() const {
   return LEFT_MOTOR_ID;
 }

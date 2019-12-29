@@ -7,7 +7,7 @@
 
 class BME680Sensor : public Sensor {
 public:
-  BME680Sensor(TwoWire *i2cBus);
+  BME680Sensor(uint8_t address, TwoWire *i2cBus);
 
   virtual const char *sensorClass() const override { return "BME"; };
   virtual const char *sensorType() const override { return "BME680"; };
