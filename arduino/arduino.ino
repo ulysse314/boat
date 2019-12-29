@@ -68,7 +68,6 @@ void initGlobal() {
   piLink->setRightMotorController(rightMotorController);
   piLink->setArduinoController(arduinoController);
 
-  hardwareConfig.begin();
   driverManager->begin();
   sensorList->begin();
   controllerManager->begin();
@@ -77,14 +76,14 @@ void initGlobal() {
 
 void setup() {
   analogReadResolution(12);
-  pinMode(LED_BUILTIN, OUTPUT);
   
+  hardwareConfig.begin();
   Serial.begin(115200);
   Wire.begin();
   for (int i = 0; i < 4; i++) {
-    digitalWrite(LED_BUILTIN, HIGH);   // turn the LED on (HIGH is the voltage level)
+    digitalWrite(hardwareConfig.getLEDPin(), HIGH);   // turn the LED on (HIGH is the voltage level)
     delay(500);                       // wait for a second
-    digitalWrite(LED_BUILTIN, LOW);    // turn the LED off by making the voltage LOW
+    digitalWrite(hardwareConfig.getLEDPin(), LOW);    // turn the LED off by making the voltage LOW
     delay(500);                       // wait for a second
     Serial.println(i);
   }
@@ -103,7 +102,7 @@ void loop() {
   unsigned long currentTime = millis();
   unsigned long difference = currentTime - lastPrint;
   if (difference > 1000) {
-    digitalWrite(LED_BUILTIN, HIGH);
+    digitalWrite(hardwareConfig.getLEDPin(), HIGH);
     lastPrint = currentTime;
 
     arduinoController->setCycleCount(counter);
@@ -113,7 +112,7 @@ void loop() {
     sensorList->readValues();
     arduinoController->setComputeTime(millis() - currentTime);
     counter = 0;
-    digitalWrite(LED_BUILTIN, LOW);
+    digitalWrite(hardwareConfig.getLEDPin(), LOW);
   }
   ++counter;
 }

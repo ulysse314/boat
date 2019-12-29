@@ -44,6 +44,7 @@ HardwareConfig::~HardwareConfig() {
 }
 
 void HardwareConfig::begin() {
+  pinMode(getLEDPin(), OUTPUT);
   _i2c->begin();
 }
 
@@ -85,4 +86,8 @@ uint8_t HardwareConfig::getLeftMotorPWMID() const {
 
 uint8_t HardwareConfig::getRightMotorPWMID() const {
   return RIGHT_MOTOR_ID;
+}
+
+uint8_t HardwareConfig::getLEDPin() const {
+  return LED_PIN;
 }

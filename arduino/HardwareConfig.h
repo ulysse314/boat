@@ -30,6 +30,8 @@ public:
   uint8_t getLeftMotorPWMID() const;
   uint8_t getRightMotorPWMID() const;
 
+  uint8_t getLEDPin() const;
+
 private:
   TwoWire *_i2c;
   OneWire *_oneWire;
