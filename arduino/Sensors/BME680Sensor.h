@@ -23,7 +23,7 @@ public:
   float getHumidity() const { return _humidity; };
 
 protected:
-  Adafruit_BME680 _bme680;
+  BME680 _bme680;
   bool _available;
   bool _waitingForData;
   float _temperature;
