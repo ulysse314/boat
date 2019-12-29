@@ -16,7 +16,7 @@
 
 // I2C addresses
 #define BNO055_ADDRESS        0x28
-#define PCA9685_ADDRESS       0x40
+#define PCA9685_ADDRESS       0x70
 #define INA219_ADDRESS        0x41
 #define ADS1115_ADDRESS       0x48
 #define BME680_ADDRESS        0x76
