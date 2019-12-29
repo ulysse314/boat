@@ -3,7 +3,7 @@
 
 #include "Sensor.h"
 
-#include <Adafruit_BME680.h>
+#include <BME680.h>
 
 class BME680Sensor : public Sensor {
 public:
