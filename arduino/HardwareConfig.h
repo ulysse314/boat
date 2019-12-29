@@ -2,6 +2,7 @@
 #define HardwareConfig_h
 
 #include <inttypes.h>
+#include <OneWire.h>
 
 class TwoWire;
 class OneWire;
@@ -16,10 +17,10 @@ public:
   TwoWire *getI2C() const { return _i2c; };
   OneWire *getOneWire() const { return _oneWire; };
 
-  const uint8_t *getLeftMotorDallasAddress() const;
-  const uint8_t *getRightMotorDallasAddress() const;
-  const uint8_t *getBatteryDallasAddress() const;
-  const uint8_t *getBalancerDallasAddress() const;
+  const OneWire::Address getLeftMotorDallasAddress() const;
+  const OneWire::Address getRightMotorDallasAddress() const;
+  const OneWire::Address getBatteryDallasAddress() const;
+  const OneWire::Address getBalancerDallasAddress() const;
 
   uint8_t getPCA9685Address() const;
   uint8_t getINA219Address() const;

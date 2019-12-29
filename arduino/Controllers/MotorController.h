@@ -4,6 +4,8 @@
 #include "Controller.h"
 #include "Value.h"
 
+#include <OneWire.h>
+
 class DallasSensor;
 class HardwareConfig;
 class PWMDriver;
@@ -24,7 +26,7 @@ public:
   void setValue(int);
   
 protected:
-  MotorController(const char *name, PWMDriver *pwmDriver, uint8_t motorID, const uint8_t dallasAddress[8], HardwareConfig *hardwareConfig);
+  MotorController(const char *name, PWMDriver *pwmDriver, uint8_t motorID, const OneWire::Address dallasAddress, HardwareConfig *hardwareConfig);
 
   const char *_name;
   PWMDriver *_pwmDriver;

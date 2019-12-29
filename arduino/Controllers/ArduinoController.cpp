@@ -132,11 +132,8 @@ void ArduinoController::setCommand(const char *command) {
   String result;
   if (strcmp(command, "dallasscan") == 0) {
     OneWire *oneWire = _hardwareConfig->getOneWire();
-    byte addr[8];
+    OneWire::Address addr;
     while(oneWire->search(addr)) {
-      if (OneWire::crc8(addr, 7) != addr[7]) {
-        continue;
-      }
       if (result.length() > 0) {
         result = result + ", ";
       }

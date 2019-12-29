@@ -7,8 +7,8 @@ typedef enum {
   DallasCommandReadScratchpad = 0xBE,
 } DallasCommand;
 
-static byte dallasType(uint8_t address[8]) {
-  switch (address[0]) {
+static byte dallasType(const OneWire::Address address) {
+  switch (address.data[0]) {
     case DallasSensorTypeDS18S20:
       return 1;
       break;
@@ -22,9 +22,9 @@ static byte dallasType(uint8_t address[8]) {
 }
 
 // static
-const char *DallasSensor::sensorType(const uint8_t address[8]) {
+const char *DallasSensor::sensorType(const OneWire::Address address) {
   const char *result = NULL;
-  switch(address[0]) {
+  switch(address.data[0]) {
     case DallasSensorTypeDS18S20:
       result = "DS18S20";
       break;
@@ -38,12 +38,12 @@ const char *DallasSensor::sensorType(const uint8_t address[8]) {
   return result;
 }
 
-DallasSensor::DallasSensor(const uint8_t address[8], OneWire *oneWire) :
+DallasSensor::DallasSensor(const OneWire::Address address, OneWire *oneWire) :
     _oneWire(oneWire),
+    _address(address),
     _hasValue(false),
     _celsius(0),
     _timer(0) {
-  memcpy(_address, address, sizeof(_address));
 }
 
 const char *DallasSensor::sensorType() const {
@@ -55,7 +55,7 @@ const char *DallasSensor::copyAddressString() const {
   char *cursor;
   cursor = string = (char *)malloc(24);
   for(unsigned char ii = 0; ii < 8; ii++) {
-    sprintf(cursor, "%02x", _address[ii]);
+    sprintf(cursor, "%02x", _address.data[ii]);
     cursor += 2;
     cursor[0] = ':';
     cursor++;
@@ -68,10 +68,10 @@ const char *DallasSensor::copyAddressString() const {
 bool DallasSensor::printAddress(Stream *serial) {
   byte ii;
   for(ii = 0; ii < 8; ii++) {
-    if (_address[ii] < 16) {
+    if (_address.data[ii] < 16) {
       serial->print("0");
     }
-    serial->print(_address[ii], HEX);
+    serial->print(_address.data[ii], HEX);
     if (ii < 7) {
       serial->print(':');
     }
@@ -89,7 +89,7 @@ bool DallasSensor::printValues(Stream *serial) {
 void DallasSensor::sendConvertCommand() {
   _oneWire->reset();
   _oneWire->select(_address);    
-  _oneWire->write(DallasCommandConvertTemperature,1);         // Read Scratchpad
+  _oneWire->write(DallasCommandConvertTemperature, 1);         // Read Scratchpad
 }
 
 void DallasSensor::sendReadCommand() {

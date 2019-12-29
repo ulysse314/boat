@@ -30,7 +30,7 @@ MotorController *MotorController::RightMotor(PWMDriver *pwmDriver, HardwareConfi
   return motor;
 }
 
-MotorController::MotorController(const char *name, PWMDriver *pwmDriver, uint8_t motorID, const uint8_t dallasAddress[8], HardwareConfig *hardwareConfig) :
+MotorController::MotorController(const char *name, PWMDriver *pwmDriver, uint8_t motorID, const OneWire::Address dallasAddress, HardwareConfig *hardwareConfig) :
     _name(createStringCopy(name)),
     _pwmDriver(pwmDriver),
     _temperatureSensor(new DallasSensor(dallasAddress, hardwareConfig->getOneWire())),

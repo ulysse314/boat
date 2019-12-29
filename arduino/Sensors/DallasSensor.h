@@ -1,8 +1,9 @@
 #ifndef DallasSensor_h
 #define DallasSensor_h
 
-#include <OneWire.h>
 #include "Sensor.h"
+
+#include <OneWire.h>
 
 typedef enum {
   DallasSensorTypeDS18S20 = 0x10,
@@ -15,7 +16,7 @@ class OneWire;
 class DallasSensor : public Sensor
 {
 public:
-  static const char *sensorType(const uint8_t address[8]);
+  static const char *sensorType(const OneWire::Address address);
   inline static int maxConversionTimeMillisForBits(int bits) {
     if (bits == 9) return 94;
     if (bits == 10) return 188;
@@ -23,7 +24,7 @@ public:
     return 750;
   };
 
-  DallasSensor(const uint8_t adresse[8], OneWire *oneWire);
+  DallasSensor(const OneWire::Address adress, OneWire *oneWire);
   
   float celsius() const { return _celsius; };
   bool hasValue() const { return _hasValue; };
@@ -42,7 +43,7 @@ private:
   void sendReadCommand();
 
   OneWire *_oneWire;
-  uint8_t _address[8];
+  OneWire::Address _address;
   bool _hasValue;
   float _celsius;
   unsigned long _timer;
