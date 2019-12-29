@@ -36,15 +36,15 @@ const OneWire::Address kRightMotorDallasAddress(0x28, 0xAB, 0xDD, 0x1E, 0x03, 0x
 #endif
 
 HardwareConfig::HardwareConfig() {
+  _i2c = &Wire;
+  _oneWire = new OneWire(ONE_WIRE_PIN);
 }
 
 HardwareConfig::~HardwareConfig() {
 }
 
 void HardwareConfig::begin() {
-  _i2c = &Wire;
   _i2c->begin();
-  _oneWire = new OneWire(ONE_WIRE_PIN);
 }
 
 const OneWire::Address HardwareConfig::getLeftMotorDallasAddress() const {
