@@ -119,7 +119,7 @@ void ArduinoController::sensorsHasBeenUpdated() {
   } else if (_cycleCount.getInteger() < 5000) {
     addError(new ArduinoError(ArduinoError::CodeMainLoopCounterLowInfo));
   }
-  if (PiLink::getPiLink()->hasTimedOut()) {
+  if (PiLink::getSharedPiLink()->hasTimedOut()) {
     addError(new ArduinoError(ArduinoError::CodePiLinkConnectionTimeOut));
   }
 }

@@ -4,8 +4,9 @@
 #include <inttypes.h>
 #include <OneWire.h>
 
+class Serial_;
+class Stream;
 class TwoWire;
-class OneWire;
 
 class HardwareConfig {
 public:
@@ -16,6 +17,7 @@ public:
 
   TwoWire *getI2C() const { return _i2c; };
   OneWire *getOneWire() const { return _oneWire; };
+  Stream *getSerial() const;
 
   const OneWire::Address getLeftMotorDallasAddress() const;
   const OneWire::Address getRightMotorDallasAddress() const;
@@ -33,8 +35,9 @@ public:
   uint8_t getLEDPin() const;
 
 private:
-  TwoWire *_i2c;
-  OneWire *_oneWire;
+  TwoWire *const _i2c;
+  OneWire *const _oneWire;
+  Serial_ *const _serial;
 };
 
 #endif  // HardwareConfig_h

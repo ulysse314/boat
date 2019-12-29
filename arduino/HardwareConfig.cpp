@@ -6,9 +6,11 @@
 #include <Arduino.h>
 #include <Wire.h>
 
+#define SERIAL_SPEED          115200
+
 // PWM IDs
-#define LEFT_MOTOR_ID        0
-#define RIGHT_MOTOR_ID       1
+#define LEFT_MOTOR_ID         0
+#define RIGHT_MOTOR_ID        1
 
 // Arduino pins
 #define ONE_WIRE_PIN          12
@@ -35,18 +37,24 @@ const OneWire::Address kRightMotorDallasAddress(0x28, 0xAB, 0xDD, 0x1E, 0x03, 0x
 #error *** No boat defined ***
 #endif
 
-HardwareConfig::HardwareConfig() {
-  _i2c = &Wire;
-  _oneWire = new OneWire(ONE_WIRE_PIN);
+HardwareConfig::HardwareConfig() :
+    _i2c(&Wire),
+    _oneWire(new OneWire(ONE_WIRE_PIN)),
+    _serial(&Serial) {
 }
 
 HardwareConfig::~HardwareConfig() {
 }
 
 void HardwareConfig::begin() {
+  _serial->begin(SERIAL_SPEED);
   pinMode(getLEDPin(), OUTPUT);
   _i2c->begin();
 }
+
+Stream *HardwareConfig::getSerial() const {
+  return _serial;
+};
 
 const OneWire::Address HardwareConfig::getLeftMotorDallasAddress() const {
   return kLeftMotorDallasAddress;

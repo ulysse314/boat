@@ -5,22 +5,29 @@
 #include "ArduinoController.h"
 #include "Controller.h"
 #include "Error.h"
+#include "HardwareConfig.h"
 #include "MotorController.h"
 #include "Value.h"
 
 #define TIMEOUT           4000
 
+static PiLink *sharedPiLink = NULL;
+
 // static
-PiLink *PiLink::getPiLink() {
-  static PiLink *piLink = NULL;
-  if (!piLink) {
-    piLink = new PiLink(&Serial);
+PiLink *PiLink::generatePiLink(HardwareConfig *hardwareConfig) {
+  if (!sharedPiLink) {
+    sharedPiLink = new PiLink(hardwareConfig);
   }
-  return piLink;
+  return sharedPiLink;
 }
 
-PiLink::PiLink(Stream *stream) :
-    _stream(stream),
+// static
+PiLink *PiLink::getSharedPiLink() {
+  return sharedPiLink;
+}
+
+PiLink::PiLink(HardwareConfig *hardwareConfig) :
+    _stream(hardwareConfig->getSerial()),
     _inputBuffer{0},
     _inputBufferLength(0),
     _nextTimeOut(millis() + TIMEOUT),

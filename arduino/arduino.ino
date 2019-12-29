@@ -41,7 +41,7 @@ void initGlobal() {
   infoActuatorSensor = new InfoActuatorSensor();
   controllerManager = new ControllerManager();
   driverManager = new DriverManager();
-  piLink = PiLink::getPiLink();
+  piLink = PiLink::generatePiLink(&hardwareConfig);
 
   sensorList = new SensorList();
   ads1115Sensor = new ADS1115Sensor(hardwareConfig.getADS1115Address(), hardwareConfig.getI2C());
@@ -75,11 +75,7 @@ void initGlobal() {
 }
 
 void setup() {
-  analogReadResolution(12);
-  
   hardwareConfig.begin();
-  Serial.begin(115200);
-  Wire.begin();
   for (int i = 0; i < 4; i++) {
     digitalWrite(hardwareConfig.getLEDPin(), HIGH);   // turn the LED on (HIGH is the voltage level)
     delay(500);                       // wait for a second

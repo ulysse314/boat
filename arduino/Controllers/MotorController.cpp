@@ -68,7 +68,7 @@ void MotorController::sensorsHasBeenUpdated() {
     addError(new MotorError(MotorError::CodeTemperatureUnknown));
     _temperature.setNull();
   }
-  if (PiLink::getPiLink()->hasTimedOut()) {
+  if (PiLink::getSharedPiLink()->hasTimedOut()) {
     setValue(0);
   }
 }
