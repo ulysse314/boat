@@ -13,6 +13,13 @@ BME680Sensor::BME680Sensor(uint8_t address, TwoWire *i2cBus) :
 
 void BME680Sensor::begin() {
   _available = _bme680.begin();
+  if (_available) {
+    _bme680.setTemperatureOversampling(BME680_OS_8X);
+    _bme680.setHumidityOversampling(BME680_OS_2X);
+    _bme680.setPressureOversampling(BME680_OS_4X);
+    _bme680.setIIRFilterSize(BME680_FILTER_SIZE_3);
+    _bme680.setGasHeater(320, 150); // 320*C for 150 ms
+  }
 }
 
 void BME680Sensor::loop() {
@@ -20,11 +27,11 @@ void BME680Sensor::loop() {
     _available = _bme680.begin();
     return;
   }
-  if (_waitingForData && _bme680.remainingReadingMillis() == _bme680.reading_complete) {
+  if (_waitingForData && _bme680.endReading()) {
     _waitingForData = false;
     _temperature = _bme680.temperature;
     _humidity = _bme680.humidity;
-    _pressure = _bme680.pressure;
+    _pressure = _bme680.pressure / 100.;
   }
 }
 

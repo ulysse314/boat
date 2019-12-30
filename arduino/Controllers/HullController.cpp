@@ -43,7 +43,7 @@ void HullController::sensorsHasBeenUpdated() {
     _water.setNull();
     addError(new HullError(HullError::CodeADS1115NotFound));
   }
-  //_temperature.setDouble(_bme680Sensor->getTemperature());
-  //_humidity.setDouble(_bme680Sensor->getHumidity());
-  //_pressure.setDouble(_bme680Sensor->getPressure());
+  _temperature.setDouble(_bme680Sensor->getTemperature());
+  _humidity.setDouble(_bme680Sensor->getHumidity());
+  _pressure.setDouble(_bme680Sensor->getPressure());
 }
