@@ -12,6 +12,7 @@ public:
     TemperatureInfo,                   // 3
     TemperatureWarning,                // 4
     TemperatureCritical,               // 5
+    TemperatureInvalid,                // 6
   } Code;
   
   HullError(Code code, const char *message = NULL);

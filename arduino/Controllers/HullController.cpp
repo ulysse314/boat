@@ -10,6 +10,7 @@
 #define kTemperatureCritical       65
 #define kTemperatureWarning        50
 #define kTemperatureInfo           45
+#define kTemperatureInvalid        2
 
 HullController::HullController(ADS1115Sensor *ads1115Sensor, HardwareConfig *hardwareConfig) :
     _ads1115Sensor(ads1115Sensor),
@@ -54,6 +55,8 @@ void HullController::sensorsHasBeenUpdated() {
     addError(new HullError(HullError::TemperatureWarning));
   } else if (temperature >= kTemperatureInfo) {
     addError(new HullError(HullError::TemperatureInfo));
+  } else if (temperature <= kTemperatureInvalid) {
+    addError(new HullError(HullError::TemperatureInvalid));
   }
   _humidity.setDouble(_bme680Sensor->getHumidity());
   _pressure.setDouble(_bme680Sensor->getPressure());

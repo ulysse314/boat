@@ -16,6 +16,7 @@ Error::Level HullError::getLevel() const {
     case CodeADS1115NotFound:
     case CodeLeak:
     case TemperatureCritical:
+    case TemperatureInvalid:
       return Error::Level::Critical;
     case TemperatureWarning:
       return Error::Level::Warning;
@@ -33,9 +34,10 @@ bool HullError::isPersistant() const {
       return true;
     case CodeADS1115NotFound:
     case CodeLeak:
-    case TemperatureCritical:
-    case TemperatureWarning:
     case TemperatureInfo:
+    case TemperatureWarning:
+    case TemperatureCritical:
+    case TemperatureInvalid:
       return false;
   };
   Error *error = new ArduinoError(ArduinoError::CodeHullCodeUnknown, NULL);
