@@ -1,6 +1,6 @@
 #include "GPSController.h"
 
-#include <Adafruit_GPS.h>
+#include <MTK3339.h>
 
 #include "GPSError.h"
 #include "GPSSensor.h"
@@ -52,29 +52,29 @@ void GPSController::addSensorsToList(SensorList *sensorList) {
 }
 
 void GPSController::sensorsHasBeenUpdated() {
-  Adafruit_GPS *gps = _gpsSensor->getGPS();
+  MTK3339 *gps = _gpsSensor->getGPS();
   switch (gps->antenna) {
-    case Adafruit_GPS::AntennaUnknown:
+    case MTK3339::AntennaUnknown:
       addError(new GPSError(GPSError::CodeUnknownAntenna));
       break;
-    case Adafruit_GPS::AntennaExternalProblem:
+    case MTK3339::AntennaExternalProblem:
       addError(new GPSError(GPSError::CodeExternalAntennaProblem));
       break;
-    case Adafruit_GPS::AntennaUsingInternal:
+    case MTK3339::AntennaUsingInternal:
       addError(new GPSError(GPSError::CodeUsingInternalAntenna));
       break;
-    case Adafruit_GPS::AntennaUsingExternal:
+    case MTK3339::AntennaUsingExternal:
       break;
   }
   _antenna.setInteger(gps->antenna);
   switch (gps->mode) {
-    case Adafruit_GPS::ModeNoFix:
+    case MTK3339::ModeNoFix:
       addError(new GPSError(GPSError::CodeNoFixMode));
       break;
-    case Adafruit_GPS::Mode2D:
+    case MTK3339::Mode2D:
       addError(new GPSError(GPSError::Code2DMode));
       break;
-    case Adafruit_GPS::Mode3D:
+    case MTK3339::Mode3D:
       break;
   }
   _mode.setInteger(gps->mode);

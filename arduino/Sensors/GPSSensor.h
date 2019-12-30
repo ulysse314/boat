@@ -3,7 +3,7 @@
 
 #include "Sensor.h"
 
-class Adafruit_GPS;
+class MTK3339;
 
 class GPSSensor : public Sensor {
 public:
@@ -13,10 +13,10 @@ public:
   virtual void loop() override;
   virtual bool printAddress(Stream *serial) override;
   virtual bool printValues(Stream *serial) override;
-  Adafruit_GPS *getGPS() { return _gps; };
+  MTK3339 *getGPS() { return _mtk3339; };
   
 protected:
-    Adafruit_GPS *_gps;
+    MTK3339 *_mtk3339;
 };
 
 #endif // GPSSensor_h
