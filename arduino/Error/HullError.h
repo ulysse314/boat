@@ -9,6 +9,9 @@ public:
     CodeNone,                          // 0
     CodeADS1115NotFound,               // 1
     CodeLeak,                          // 2
+    TemperatureInfo,                   // 3
+    TemperatureWarning,                // 4
+    TemperatureCritical,               // 5
   } Code;
   
   HullError(Code code, const char *message = NULL);

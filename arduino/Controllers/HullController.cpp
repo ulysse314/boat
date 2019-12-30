@@ -6,7 +6,10 @@
 #include "HullError.h"
 #include "SensorList.h"
 
-#define kLeakThresshold      10000
+#define kLeakThresshold            10000
+#define kTemperatureCritical       65
+#define kTemperatureWarning        50
+#define kTemperatureInfo           45
 
 HullController::HullController(ADS1115Sensor *ads1115Sensor, HardwareConfig *hardwareConfig) :
     _ads1115Sensor(ads1115Sensor),
@@ -43,7 +46,15 @@ void HullController::sensorsHasBeenUpdated() {
     _water.setNull();
     addError(new HullError(HullError::CodeADS1115NotFound));
   }
-  _temperature.setDouble(_bme680Sensor->getTemperature());
+  float temperature = _bme680Sensor->getTemperature();
+  _temperature.setDouble(temperature);
+  if (temperature >= kTemperatureCritical) {
+    addError(new HullError(HullError::TemperatureCritical));
+  } else if (temperature >= kTemperatureWarning) {
+    addError(new HullError(HullError::TemperatureWarning));
+  } else if (temperature >= kTemperatureInfo) {
+    addError(new HullError(HullError::TemperatureInfo));
+  }
   _humidity.setDouble(_bme680Sensor->getHumidity());
   _pressure.setDouble(_bme680Sensor->getPressure());
 }
