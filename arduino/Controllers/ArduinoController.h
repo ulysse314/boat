@@ -34,7 +34,8 @@ protected:
   size_t _warningFreeRAM;
   size_t _criticalFreeRAM;
   unsigned long _lastMillis;
-  unsigned long _loopCount;
+  // Counter for each cycle.
+  unsigned long _cylcleCounter;
   Value _started;
   Value _cycleCount;
   Value _loopDuration;

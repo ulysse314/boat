@@ -31,7 +31,7 @@ ArduinoController::ArduinoController(HardwareConfig *hardwareConfig) :
     _warningFreeRAM(0),
     _criticalFreeRAM(0),
     _lastMillis(0),
-    _loopCount(0),
+    _cylcleCounter(0),
     _started(Value::Type::Boolean, "stt"),
     _cycleCount(Value::Type::Integer, "cyc"),
     _loopDuration(Value::Type::Integer, "ld"),
@@ -73,7 +73,7 @@ void ArduinoController::begin() {
 }
 
 void ArduinoController::sensorsHasBeenUpdated() {
-  ++_loopCount;
+  ++_cylcleCounter;
   _millis.setInteger(millis());
   unsigned long currentMillis = millis();
   unsigned long difference = currentMillis - _lastMillis;
@@ -85,7 +85,7 @@ void ArduinoController::sensorsHasBeenUpdated() {
   size_t currentFreeRAM = freeMemory();
   _ramFreeDifference.setInteger(currentFreeRAM - _ramFree.getInteger());
   _ramFree.setInteger(currentFreeRAM);
-  if (_loopCount < 5 && !_started.getBoolean()) {
+  if (_cylcleCounter < 5 && !_started.getBoolean()) {
     addError(new ArduinoError(ArduinoError::CodeNotStarted));
     return;
   }
