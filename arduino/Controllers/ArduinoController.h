@@ -16,7 +16,7 @@ public:
   
   ~ArduinoController();
 
-  void setCycleCount(long int cycleCount) { _cycleCount.setInteger(cycleCount); };
+  void setLoopCounter(long int cycleCount) { _loopCounter.setInteger(cycleCount); };
   void setLoopDuration(long int loopDuration) { _loopDuration.setInteger(loopDuration); };
   void setComputeTime(long int computeTime) { _computeTime.setInteger(computeTime); };
   void setCommand(const char *command);
@@ -37,7 +37,7 @@ protected:
   // Counter for each cycle.
   unsigned long _cylcleCounter;
   Value _started;
-  Value _cycleCount;
+  Value _loopCounter;
   Value _loopDuration;
   Value _computeTime;
   Value _ramFree;

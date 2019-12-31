@@ -101,7 +101,7 @@ void loop() {
     digitalWrite(hardwareConfig.getLEDPin(), HIGH);
     lastPrint = currentTime;
 
-    arduinoController->setCycleCount(counter);
+    arduinoController->setLoopCounter(counter);
     arduinoController->setLoopDuration(difference);
     controllerManager->sensorsHasBeenUpdated();
     controllerManager->outputControllers(piLink);

@@ -33,7 +33,7 @@ ArduinoController::ArduinoController(HardwareConfig *hardwareConfig) :
     _lastMillis(0),
     _cylcleCounter(0),
     _started(Value::Type::Boolean, "stt"),
-    _cycleCount(Value::Type::Integer, "cyc"),
+    _loopCounter(Value::Type::Integer, "lpcnt"),
     _loopDuration(Value::Type::Integer, "ld"),
     _computeTime(Value::Type::Integer, "ct"),
     _ramFree(Value::Type::Integer, "rf"),
@@ -56,7 +56,7 @@ ArduinoController::~ArduinoController() {
 
 void ArduinoController::begin() {
   addValue(&_started);
-  addValue(&_cycleCount);
+  addValue(&_loopCounter);
   addValue(&_loopDuration);
   addValue(&_computeTime);
   addValue(&_ramFree);
@@ -112,11 +112,11 @@ void ArduinoController::sensorsHasBeenUpdated() {
   } else {
     addError(new ArduinoError(ArduinoError::CodeComputeTimeCritical));
   }
-  if (_cycleCount.getInteger() < 1000) {
+  if (_loopCounter.getInteger() < 1000) {
     addError(new ArduinoError(ArduinoError::CodeMainLoopCounterLowCritical));
-  } else if (_cycleCount.getInteger() < 2500) {
+  } else if (_loopCounter.getInteger() < 2500) {
     addError(new ArduinoError(ArduinoError::CodeMainLoopCounterLowWarning));
-  } else if (_cycleCount.getInteger() < 5000) {
+  } else if (_loopCounter.getInteger() < 5000) {
     addError(new ArduinoError(ArduinoError::CodeMainLoopCounterLowInfo));
   }
   if (PiLink::getSharedPiLink()->hasTimedOut()) {
