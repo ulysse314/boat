@@ -89,7 +89,7 @@ void setup() {
 }
 
 unsigned long lastPrint = 0;
-unsigned long counter = 0;
+unsigned long loopCounter = 0;
 
 void loop() {
   sensorList->loop();
@@ -101,14 +101,14 @@ void loop() {
     digitalWrite(hardwareConfig.getLEDPin(), HIGH);
     lastPrint = currentTime;
 
-    arduinoController->setLoopCounter(counter);
+    arduinoController->setLoopCounter(loopCounter);
     arduinoController->setLoopDuration(difference);
     controllerManager->sensorsHasBeenUpdated();
     controllerManager->outputControllers(piLink);
     sensorList->readValues();
     arduinoController->setComputeTime(millis() - currentTime);
-    counter = 0;
+    loopCounter = 0;
     digitalWrite(hardwareConfig.getLEDPin(), LOW);
   }
-  ++counter;
+  ++loopCounter;
 }
