@@ -10,10 +10,11 @@ public:
     CodeUnknownAntenna,                    // 1
     CodeExternalAntennaProblem,            // 2
     CodeUsingInternalAntenna,              // 3
-    CodeNoFixMode,                         // 4
-    Code2DMode,                            // 5
-    CodeUsedSatellitesTooLow,              // 6
-    CodeUsedSatellitesLow,                 // 7
+    CodeUnknownMode,                       // 4
+    CodeNoFixMode,                         // 5
+    Code2DMode,                            // 6
+    CodeUsedSatellitesTooLow,              // 7
+    CodeUsedSatellitesLow,                 // 8
   } Code;
   
   GPSError(Code code, const char *message = NULL);

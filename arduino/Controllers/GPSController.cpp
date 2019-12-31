@@ -68,6 +68,9 @@ void GPSController::sensorsHasBeenUpdated() {
   }
   _antenna.setInteger(gps->antenna);
   switch (gps->mode) {
+    case MTK3339::ModeUnknown:
+      addError(new GPSError(GPSError::CodeUnknownMode));
+      break;
     case MTK3339::ModeNoFix:
       addError(new GPSError(GPSError::CodeNoFixMode));
       break;

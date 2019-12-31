@@ -15,6 +15,7 @@ Error::Level GPSError::getLevel() const {
     case CodeNone:
     case CodeUnknownAntenna:
     case CodeExternalAntennaProblem:
+    case CodeUnknownMode:
     case CodeNoFixMode:
     case CodeUsedSatellitesTooLow:
       return Error::Level::Critical;
