@@ -10,10 +10,11 @@ import requests
 import time
 
 async def fetch(url, data = None):
-  client = aiohttp.ClientSession()
-  resp = await client.post(url, data = data)
-  html = await resp.text()
-  return (resp.status, html)
+  async with aiohttp.ClientSession() as client:
+    async with client.post(url, data = data) as resp:
+      status = resp.status
+      html = await resp.text()
+      return (status, html)
 
 class ValueLogger:
   def __init__(self, boat_name, new_trip_url, logger_url):
