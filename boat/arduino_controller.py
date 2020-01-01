@@ -99,63 +99,22 @@ class ArduinoController:
       await asyncio.sleep(1)
 
   def _update_arduino_values(self, values):
-    self.values['arduino'] = {}
-    if values["stt"] != None: self.values["arduino"]["started"] = values["stt"]
-    if values["lpcnt"] != None: self.values["arduino"]["loopcounter"] = values["lpcnt"]
-    if values["lpdrt"] != None: self.values["arduino"]["loopduration"] = values["lpdrt"]
-    if values["ccldrt"] != None: self.values["arduino"]["cycleduration"] = values["ccldrt"]
-    if values["expdrt"] != None: self.values["arduino"]["exportduration"] = values["expdrt"]
-    if values["rf"] != None: self.values["arduino"]["ramfree"] = values["rf"]
-    if values["rfd"] != None: self.values["arduino"]["ramfreediff"] = values["rfd"]
-    if values["mlls"] != None: self.values["arduino"]["millis"] = values["mlls"]
-    if values["tst"] != None: self.values["arduino"]["timestamp"] = values["tst"]
-    if values["cmp"] != None: self.values["arduino"]["compiledate"] = values["cmp"]
-    if values["vrs"] != None: self.values["arduino"]["version"] = values["vrs"]
-    if "err" in values: self.values["arduino"]["errors"] = values["err"]
+    self.values['arduino'] = values
 
   def _update_battery_values(self, values):
-    self.values['battery'] = {}
-    if values["volt"] != None: self.values["battery"]["volt"] = values["volt"]
-    if values["amp"] != None: self.values["battery"]["amp"] = values["amp"]
-    if values["batT"] != None: self.values["battery"]["batT"] = values["batT"]
-    if values["balT"] != None: self.values["battery"]["balT"] = values["balT"]
-    if values["bal0"] != None: self.values["battery"]["bal0"] = values["bal0"]
-    if values["bal1"] != None: self.values["battery"]["bal1"] = values["bal1"]
-    if values["bal2"] != None: self.values["battery"]["bal2"] = values["bal2"]
-    if "err" in values: self.values["battery"]["errors"] = values["err"]
+    self.values['battery'] = values
 
   def _update_gps_values(self, values):
-    self.values['gps'] = {}
-    if values["ant"] != None: self.values["gps"]["antenna"] = values["ant"]
-    if values["vst"] != None: self.values["gps"]["sat"] = values["vst"]
-    if values["ust"] != None: self.values["gps"]["tracked"] = values["ust"]
-    if values["mod"] != None: self.values["gps"]["mode"] = values["mod"]
-    if values["fxq"] != None: self.values["gps"]["fix"] = values["fxq"]
+    self.values['gps'] = values
     if values["lat"] != None: self.values["gps"]["lat"] = values["lat"] / 10000000
     if values["lon"] != None: self.values["gps"]["lon"] = values["lon"] / 10000000
-    if values["alt"] != None: self.values["gps"]["alt"] = values["alt"]
-    if values["spd"] != None: self.values["gps"]["speed"] = values["spd"]
-    if values["ang"] != None: self.values["gps"]["angle"] = values["ang"]
-    if values["hdp"] != None: self.values["gps"]["dop.h"] = values["hdp"]
-    if values["pdp"] != None: self.values["gps"]["dop.p"] = values["pdp"]
-    if values["vdp"] != None: self.values["gps"]["dop.v"] = values["vdp"]
-    if values["gh"] != None: self.values["gps"]["geoidheight"] = values["gh"]
-    if "err" in values: self.values["gps"]["errors"] = values["err"]
 
   def _update_hull_values(self, values):
-    self.values['hull'] = {}
-    if values["water"] != None: self.values["hull"]["water"] = values["water"]
-    if values["temp"] != None: self.values["hull"]["temp"] = values["temp"]
-    if values["humi"] != None: self.values["hull"]["humi"] = values["humi"]
-    if values["press"] != None: self.values["hull"]["press"] = values["press"]
-    if "err" in values: self.values["hull"]["errors"] = values["err"]
+    self.values['hull'] = values
 
   def _update_motor_values(self, values):
     motor_name = values["name"]
-    self.values[motor_name] = {}
-    if values["pwr"] != None: self.values[motor_name]["pwr"] = values["pwr"]
-    if values["t"] != None: self.values[motor_name]["temp"] = values["t"]
-    if "err" in values: self.values[motor_name]["errors"] = values["err"]
+    self.values[motor_name] = values
 
   def _add_values(self, keys, value):
     array = self.values
