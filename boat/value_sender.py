@@ -31,6 +31,7 @@ class ValueSender:
     self.boat_port = boat_port
     self.key = key
     self.last_sent = 0
+    self.statistics = {}
   
   def start(self):
     self.logger.debug("Start")
@@ -85,7 +86,11 @@ class ValueSender:
     self.last_sent = time.time()
     self.sending_id = self.ids_to_send[-1]
     self.logger.debug("Sending next value {}".format(self.sending_id))
-    self.transport.send_json(self.values[self.sending_id])
+    value = self.values[self.sending_id]
+    if "pi" in value:
+      value["pi"].update(self.statistics)
+    data_sent = self.transport.send_json(value)
+    self.statistics["dtsz"] = data_sent
 
 ## connection
   def connection_made(self, transport):
@@ -107,6 +112,7 @@ class ValueSender:
     if "id" in message:
       message_id = message["id"]
       if self.sending_id == message_id:
+        self.statistics["uplddrt"] = time.time() - self.last_sent
         self.last_sent = 0
         self.sending_id = None
       if message_id in self.ids_to_send:

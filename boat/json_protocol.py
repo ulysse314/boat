@@ -28,3 +28,4 @@ class JsonProtocol(line_protocol.LineProtocol):
   def send_json(self, values):
     data = json.dumps(values)
     self.send_line(data)
+    return len(data)
