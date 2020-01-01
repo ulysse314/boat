@@ -96,7 +96,7 @@ class E3372Controller:
   async def _run(self):
     while True:
       values = await self._get_values()
-      self.values = { "cellular": values }
+      self.values = { "cell": values }
       await asyncio.sleep(1)
 
   async def _get_values(self):
