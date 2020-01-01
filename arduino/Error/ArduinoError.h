@@ -9,9 +9,9 @@ public:
     CodeNone,                          // 0
     CodeSetValueWithWrongType,         // 1
     CodeGetValueWithWrongType,         // 2
-    CodeComputeTimeInfo,               // 3
-    CodeComputeTimeWarning,            // 4
-    CodeComputeTimeCritical,           // 5
+    CodeExportDurationInfo,            // 3
+    CodeExportDurationWarning,         // 4
+    CodeExportDurationCritical,        // 5
     CodeRAMDifference100,              // 6
     CodeRAMDifference500,              // 7
     CodeRAMDifference1k,               // 8

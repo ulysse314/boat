@@ -15,7 +15,7 @@ Error::Level ArduinoError::getLevel() const {
     case CodeNone:
     case CodeSetValueWithWrongType:
     case CodeGetValueWithWrongType:
-    case CodeComputeTimeCritical:
+    case CodeExportDurationCritical:
     case CodeRAMDifference1k:
     case CodeCriticalRAM:
     case CodeArduinoCodeUnknown:
@@ -29,12 +29,12 @@ Error::Level ArduinoError::getLevel() const {
     case CodeBatteryCodeUnknown:
     case CodeHullCodeUnknown:
       return Error::Level::Critical;
-    case CodeComputeTimeWarning:
+    case CodeExportDurationWarning:
     case CodeRAMDifference500:
     case CodeWarningRAM:
     case CodeMainLoopCounterLowWarning:
       return Error::Level::Warning;
-    case CodeComputeTimeInfo:
+    case CodeExportDurationInfo:
     case CodeRAMDifference100:
     case CodeInfoRAM:
     case CodeMainLoopCounterLowInfo:
@@ -55,15 +55,15 @@ bool ArduinoError::isPersistant() const {
     case CodeGPSValueIndex:
     case CodeGPSCodeUnknown:
     case CodeRAMDifference1k:
-    case CodeComputeTimeCritical:
+    case CodeExportDurationCritical:
     case CodeAddingValueWithSameName:
     case CodePWMDriverNotAvailable:
     case CodeMotorCodeUnknown:
     case CodeBatteryCodeUnknown:
     case CodeHullCodeUnknown:
       return true;
-    case CodeComputeTimeInfo:
-    case CodeComputeTimeWarning:
+    case CodeExportDurationInfo:
+    case CodeExportDurationWarning:
     case CodeRAMDifference100:
     case CodeRAMDifference500:
     case CodeInfoRAM:

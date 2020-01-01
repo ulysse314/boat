@@ -34,15 +34,16 @@ ArduinoController::ArduinoController(HardwareConfig *hardwareConfig) :
     _cylcleCounter(0),
     _started(Value::Type::Boolean, "stt"),
     _loopCounter(Value::Type::Integer, "lpcnt"),
-    _loopDuration(Value::Type::Integer, "ld"),
-    _computeTime(Value::Type::Integer, "ct"),
+    _longestLoopDuration(Value::Type::Integer, "lpdrt"),
+    _cycleDuration(Value::Type::Integer, "ccldrt"),
+    _exportDuration(Value::Type::Integer, "expdrt"),
     _ramFree(Value::Type::Integer, "rf"),
     _ramFreeDifference(Value::Type::Integer, "rfd"),
-    _millis(Value::Type::Integer, "mil"),
+    _millis(Value::Type::Integer, "mlls"),
     _timestamp(Value::Type::Integer, "tst"),
     _compileDate(Value::Type::String, "cmp"),
-    _arduinoVersion(Value::Type::Integer, "ver"),
-    _debugInfo(Value::Type::String, "debug") {
+    _arduinoVersion(Value::Type::Integer, "vrs"),
+    _debugInfo(Value::Type::String, "dbg") {
   String compileDateString;
   compileDateString.concat(__TIME__);
   compileDateString.concat(" ");
@@ -57,8 +58,9 @@ ArduinoController::~ArduinoController() {
 void ArduinoController::begin() {
   addValue(&_started);
   addValue(&_loopCounter);
-  addValue(&_loopDuration);
-  addValue(&_computeTime);
+  addValue(&_longestLoopDuration);
+  addValue(&_cycleDuration);
+  addValue(&_exportDuration);
   addValue(&_ramFree);
   addValue(&_ramFreeDifference);
   addValue(&_millis);
@@ -104,13 +106,13 @@ void ArduinoController::sensorsHasBeenUpdated() {
   } else if (currentFreeRAM <= _infoFreeRAM) {
     addError(new ArduinoError(ArduinoError::CodeInfoRAM));
   }
-  if (_computeTime.getInteger() < 200) {
-  } else if (_computeTime.getInteger() < 500) {
-    addError(new ArduinoError(ArduinoError::CodeComputeTimeInfo));
-  } else if (_computeTime.getInteger() > 750) {
-    addError(new ArduinoError(ArduinoError::CodeComputeTimeWarning));
+  if (_exportDuration.getInteger() < 200) {
+  } else if (_exportDuration.getInteger() < 500) {
+    addError(new ArduinoError(ArduinoError::CodeExportDurationInfo));
+  } else if (_exportDuration.getInteger() > 750) {
+    addError(new ArduinoError(ArduinoError::CodeExportDurationWarning));
   } else {
-    addError(new ArduinoError(ArduinoError::CodeComputeTimeCritical));
+    addError(new ArduinoError(ArduinoError::CodeExportDurationCritical));
   }
   if (_loopCounter.getInteger() < 1000) {
     addError(new ArduinoError(ArduinoError::CodeMainLoopCounterLowCritical));

@@ -101,15 +101,16 @@ class ArduinoController:
   def _update_arduino_values(self, values):
     self.values['arduino'] = {}
     if values["stt"] != None: self.values["arduino"]["started"] = values["stt"]
-    if values["cyc"] != None: self.values["arduino"]["cyclecount"] = values["cyc"]
-    if values["ld"] != None: self.values["arduino"]["loopduration"] = values["ld"]
-    if values["ct"] != None: self.values["arduino"]["computetime"] = values["ct"]
+    if values["lpcnt"] != None: self.values["arduino"]["loopcounter"] = values["lpcnt"]
+    if values["lpdrt"] != None: self.values["arduino"]["loopduration"] = values["lpdrt"]
+    if values["ccldrt"] != None: self.values["arduino"]["cycleduration"] = values["ccldrt"]
+    if values["expdrt"] != None: self.values["arduino"]["exportduration"] = values["expdrt"]
     if values["rf"] != None: self.values["arduino"]["ramfree"] = values["rf"]
     if values["rfd"] != None: self.values["arduino"]["ramfreediff"] = values["rfd"]
-    if values["mil"] != None: self.values["arduino"]["millis"] = values["mil"]
+    if values["mlls"] != None: self.values["arduino"]["millis"] = values["mlls"]
     if values["tst"] != None: self.values["arduino"]["timestamp"] = values["tst"]
     if values["cmp"] != None: self.values["arduino"]["compiledate"] = values["cmp"]
-    if values["ver"] != None: self.values["arduino"]["version"] = values["ver"]
+    if values["vrs"] != None: self.values["arduino"]["version"] = values["vrs"]
     if "err" in values: self.values["arduino"]["errors"] = values["err"]
 
   def _update_battery_values(self, values):

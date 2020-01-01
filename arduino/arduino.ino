@@ -74,6 +74,7 @@ void initGlobal() {
   sensorList->loop();
 }
 
+
 void setup() {
   hardwareConfig.begin();
   for (int i = 0; i < 4; i++) {
@@ -88,26 +89,34 @@ void setup() {
   Serial.println("Started!");
 }
 
-unsigned long lastPrint = 0;
-unsigned long loopCounter = 0;
-
 void loop() {
+  static unsigned long loopCounter = 0;
+  static unsigned long lastLoopTime = millis();
+  static unsigned long longestLoopDuration = 0;
+  static unsigned long lastCycleTime = 1000 * (unsigned long)(millis() / 1000.);
   sensorList->loop();
   piLink->listen();
   driverManager->loop();
   unsigned long currentTime = millis();
-  unsigned long difference = currentTime - lastPrint;
-  if (difference > 1000) {
+  unsigned long loopDuration = currentTime - lastLoopTime;
+  if (loopDuration > longestLoopDuration) {
+    longestLoopDuration = loopDuration;
+  }
+  lastLoopTime = currentTime;
+  unsigned long cycleDuration = currentTime - lastCycleTime;
+  if ((unsigned long)(currentTime - lastCycleTime) >= 1000) {
     digitalWrite(hardwareConfig.getLEDPin(), HIGH);
-    lastPrint = currentTime;
+    lastCycleTime = 1000 * (unsigned long)(currentTime / 1000.) ;
 
     arduinoController->setLoopCounter(loopCounter);
-    arduinoController->setLoopDuration(difference);
+    arduinoController->setCycleDuration(cycleDuration);
+    arduinoController->setLongestLoopDuration(longestLoopDuration);
     controllerManager->sensorsHasBeenUpdated();
     controllerManager->outputControllers(piLink);
     sensorList->readValues();
-    arduinoController->setComputeTime(millis() - currentTime);
+    arduinoController->setExportDuration(millis() - currentTime);
     loopCounter = 0;
+    longestLoopDuration = 0;
     digitalWrite(hardwareConfig.getLEDPin(), LOW);
   }
   ++loopCounter;
