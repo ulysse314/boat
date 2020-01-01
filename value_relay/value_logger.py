@@ -35,7 +35,7 @@ class ValueLogger:
         start_time = time.time()
         (status, html) = await fetch(url, {"values": packet.decode("utf-8")})
         upload_duration = time.time() - start_time
-        self.logger.debug("Upload duration: {}".format(upload_duration))
+        self.logger.debug("Upload duration: {}, size: {}".format(upload_duration, len(packet)))
         if status == 200:
           self.logger.debug("Packet sent {}".format(html))
           break
