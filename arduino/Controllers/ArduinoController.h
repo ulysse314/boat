@@ -23,7 +23,7 @@ public:
   void setCommand(const char *command);
 
   // Controller
-  const char *getName() const override { return "arduino"; };
+  const char *getName() const override { return "ard"; };
   void begin() override;
   void sensorsHasBeenUpdated() override;
 

@@ -13,7 +13,7 @@ public:
   HullController(ADS1115Sensor *ads1115Sensor, HardwareConfig *hardwareConfig);
   virtual ~HullController();
 
-  const char *getName() const override { return "hull"; };
+  const char *getName() const override { return "hll"; };
   void begin() override;
   void addSensorsToList(SensorList *sensorList) override;
   void sensorsHasBeenUpdated() override;

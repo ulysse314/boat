@@ -16,7 +16,7 @@
 MotorController *MotorController::LeftMotor(PWMDriver *pwmDriver, HardwareConfig *hardwareConfig) {
   static MotorController*motor = NULL;
   if (!motor) {
-    motor = new MotorController("motor-l", pwmDriver, hardwareConfig->getLeftMotorPWMID(), hardwareConfig->getLeftMotorDallasAddress(), hardwareConfig);
+    motor = new MotorController("mtr-l", pwmDriver, hardwareConfig->getLeftMotorPWMID(), hardwareConfig->getLeftMotorDallasAddress(), hardwareConfig);
   }
   return motor;
 }
@@ -25,7 +25,7 @@ MotorController *MotorController::LeftMotor(PWMDriver *pwmDriver, HardwareConfig
 MotorController *MotorController::RightMotor(PWMDriver *pwmDriver, HardwareConfig *hardwareConfig) {
   static MotorController*motor = NULL;
   if (!motor) {
-    motor = new MotorController("motor-r", pwmDriver, hardwareConfig->getRightMotorPWMID(), hardwareConfig->getRightMotorDallasAddress(), hardwareConfig);
+    motor = new MotorController("mtr-r", pwmDriver, hardwareConfig->getRightMotorPWMID(), hardwareConfig->getRightMotorDallasAddress(), hardwareConfig);
   }
   return motor;
 }

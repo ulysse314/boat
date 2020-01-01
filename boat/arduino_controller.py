@@ -99,10 +99,10 @@ class ArduinoController:
       await asyncio.sleep(1)
 
   def _update_arduino_values(self, values):
-    self.values['arduino'] = values
+    self.values['ard'] = values
 
   def _update_battery_values(self, values):
-    self.values['battery'] = values
+    self.values['batt'] = values
 
   def _update_gps_values(self, values):
     self.values['gps'] = values
@@ -110,7 +110,7 @@ class ArduinoController:
     if values["lon"] != None: self.values["gps"]["lon"] = values["lon"] / 10000000
 
   def _update_hull_values(self, values):
-    self.values['hull'] = values
+    self.values['hll'] = values
 
   def _update_motor_values(self, values):
     motor_name = values["name"]
@@ -153,15 +153,15 @@ class ArduinoController:
       values = json.loads(line)
     except:
       self.logger.exception("Cannot parse " + pprint.pformat(line))
-    if values["name"] == "arduino":
+    if values["name"] == "ard":
       self._update_arduino_values(values)
-    elif values["name"] == "bat":
+    elif values["name"] == "batt":
       self._update_battery_values(values)
     elif values["name"] == "gps":
       self._update_gps_values(values)
-    elif values["name"] == "hull":
+    elif values["name"] == "hll":
       self._update_hull_values(values)
-    elif values["name"].startswith("motor-"):
+    elif values["name"].startswith("mtr-"):
       self._update_motor_values(values)
     else:
       self.logger.warning("Unknown values " + pprint.pformat(values))
