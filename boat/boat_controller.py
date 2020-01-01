@@ -27,9 +27,9 @@ class BoatController:
     self.value_id += 1
     values["record"] = self.record
     i = datetime.datetime.now()
-    values['date'] = i.isoformat()
-    values["timestamp"] = time.time()
-    values["boot_timestamp"] = self.boot_timestamp
+    values['dt'] = i.isoformat()
+    values["tmstmp"] = time.time()
+    values["bttmstmp"] = self.boot_timestamp
     for controller in self.controllers:
       try:
         controller.stop_update_values()
