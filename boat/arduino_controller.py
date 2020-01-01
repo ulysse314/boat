@@ -98,23 +98,10 @@ class ArduinoController:
         self.logger.exception("connection failed")
       await asyncio.sleep(1)
 
-  def _update_arduino_values(self, values):
-    self.values['ard'] = values
-
-  def _update_battery_values(self, values):
-    self.values['batt'] = values
-
   def _update_gps_values(self, values):
-    self.values['gps'] = values
-    if values["lat"] != None: self.values["gps"]["lat"] = values["lat"] / 10000000
-    if values["lon"] != None: self.values["gps"]["lon"] = values["lon"] / 10000000
-
-  def _update_hull_values(self, values):
-    self.values['hll'] = values
-
-  def _update_motor_values(self, values):
-    motor_name = values["name"]
-    self.values[motor_name] = values
+    if "lat" in values: values["lat"] = values["lat"] / 10000000
+    if "lon" in values: values["lon"] = values["lon"] / 10000000
+    return values
 
   def _add_values(self, keys, value):
     array = self.values
@@ -153,18 +140,11 @@ class ArduinoController:
       values = json.loads(line)
     except:
       self.logger.exception("Cannot parse " + pprint.pformat(line))
-    if values["name"] == "ard":
-      self._update_arduino_values(values)
-    elif values["name"] == "batt":
-      self._update_battery_values(values)
-    elif values["name"] == "gps":
-      self._update_gps_values(values)
-    elif values["name"] == "hll":
-      self._update_hull_values(values)
-    elif values["name"].startswith("mtr-"):
-      self._update_motor_values(values)
-    else:
-      self.logger.warning("Unknown values " + pprint.pformat(values))
+    name = values["name"]
+    del values["name"]
+    if name == "gps":
+      values = self._update_gps_values(values)
+    self.values[name] = values
 
   def eof_received(self):
     self.serial_transport.close()
