@@ -9,6 +9,7 @@ class Arduino:
   NoError = 0
   DevNotFound = 100
   ConnectionError = 101
+  NoData = 102
 
 class E3372:
   NoError = 0

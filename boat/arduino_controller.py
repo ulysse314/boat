@@ -42,6 +42,7 @@ class ArduinoController:
     self.next_motor_line = None
     self.last_send = 0
     self.send_pending = False
+    self.last_line_received_timestamp = time.time()
 
   def set_motors(self, values):
     left = None
@@ -92,8 +93,10 @@ class ArduinoController:
           await serial_asyncio.create_serial_connection(loop, lambda: line_protocol.LineProtocol(self), self.dev_port, baudrate = self.port_speed)
           break
         else:
+          self.values = {}
           self.values['ard'] = { 'err': [[ boat_error.ArduinoDomain, boat_error.Arduino.DevNotFound ]] }
       except:
+        self.values = {}
         self.values['ard'] = { 'err': [[ boat_error.ArduinoDomain, boat_error.Arduino.ConnectionError ]] }
         self.logger.exception("connection failed")
       await asyncio.sleep(1)
@@ -116,6 +119,9 @@ class ArduinoController:
       await asyncio.sleep(2)
       if self.serial_transport:
         self.serial_transport.send_line("Motor ping")
+      if time.time() - self.last_line_received_timestamp >= 2:
+        self.values = {}
+        self.values['ard'] = { 'err': [[ boat_error.ArduinoDomain, boat_error.Arduino.NoData ]] }
  
 ## connection
   def connection_made(self, transport):
@@ -140,11 +146,13 @@ class ArduinoController:
       values = json.loads(line)
     except:
       self.logger.exception("Cannot parse " + pprint.pformat(line))
+      return
     name = values["name"]
     del values["name"]
     if name == "gps":
       values = self._update_gps_values(values)
     self.values[name] = values
+    self.last_line_received_timestamp = time.time()
 
   def eof_received(self):
     self.serial_transport.close()
