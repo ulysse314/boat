@@ -72,6 +72,8 @@ void initGlobal() {
   sensorList->begin();
   controllerManager->begin();
   sensorList->loop();
+  leftMotorController->setValue(0);
+  rightMotorController->setValue(0);
 }
 
 
