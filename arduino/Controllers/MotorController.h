@@ -26,11 +26,12 @@ public:
   void setValue(int);
   
 protected:
-  MotorController(const char *name, PWMDriver *pwmDriver, uint8_t motorID, const OneWire::Address dallasAddress, HardwareConfig *hardwareConfig);
+  MotorController(const char *name, const char *humanName, PWMDriver *pwmDriver, uint8_t motorID, const OneWire::Address dallasAddress, HardwareConfig *hardwareConfig);
 
-  const char *_name;
-  PWMDriver *_pwmDriver;
-  DallasSensor *_temperatureSensor;
+  const char *const _name;
+  const char *const _humanName;
+  PWMDriver *const _pwmDriver;
+  DallasSensor *const _temperatureSensor;
   uint8_t _motorID;
   Value _power;
   Value _temperature;

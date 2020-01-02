@@ -16,7 +16,7 @@
 MotorController *MotorController::LeftMotor(PWMDriver *pwmDriver, HardwareConfig *hardwareConfig) {
   static MotorController*motor = NULL;
   if (!motor) {
-    motor = new MotorController("mtr-l", pwmDriver, hardwareConfig->getLeftMotorPWMID(), hardwareConfig->getLeftMotorDallasAddress(), hardwareConfig);
+    motor = new MotorController("mtr-l", "left", pwmDriver, hardwareConfig->getLeftMotorPWMID(), hardwareConfig->getLeftMotorDallasAddress(), hardwareConfig);
   }
   return motor;
 }
@@ -25,13 +25,14 @@ MotorController *MotorController::LeftMotor(PWMDriver *pwmDriver, HardwareConfig
 MotorController *MotorController::RightMotor(PWMDriver *pwmDriver, HardwareConfig *hardwareConfig) {
   static MotorController*motor = NULL;
   if (!motor) {
-    motor = new MotorController("mtr-r", pwmDriver, hardwareConfig->getRightMotorPWMID(), hardwareConfig->getRightMotorDallasAddress(), hardwareConfig);
+    motor = new MotorController("mtr-r", "right", pwmDriver, hardwareConfig->getRightMotorPWMID(), hardwareConfig->getRightMotorDallasAddress(), hardwareConfig);
   }
   return motor;
 }
 
-MotorController::MotorController(const char *name, PWMDriver *pwmDriver, uint8_t motorID, const OneWire::Address dallasAddress, HardwareConfig *hardwareConfig) :
+MotorController::MotorController(const char *name, const char *humanName, PWMDriver *pwmDriver, uint8_t motorID, const OneWire::Address dallasAddress, HardwareConfig *hardwareConfig) :
     _name(createStringCopy(name)),
+    _humanName(createStringCopy(humanName)),
     _pwmDriver(pwmDriver),
     _temperatureSensor(new DallasSensor(dallasAddress, hardwareConfig->getOneWire())),
     _motorID(motorID),
@@ -40,6 +41,9 @@ MotorController::MotorController(const char *name, PWMDriver *pwmDriver, uint8_t
 }
 
 MotorController::~MotorController() {
+  free((void *)_name);
+  free((void *)_humanName);
+  delete _temperatureSensor;
 }
 
 void MotorController::addSensorsToList(SensorList *sensorList) {
@@ -58,14 +62,14 @@ void MotorController::sensorsHasBeenUpdated() {
     if (temperature < InfoTemperature) {
       // No error.
     } else if (temperature < WarningTemperature) {
-      addError(new MotorError(MotorError::CodeTemperatureInfo));
+      addError(new MotorError(MotorError::CodeTemperatureInfo, _humanName));
     } else if (temperature < CriticalTemperature) {
-      addError(new MotorError(MotorError::CodeTemperatureWarning));
+      addError(new MotorError(MotorError::CodeTemperatureWarning, _humanName));
     } else {
-      addError(new MotorError(MotorError::CodeTemperatureCritical));
+      addError(new MotorError(MotorError::CodeTemperatureCritical, _humanName));
     }
   } else {
-    addError(new MotorError(MotorError::CodeTemperatureUnknown));
+    addError(new MotorError(MotorError::CodeTemperatureUnknown, _humanName));
     _temperature.setNull();
   }
   if (PiLink::getSharedPiLink()->hasTimedOut()) {

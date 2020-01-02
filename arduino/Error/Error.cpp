@@ -4,15 +4,10 @@
 #include <string.h>
 
 #include "ArduinoController.h"
+#include "StringUtils.h"
 
 Error::Error(const char *message) :
-    _message(NULL) {
-  if (message) {
-    size_t messageLength = strlen(message);
-    char *newMessage = (char *)malloc(messageLength + 1);
-    strcpy(newMessage, message);
-    _message = newMessage;
-  }
+    _message(createStringCopy(message)) {
 }
 
 Error::~Error() {

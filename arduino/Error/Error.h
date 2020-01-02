@@ -38,7 +38,7 @@ public:
 protected:
   Domain _domain;
   int _code;
-  const char *_message;
+  const char *const _message;
   bool _persistant;
 };
 

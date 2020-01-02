@@ -92,9 +92,9 @@ class ArduinoController:
           await serial_asyncio.create_serial_connection(loop, lambda: line_protocol.LineProtocol(self), self.dev_port, baudrate = self.port_speed)
           break
         else:
-          self.values['arduino'] = { 'errors': [[ boat_error.ArduinoDomain, boat_error.Arduino.DevNotFound ]] }
+          self.values['ard'] = { 'err': [[ boat_error.ArduinoDomain, boat_error.Arduino.DevNotFound ]] }
       except:
-        self.values['arduino'] = { 'errors': [[ boat_error.ArduinoDomain, boat_error.Arduino.ConnectionError ]] }
+        self.values['ard'] = { 'err': [[ boat_error.ArduinoDomain, boat_error.Arduino.ConnectionError ]] }
         self.logger.exception("connection failed")
       await asyncio.sleep(1)
 
