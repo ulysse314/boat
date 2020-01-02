@@ -28,7 +28,7 @@ protected:
   Value _longitudeDegree;
   Value _altitude;
   Value _speed;
-  Value _angle;
+  Value _heading;
   Value _geoidHeight;
   Value _pdop;
   Value _hdop;

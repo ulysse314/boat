@@ -19,7 +19,7 @@ GPSController::GPSController() :
     _longitudeDegree(Value::Type::Integer, "lon"),
     _altitude(Value::Type::Double, "alt"),
     _speed(Value::Type::Double, "spd"),
-    _angle(Value::Type::Double, "ang"),
+    _heading(Value::Type::Double, "head"),
     _geoidHeight(Value::Type::Double, "gh"),
     _pdop(Value::Type::Double, "pdp"),
     _hdop(Value::Type::Double, "hdp"),
@@ -40,7 +40,7 @@ void GPSController::begin() {
   addValue(&_longitudeDegree);
   addValue(&_altitude);
   addValue(&_speed);
-  addValue(&_angle);
+  addValue(&_heading);
   addValue(&_geoidHeight);
   addValue(&_pdop);
   addValue(&_hdop);
@@ -94,7 +94,7 @@ void GPSController::sensorsHasBeenUpdated() {
     _longitudeDegree.setInteger(gps->longitude_degree);
     _altitude.setDouble(gps->altitude);
     _speed.setDouble(gps->speed);
-    _angle.setDouble(gps->angle);
+    _heading.setDouble(gps->angle);
     _geoidHeight.setDouble(gps->geoidheight);
     _pdop.setDouble(gps->PDOP);
     _hdop.setDouble(gps->HDOP);
@@ -105,7 +105,7 @@ void GPSController::sensorsHasBeenUpdated() {
     _longitudeDegree.setNull();
     _altitude.setNull();
     _speed.setNull();
-    _angle.setNull();
+    _heading.setNull();
     _geoidHeight.setNull();
     _pdop.setNull();
     _hdop.setNull();
