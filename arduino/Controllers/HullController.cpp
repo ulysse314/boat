@@ -16,7 +16,7 @@ HullController::HullController(ADS1115Sensor *ads1115Sensor, HardwareConfig *har
     _ads1115Sensor(ads1115Sensor),
     _bme680Sensor(new BME680Sensor(hardwareConfig->getBME680Address(), hardwareConfig->getI2C())),
     _water(Value::Type::Integer, "wtr"),
-    _temperature(Value::Type::Double, "t"),
+    _temperature(Value::Type::Double, "T"),
     _humidity(Value::Type::Double, "hm"),
     _pressure(Value::Type::Double, "prss") {
 }
