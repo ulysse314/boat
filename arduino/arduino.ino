@@ -8,7 +8,6 @@
 #include "GPSSensor.h"
 #include "HardwareConfig.h"
 #include "HullController.h"
-#include "InfoActuatorSensor.h"
 #include "MemoryFree.h"
 #include "MotorController.h"
 #include "PiLink.h"
@@ -21,7 +20,6 @@
 HardwareConfig hardwareConfig;
 
 SensorList *sensorList = NULL;
-InfoActuatorSensor *infoActuatorSensor = NULL;
 ADS1115Sensor *ads1115Sensor = NULL;
 
 DriverManager *driverManager = NULL;
@@ -38,7 +36,6 @@ MotorController *rightMotorController = NULL;
 PiLink *piLink = NULL;
 
 void initGlobal() {
-  infoActuatorSensor = new InfoActuatorSensor();
   controllerManager = new ControllerManager();
   driverManager = new DriverManager();
   piLink = PiLink::generatePiLink(&hardwareConfig);
