@@ -27,7 +27,8 @@ void BME680Sensor::loop() {
     _available = _bme680.begin();
     return;
   }
-  if (_waitingForData && _bme680.endReading()) {
+  if (_waitingForData && _bme680.remainingReadingMillis() == 0) {
+    _bme680.endReading();
     _waitingForData = false;
     _temperature = _bme680.temperature;
     _humidity = _bme680.humidity;
