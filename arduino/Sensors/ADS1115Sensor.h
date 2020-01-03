@@ -3,6 +3,8 @@
 
 #include "Sensor.h"
 
+#include <inttypes.h>
+
 class ADS1115;
 class TwoWire;
 

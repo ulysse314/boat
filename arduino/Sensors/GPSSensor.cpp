@@ -1,5 +1,6 @@
 #include "GPSSensor.h"
 
+#include <Arduino.h>
 #include <MTK3339.h>
 
 #define GPSSerial Serial1

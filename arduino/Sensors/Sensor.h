@@ -1,7 +1,7 @@
 #ifndef Sensor_h
 #define Sensor_h
 
-#include <Arduino.h>
+#include <stddef.h>
 
 class Sensor {
 public:

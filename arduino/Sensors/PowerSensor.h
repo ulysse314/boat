@@ -1,7 +1,9 @@
-#include "Sensor.h"
-
 #ifndef PowerSensor_h
 #define PowerSensor_h
+
+#include "Sensor.h"
+
+#include <inttypes.h>
 
 class PowerSensor : public Sensor {
 public:

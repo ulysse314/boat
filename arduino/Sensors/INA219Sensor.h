@@ -3,6 +3,8 @@
 
 #include "Sensor.h"
 
+#include <inttypes.h>
+
 class INA219;
 class TwoWire;
 

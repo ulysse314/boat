@@ -1,8 +1,9 @@
 #ifndef SensorList_h
 #define SensorList_h
 
-#include "Sensor.h"
+#include <stddef.h>
 
+class Sensor;
 typedef void *SensorCursor;
 
 class SensorList

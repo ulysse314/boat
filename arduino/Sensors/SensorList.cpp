@@ -1,5 +1,9 @@
 #include "SensorList.h"
 
+#include "Sensor.h"
+
+#include <Arduino.h>
+
 SensorList::SensorList() {
   _sensorBucket = NULL;
 }

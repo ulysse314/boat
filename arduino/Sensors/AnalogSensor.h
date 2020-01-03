@@ -1,7 +1,9 @@
-#include "Sensor.h"
-
 #ifndef AnalogSensor_h
 #define AnalogSensor_h
+
+#include <inttypes.h>
+
+#include "Sensor.h"
 
 class AnalogSensor : public Sensor {
 public:
