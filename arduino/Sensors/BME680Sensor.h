@@ -14,8 +14,6 @@ public:
   virtual void begin() override;
   virtual void loop() override;
   virtual bool readValues() override;
-  virtual bool printAddress(Stream *serial) override;
-  virtual bool printValues(Stream *serial) override;
 
   bool getAvailable() const { return _available; };
   float getTemperature() const { return _temperature; };

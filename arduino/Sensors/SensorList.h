@@ -28,9 +28,6 @@ public:
   virtual void loop();
   virtual bool readValues();
   virtual bool resetValues();
-  virtual bool printInfo(Stream *serial, int nodeID = -1);
-  virtual bool printAddress(Stream *serial);
-  virtual bool printValues(Stream *serial);
 };
 
 #endif // SensorList_h

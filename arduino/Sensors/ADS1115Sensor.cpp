@@ -22,22 +22,6 @@ void ADS1115Sensor::loop() {
   }
 }
 
-bool ADS1115Sensor::printAddress(Stream *serial) {
-  serial->print((uint16_t)_ads1115->i2cAddress());
-  return true;
-}
-
-bool ADS1115Sensor::printValues(Stream *serial) {
-  serial->print(_value0);
-  serial->print(",");
-  serial->print(_value1);
-  serial->print(",");
-  serial->print(_value2);
-  serial->print(",");
-  serial->print(_value3);
-  return true;
-}
-
 bool ADS1115Sensor::readValues() {
   if (_available) {
     _ads1115->readADC_SingleEnded(0, &_value0);

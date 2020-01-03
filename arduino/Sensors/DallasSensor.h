@@ -35,8 +35,6 @@ public:
   const char *copyAddressString() const override;
   bool readValues() override;
   void loop() override;
-  bool printAddress(Stream *serial) override;
-  bool printValues(Stream *serial) override;
 
 private:
   void sendConvertCommand();

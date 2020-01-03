@@ -12,7 +12,6 @@ public:
   const char *addressString() const override { return _address; };
   void begin() override;
   bool readValues() override;
-  bool printValues(Stream *serial) override;
   
 protected:
   const char *_address = NULL;

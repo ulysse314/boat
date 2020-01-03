@@ -25,39 +25,3 @@ void GPSSensor::loop() {
     }
   }
 }
-
-bool GPSSensor::printAddress(Stream *serial) {
-  serial->print("serial1");
-  return true;
-}
-
-bool GPSSensor::printValues(Stream *serial) {
-  serial->print((int)_mtk3339->antenna); // 3
-  serial->print(" ");
-  serial->print(_mtk3339->satellites_in_views); // 4
-  serial->print(" ");
-  serial->print(_mtk3339->satellites_used); // 5
-  serial->print(" ");
-  serial->print(_mtk3339->mode); // 6
-  if (_mtk3339->fix) {
-    serial->print(" ");
-    serial->print(_mtk3339->fix_quality); // 7
-    serial->print(" ");
-    serial->print(_mtk3339->latitude_degree); // 8
-    serial->print(" ");
-    serial->print(_mtk3339->longitude_degree); // 9
-    serial->print(" ");
-    serial->print(_mtk3339->altitude); // 10
-    serial->print(" ");
-    serial->print(_mtk3339->speed); // 11
-    serial->print(" ");
-    serial->print(_mtk3339->angle); // 12
-    serial->print(" ");
-    serial->print(_mtk3339->PDOP); // 13
-    serial->print(" ");
-    serial->print(_mtk3339->VDOP); // 14
-    serial->print(" ");
-    serial->print(_mtk3339->VDOP); // 15
-  }
-  return true;
-}

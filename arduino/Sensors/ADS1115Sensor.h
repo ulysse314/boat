@@ -16,8 +16,6 @@ public:
   virtual void begin() override;
   virtual void loop() override;
   virtual bool readValues() override;
-  virtual bool printAddress(Stream *serial) override;
-  virtual bool printValues(Stream *serial) override;
 
   bool getAvailable() const { return _available; };
   int16_t getValue0() const { return _value0; };

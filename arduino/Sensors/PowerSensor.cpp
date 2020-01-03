@@ -37,15 +37,3 @@ bool PowerSensor::readValues() {
   _rawVolt = analogRead(_voltPin);
   return true;
 }
-
-bool PowerSensor::printValues(Stream *serial) {
-  serial->print((double)_rawAmpere / kAmpereCoef);
-  serial->print(" ");
-  serial->print(_rawAmpere);
-  serial->print(" ");
-  serial->print((double)_rawVolt / kVoltCoef);
-  serial->print(" ");
-  serial->print(_rawVolt);
-  return true;
-}
-

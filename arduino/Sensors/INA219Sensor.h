@@ -15,8 +15,6 @@ public:
   virtual const char *sensorType() const override { return "INA219"; };
   virtual void begin() override;
   virtual void loop() override;
-  virtual bool printAddress(Stream *serial) override;
-  virtual bool printValues(Stream *serial) override;
   virtual bool readValues() override;
   
   bool hasValue() const { return _hasValue; };

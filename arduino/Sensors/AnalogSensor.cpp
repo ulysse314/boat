@@ -14,13 +14,3 @@ bool AnalogSensor::readValues() {
   _value = analogRead(_pin);
   return true;
 }
-
-bool AnalogSensor::printAddress(Stream *serial) {
-  serial->print(_pin);
-  return true;
-}
-
-bool AnalogSensor::printValues(Stream *serial) {
-  serial->print(_value);
-  return true;
-}

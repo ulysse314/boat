@@ -65,27 +65,6 @@ const char *DallasSensor::copyAddressString() const {
   return string;
 }
 
-bool DallasSensor::printAddress(Stream *serial) {
-  byte ii;
-  for(ii = 0; ii < 8; ii++) {
-    if (_address.data[ii] < 16) {
-      serial->print("0");
-    }
-    serial->print(_address.data[ii], HEX);
-    if (ii < 7) {
-      serial->print(':');
-    }
-  }
-  return true;
-}
-
-bool DallasSensor::printValues(Stream *serial) {
-  char buffer[32];
-  sprintf(buffer, "%.2f", this->celsius());
-  serial->print(buffer);
-  return true;
-}
-
 void DallasSensor::sendConvertCommand() {
   _oneWire->reset();
   _oneWire->select(_address);    

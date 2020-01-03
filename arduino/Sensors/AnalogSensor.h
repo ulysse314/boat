@@ -10,8 +10,6 @@ public:
   const char *sensorClass() const override { return "AnalogSensor"; };
   void begin() override;
   bool readValues() override;
-  bool printAddress(Stream *serial) override;
-  bool printValues(Stream *serial) override;
   
 protected:
   uint32_t _pin = 0;

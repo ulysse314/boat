@@ -36,20 +36,6 @@ void BME680Sensor::loop() {
   }
 }
 
-bool BME680Sensor::printAddress(Stream *serial) {
-  serial->print(_bme680.i2cAddress());
-  return true;
-}
-
-bool BME680Sensor::printValues(Stream *serial) {
-  serial->print(_temperature);
-  serial->print(",");
-  serial->print(_pressure);
-  serial->print(",");
-  serial->print(_humidity);
-  return true;
-}
-
 bool BME680Sensor::readValues() {
   if (_available) {
     _bme680.beginReading();

@@ -13,8 +13,6 @@ public:
   const char *addressString() const override { return "Info"; };
   bool readValues() override;
   void loop() override;
-  bool printInfo(Stream *serial, int nodeID = -1)  override;
-  bool printValues(Stream *serial) override;
 
   bool processValues(const char *values) override;
   

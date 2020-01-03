@@ -100,17 +100,6 @@ bool SensorList::resetValues() {
   return result;
 }
 
-bool SensorList::printInfo(Stream *serial, int nodeID) {
-  bool result = true;
-  SensorBucket *bucketCursor = _sensorBucket;
-  
-  while (bucketCursor) {
-    result = bucketCursor->sensor->printInfo(serial, nodeID) && result;
-    bucketCursor = bucketCursor->nextBucket;
-  }
-  return result;
-}
-
 bool SensorList::areAllReady() {
   bool result = true;
   SensorBucket *bucketCursor = _sensorBucket;
@@ -120,28 +109,6 @@ bool SensorList::areAllReady() {
       result = false;
       break;
     }
-    bucketCursor = bucketCursor->nextBucket;
-  }
-  return result;
-}
-
-bool SensorList::printAddress(Stream *serial) {
-  bool result = true;
-  SensorBucket *bucketCursor = _sensorBucket;
-  
-  while (bucketCursor) {
-    result = bucketCursor->sensor->printAddress(serial) && result;
-    bucketCursor = bucketCursor->nextBucket;
-  }
-  return result;
-}
-
-bool SensorList::printValues(Stream *serial) {
-  bool result = true;
-  SensorBucket *bucketCursor = _sensorBucket;
-  
-  while (bucketCursor) {
-    result = bucketCursor->sensor->printValues(serial) && result;
     bucketCursor = bucketCursor->nextBucket;
   }
   return result;

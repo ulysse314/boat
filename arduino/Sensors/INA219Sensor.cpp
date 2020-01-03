@@ -30,18 +30,6 @@ void INA219Sensor::loop() {
   }
 }
 
-bool INA219Sensor::printAddress(Stream *serial) {
-  serial->print(_ina219->i2cAddress());
-  return true;
-}
-
-bool INA219Sensor::printValues(Stream *serial) {
-  serial->print(_voltage);
-  serial->print(",");
-  serial->print(_current);
-  return true;
-}
-
 bool INA219Sensor::readValues() {
   if (_hasValue) {
     _hasValue = _ina219->busVoltage(&_voltage);
