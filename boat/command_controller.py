@@ -33,6 +33,8 @@ class CommandController:
       self.arduino_update()
     elif command == "arduino_info":
       self.get_arduino_info()
+    elif command == "update_pi":
+      self.update_pi()
 
   def reboot(self):
     subprocess.call(["/sbin/reboot"])
@@ -42,6 +44,9 @@ class CommandController:
 
   def arduino_update(self):
     subprocess.call(["/home/ulysse314/scripts/arduino/update.sh"])
+
+  def update_pi(self):
+    subprocess.call(["/home/ulysse314/scripts/update_install.sh"])
 
   def get_arduino_info(self):
     self.arduino_controller.get_info()
