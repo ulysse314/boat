@@ -29,8 +29,8 @@ class CommandController:
       self.reboot()
     elif command == "shutdown":
       self.shutdown()
-    elif command == "arduino_update":
-      self.arduino_update()
+    elif command == "update_arduino":
+      self.update_arduino()
     elif command == "arduino_info":
       self.get_arduino_info()
     elif command == "update_pi":
@@ -42,7 +42,7 @@ class CommandController:
   def shutdown(self):
     subprocess.call(["/sbin/shutdown", "-h", "now"])
 
-  def arduino_update(self):
+  def update_arduino(self):
     subprocess.call(["/home/ulysse314/scripts/arduino/update.sh"])
 
   def update_pi(self):
