@@ -8,9 +8,9 @@
 #include "SensorList.h"
 #include "StringUtils.h"
 
-#define InfoTemperature                 50.0
-#define WarningTemperature              60.0
-#define CriticalTemperature             70.0
+#define InfoTemperature                 55.0
+#define WarningTemperature              65.0
+#define CriticalTemperature             75.0
 
 // static
 MotorController *MotorController::LeftMotor(PWMDriver *pwmDriver, HardwareConfig *hardwareConfig) {
