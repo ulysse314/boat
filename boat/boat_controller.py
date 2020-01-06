@@ -82,6 +82,11 @@ class BoatController:
           self._turn_off_motors()
         elif key == "command":
           self.command_controller.execute(value)
+        elif key == "ping":
+          self.arduino_controller.send_ping()
+        else:
+          self.logger.warning("Command unknown")
+          self.logger.warning(pprint.pformat(values))
     except Exception as e:
       self.logger.exception("set values")
 

@@ -44,6 +44,10 @@ class ArduinoController:
     self.send_pending = False
     self.last_line_received_timestamp = time.time()
 
+  def send_ping(self):
+    if self.serial_transport:
+      self.serial_transport.send_line("ping")
+
   def set_motors(self, values):
     left = None
     right = None
@@ -68,7 +72,8 @@ class ArduinoController:
     self.next_motor_line = None
 
   def get_info(self):
-    self.serial_transport.send_line("Info")
+    if self.serial_transport:
+      self.serial_transport.send_line("Info")
 
   def set_leds(self, values):
     pass
@@ -117,8 +122,6 @@ class ArduinoController:
   async def _ping(self):
     while True:
       await asyncio.sleep(2)
-      if self.serial_transport:
-        self.serial_transport.send_line("Motor ping")
       if time.time() - self.last_line_received_timestamp >= 2:
         self.values = {}
         self.values['ard'] = { 'err': [[ boat_error.ArduinoDomain, boat_error.Arduino.NoData ]] }
