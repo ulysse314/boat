@@ -140,6 +140,10 @@ void PiLink::processInputBuffer() {
   } else if (strncmp(_inputBuffer, "arduino ", strlen("arduino ")) == 0) {
     char *buffer = _inputBuffer + strlen("arduino ");
     _arduinoController->setCommand(buffer);
+  } else if (strcmp(_inputBuffer, "ping") == 0) {
+    // Nothing to do.
+  } else {
+    // Error
   }
   _inputBufferLength = 0;
   _nextTimeOut = millis() + TIMEOUT;
