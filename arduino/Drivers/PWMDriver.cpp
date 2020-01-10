@@ -19,7 +19,7 @@
 #define REVERSED() (PWM_REVERSE_S * 4096.0 * REAL_FREQUENCE)
 
 PWMDriver::PWMDriver(HardwareConfig *hardwareConfig) :
-    _pca9685(hardwareConfig->getPCA9685Address(), hardwareConfig->getI2C()) {
+    _pca9685(hardwareConfig->pca9685Address(), hardwareConfig->i2c()) {
 }
 
 void PWMDriver::begin() {

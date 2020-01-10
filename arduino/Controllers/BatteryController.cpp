@@ -26,9 +26,9 @@
 BatteryController::BatteryController(ADS1115Sensor *ads1115Sensor,
                                      HardwareConfig *hardwareConfig) :
     _ads1115Sensor(ads1115Sensor),
-    _ina219Sensor(INA219ShuntValue, INA219MaxCurrent, hardwareConfig->getINA219Address(), hardwareConfig->getI2C()),
-    _batteryTemperatureSensor(hardwareConfig->getBatteryDallasAddress(), hardwareConfig->getOneWire()),
-    _balancerTemperatureSensor(hardwareConfig->getBalancerDallasAddress(), hardwareConfig->getOneWire()),
+    _ina219Sensor(INA219ShuntValue, INA219MaxCurrent, hardwareConfig->ina219Address(), hardwareConfig->i2c()),
+    _batteryTemperatureSensor(hardwareConfig->batteryDallasAddress(), hardwareConfig->oneWire()),
+    _balancerTemperatureSensor(hardwareConfig->balancerDallasAddress(), hardwareConfig->oneWire()),
     _voltage(Value::Type::Double, "volt"),
     _current(Value::Type::Double, "amp"),
     _batteryTemperature(Value::Type::Double, "batT"),

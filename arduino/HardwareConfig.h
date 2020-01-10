@@ -15,24 +15,24 @@ public:
 
   void begin();
 
-  TwoWire *getI2C() const { return _i2c; };
-  OneWire *getOneWire() const { return _oneWire; };
-  Stream *getSerial() const;
+  TwoWire *i2c() const { return _i2c; };
+  OneWire *oneWire() const { return _oneWire; };
+  Stream *piSerial() const;
 
-  const OneWire::Address getLeftMotorDallasAddress() const;
-  const OneWire::Address getRightMotorDallasAddress() const;
-  const OneWire::Address getBatteryDallasAddress() const;
-  const OneWire::Address getBalancerDallasAddress() const;
+  const OneWire::Address leftMotorDallasAddress() const;
+  const OneWire::Address rightMotorDallasAddress() const;
+  const OneWire::Address batteryDallasAddress() const;
+  const OneWire::Address balancerDallasAddress() const;
 
-  uint8_t getPCA9685Address() const;
-  uint8_t getINA219Address() const;
-  uint8_t getADS1115Address() const;
-  uint8_t getBME680Address() const;
+  uint8_t pca9685Address() const;
+  uint8_t ina219Address() const;
+  uint8_t ads1115Address() const;
+  uint8_t bme680Address() const;
 
-  uint8_t getLeftMotorPWMID() const;
-  uint8_t getRightMotorPWMID() const;
+  uint8_t leftMotorPWMID() const;
+  uint8_t rightMotorPWMID() const;
 
-  uint8_t getLEDPin() const;
+  uint8_t ledPin() const;
 
 private:
   TwoWire *const _i2c;

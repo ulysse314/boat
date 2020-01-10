@@ -133,7 +133,7 @@ char hexFromByte(byte value) {
 void ArduinoController::setCommand(const char *command) {
   String result;
   if (strcmp(command, "dallasscan") == 0) {
-    OneWire *oneWire = _hardwareConfig->getOneWire();
+    OneWire *oneWire = _hardwareConfig->oneWire();
     OneWire::Address addr;
     while(oneWire->search(addr)) {
       if (result.length() > 0) {
@@ -152,7 +152,7 @@ void ArduinoController::setCommand(const char *command) {
     oneWire->reset_search();
     result = "Dallas: " + result;
   } else if (strcmp(command, "i2cscan") == 0) {
-    TwoWire *i2c = _hardwareConfig->getI2C();
+    TwoWire *i2c = _hardwareConfig->i2c();
     for(byte address = 1; address < 127; address++ ) {
       i2c->beginTransmission(address);
       byte error = i2c->endTransmission();

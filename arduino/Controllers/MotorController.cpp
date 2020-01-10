@@ -16,7 +16,7 @@
 MotorController *MotorController::LeftMotor(PWMDriver *pwmDriver, HardwareConfig *hardwareConfig) {
   static MotorController*motor = NULL;
   if (!motor) {
-    motor = new MotorController("mtr-l", "left", pwmDriver, hardwareConfig->getLeftMotorPWMID(), hardwareConfig->getLeftMotorDallasAddress(), hardwareConfig);
+    motor = new MotorController("mtr-l", "left", pwmDriver, hardwareConfig->leftMotorPWMID(), hardwareConfig->leftMotorDallasAddress(), hardwareConfig);
   }
   return motor;
 }
@@ -25,7 +25,7 @@ MotorController *MotorController::LeftMotor(PWMDriver *pwmDriver, HardwareConfig
 MotorController *MotorController::RightMotor(PWMDriver *pwmDriver, HardwareConfig *hardwareConfig) {
   static MotorController*motor = NULL;
   if (!motor) {
-    motor = new MotorController("mtr-r", "right", pwmDriver, hardwareConfig->getRightMotorPWMID(), hardwareConfig->getRightMotorDallasAddress(), hardwareConfig);
+    motor = new MotorController("mtr-r", "right", pwmDriver, hardwareConfig->rightMotorPWMID(), hardwareConfig->rightMotorDallasAddress(), hardwareConfig);
   }
   return motor;
 }
@@ -34,7 +34,7 @@ MotorController::MotorController(const char *name, const char *humanName, PWMDri
     _name(createStringCopy(name)),
     _humanName(createStringCopy(humanName)),
     _pwmDriver(pwmDriver),
-    _temperatureSensor(new DallasSensor(dallasAddress, hardwareConfig->getOneWire())),
+    _temperatureSensor(new DallasSensor(dallasAddress, hardwareConfig->oneWire())),
     _motorID(motorID),
     _power(Value::Type::Integer, "pwr"),
     _temperature(Value::Type::Double, "t") {

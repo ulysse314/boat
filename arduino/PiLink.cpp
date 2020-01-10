@@ -27,7 +27,7 @@ PiLink *PiLink::getSharedPiLink() {
 }
 
 PiLink::PiLink(HardwareConfig *hardwareConfig) :
-    _stream(hardwareConfig->getSerial()),
+    _stream(hardwareConfig->piSerial()),
     _inputBuffer{0},
     _inputBufferLength(0),
     _nextTimeOut(millis() + TIMEOUT),

@@ -41,7 +41,7 @@ void initGlobal() {
   piLink = PiLink::generatePiLink(&hardwareConfig);
 
   sensorList = new SensorList();
-  ads1115Sensor = new ADS1115Sensor(hardwareConfig.getADS1115Address(), hardwareConfig.getI2C());
+  ads1115Sensor = new ADS1115Sensor(hardwareConfig.ads1115Address(), hardwareConfig.i2c());
   sensorList->addSensor(ads1115Sensor);
 
   pwmDriver = new PWMDriver(&hardwareConfig);
@@ -77,9 +77,9 @@ void initGlobal() {
 void setup() {
   hardwareConfig.begin();
   for (int i = 0; i < 4; i++) {
-    digitalWrite(hardwareConfig.getLEDPin(), HIGH);   // turn the LED on (HIGH is the voltage level)
+    digitalWrite(hardwareConfig.ledPin(), HIGH);   // turn the LED on (HIGH is the voltage level)
     delay(500);                       // wait for a second
-    digitalWrite(hardwareConfig.getLEDPin(), LOW);    // turn the LED off by making the voltage LOW
+    digitalWrite(hardwareConfig.ledPin(), LOW);    // turn the LED off by making the voltage LOW
     delay(500);                       // wait for a second
     Serial.println(i);
   }
@@ -104,7 +104,7 @@ void loop() {
   lastLoopTime = currentTime;
   unsigned long cycleDuration = currentTime - lastCycleTime;
   if ((unsigned long)(currentTime - lastCycleTime) >= 1000) {
-    digitalWrite(hardwareConfig.getLEDPin(), HIGH);
+    digitalWrite(hardwareConfig.ledPin(), HIGH);
     lastCycleTime = 1000 * (unsigned long)(currentTime / 1000.) ;
 
     arduinoController->setLoopCounter(loopCounter);
@@ -116,7 +116,7 @@ void loop() {
     arduinoController->setExportDuration(millis() - currentTime);
     loopCounter = 0;
     longestLoopDuration = 0;
-    digitalWrite(hardwareConfig.getLEDPin(), LOW);
+    digitalWrite(hardwareConfig.ledPin(), LOW);
   }
   ++loopCounter;
 }

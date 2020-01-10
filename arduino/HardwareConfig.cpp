@@ -44,58 +44,59 @@ HardwareConfig::HardwareConfig() :
 }
 
 HardwareConfig::~HardwareConfig() {
+  delete(_oneWire);
 }
 
 void HardwareConfig::begin() {
   _serial->begin(SERIAL_SPEED);
-  pinMode(getLEDPin(), OUTPUT);
+  pinMode(ledPin(), OUTPUT);
   _i2c->begin();
 }
 
-Stream *HardwareConfig::getSerial() const {
+Stream *HardwareConfig::piSerial() const {
   return _serial;
 };
 
-const OneWire::Address HardwareConfig::getLeftMotorDallasAddress() const {
+const OneWire::Address HardwareConfig::leftMotorDallasAddress() const {
   return kLeftMotorDallasAddress;
 }
 
-const OneWire::Address HardwareConfig::getRightMotorDallasAddress() const {
+const OneWire::Address HardwareConfig::rightMotorDallasAddress() const {
   return kRightMotorDallasAddress;
 }
 
-const OneWire::Address HardwareConfig::getBatteryDallasAddress() const {
+const OneWire::Address HardwareConfig::batteryDallasAddress() const {
   return kBatteryDallasAddress;
 }
 
-const OneWire::Address HardwareConfig::getBalancerDallasAddress() const {
+const OneWire::Address HardwareConfig::balancerDallasAddress() const {
   return kBalancerDallasAddress;
 }
 
-uint8_t HardwareConfig::getPCA9685Address() const {
+uint8_t HardwareConfig::pca9685Address() const {
   return PCA9685_ADDRESS;
 }
 
-uint8_t HardwareConfig::getINA219Address() const {
+uint8_t HardwareConfig::ina219Address() const {
   return INA219_ADDRESS;
 }
 
-uint8_t HardwareConfig::getADS1115Address() const {
+uint8_t HardwareConfig::ads1115Address() const {
   return ADS1115_ADDRESS;
 }
 
-uint8_t HardwareConfig::getBME680Address() const {
+uint8_t HardwareConfig::bme680Address() const {
   return BME680_ADDRESS;
 }
 
-uint8_t HardwareConfig::getLeftMotorPWMID() const {
+uint8_t HardwareConfig::leftMotorPWMID() const {
   return LEFT_MOTOR_ID;
 }
 
-uint8_t HardwareConfig::getRightMotorPWMID() const {
+uint8_t HardwareConfig::rightMotorPWMID() const {
   return RIGHT_MOTOR_ID;
 }
 
-uint8_t HardwareConfig::getLEDPin() const {
+uint8_t HardwareConfig::ledPin() const {
   return LED_PIN;
 }
