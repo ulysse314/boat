@@ -16,7 +16,7 @@ public:
   ~BatteryController();
 
   // Controller.
-  const char *getName() const override { return "batt"; };
+  const char *name() const override { return "batt"; };
   void begin() override;
   void addSensorsToList(SensorList *sensorList) override;
   void sensorsHasBeenUpdated() override;

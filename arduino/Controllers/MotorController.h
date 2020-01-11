@@ -18,7 +18,7 @@ public:
   ~MotorController();
 
   // Controller
-  const char *getName() const override { return _name; };
+  const char *name() const override { return _name; };
   void addSensorsToList(SensorList *sensorList) override;
   void sensorsHasBeenUpdated() override;
   void begin() override;

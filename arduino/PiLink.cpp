@@ -37,7 +37,7 @@ PiLink::PiLink(HardwareConfig *hardwareConfig) :
 
 void PiLink::outputController(const Controller *controller) {
   _stream->print("{\"name\":\"");
-  _stream->print(controller->getName());
+  _stream->print(controller->name());
   _stream->print("\"");
   const List<Error>::Bucket *errorBucket = controller->firstErrorBucket();
   if (errorBucket) {

@@ -12,7 +12,7 @@ public:
   Controller();
   virtual ~Controller();
 
-  virtual const char *getName() const = 0;
+  virtual const char *name() const = 0;
   virtual void addSensorsToList(SensorList *) {};
   virtual void begin() {};
   virtual void sensorsHasBeenUpdated() {};

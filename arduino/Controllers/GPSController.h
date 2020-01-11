@@ -13,7 +13,7 @@ public:
   ~GPSController();
   
   // Controller
-  const char *getName() const override { return "gps"; };
+  const char *name() const override { return "gps"; };
   void begin() override;
   void addSensorsToList(SensorList *sensorList) override;
   void sensorsHasBeenUpdated() override;
