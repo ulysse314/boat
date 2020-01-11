@@ -81,22 +81,22 @@ void ArduinoController::sensorsHasBeenUpdated() {
   unsigned long difference = currentMillis - _lastMillis;
   if (difference > 1000) {
     unsigned long addedSeconds = difference / 1000;
-    _timestamp.setInteger(addedSeconds + _timestamp.getInteger());
+    _timestamp.setInteger(addedSeconds + _timestamp.valueAsInteger());
     _lastMillis += addedSeconds * 1000;
   }
   size_t currentFreeRAM = freeMemory();
-  _ramFreeDifference.setInteger(currentFreeRAM - _ramFree.getInteger());
+  _ramFreeDifference.setInteger(currentFreeRAM - _ramFree.valueAsInteger());
   _ramFree.setInteger(currentFreeRAM);
-  if (_cylcleCounter < 5 && !_started.getBoolean()) {
+  if (_cylcleCounter < 5 && !_started.valueAsBoolean()) {
     addError(new ArduinoError(ArduinoError::CodeNotStarted));
     return;
   }
   _started.setBoolean(true);
-  if (_ramFreeDifference.getInteger() >= 1000) {
+  if (_ramFreeDifference.valueAsInteger() >= 1000) {
     addError(new ArduinoError(ArduinoError::CodeRAMDifference1k));
-  } else if (_ramFreeDifference.getInteger() >= 500) {
+  } else if (_ramFreeDifference.valueAsInteger() >= 500) {
     addError(new ArduinoError(ArduinoError::CodeRAMDifference500));
-  } else if (_ramFreeDifference.getInteger() >= 100) {
+  } else if (_ramFreeDifference.valueAsInteger() >= 100) {
     addError(new ArduinoError(ArduinoError::CodeRAMDifference100));
   }
   if (currentFreeRAM <= _criticalFreeRAM) {
@@ -106,19 +106,19 @@ void ArduinoController::sensorsHasBeenUpdated() {
   } else if (currentFreeRAM <= _infoFreeRAM) {
     addError(new ArduinoError(ArduinoError::CodeInfoRAM));
   }
-  if (_exportDuration.getInteger() < 200) {
-  } else if (_exportDuration.getInteger() < 500) {
+  if (_exportDuration.valueAsInteger() < 200) {
+  } else if (_exportDuration.valueAsInteger() < 500) {
     addError(new ArduinoError(ArduinoError::CodeExportDurationInfo));
-  } else if (_exportDuration.getInteger() > 750) {
+  } else if (_exportDuration.valueAsInteger() > 750) {
     addError(new ArduinoError(ArduinoError::CodeExportDurationWarning));
   } else {
     addError(new ArduinoError(ArduinoError::CodeExportDurationCritical));
   }
-  if (_loopCounter.getInteger() < 1000) {
+  if (_loopCounter.valueAsInteger() < 1000) {
     addError(new ArduinoError(ArduinoError::CodeMainLoopCounterLowCritical));
-  } else if (_loopCounter.getInteger() < 2500) {
+  } else if (_loopCounter.valueAsInteger() < 2500) {
     addError(new ArduinoError(ArduinoError::CodeMainLoopCounterLowWarning));
-  } else if (_loopCounter.getInteger() < 5000) {
+  } else if (_loopCounter.valueAsInteger() < 5000) {
     addError(new ArduinoError(ArduinoError::CodeMainLoopCounterLowInfo));
   }
   if (PiLink::getSharedPiLink()->hasTimedOut()) {

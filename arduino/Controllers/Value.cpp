@@ -74,7 +74,7 @@ void Value::setBoolean(bool value) {
   _null = false;
 }
 
-const char *Value::getString() const {
+const char *Value::valueAsString() const {
   if (_type != Type::String) {
     Error *error = new ArduinoError(ArduinoError::CodeGetValueWithWrongType, NULL);
     ArduinoController::sharedController()->addError(error);
@@ -82,7 +82,7 @@ const char *Value::getString() const {
   return _string;
 }
 
-int32_t Value::getInteger() const {
+int32_t Value::valueAsInteger() const {
   if (_type != Type::Integer) {
     Error *error = new ArduinoError(ArduinoError::CodeGetValueWithWrongType, NULL);
     ArduinoController::sharedController()->addError(error);
@@ -90,7 +90,7 @@ int32_t Value::getInteger() const {
   return _integer;
 }
 
-double Value::getDouble() const {
+double Value::valueAsDouble() const {
   if (_type != Type::Double) {
     Error *error = new ArduinoError(ArduinoError::CodeGetValueWithWrongType, NULL);
     ArduinoController::sharedController()->addError(error);
@@ -98,7 +98,7 @@ double Value::getDouble() const {
   return _double;
 }
 
-bool Value::getBoolean() const {
+bool Value::valueAsBoolean() const {
   if (_type != Type::Boolean) {
     Error *error = new ArduinoError(ArduinoError::CodeGetValueWithWrongType, NULL);
     ArduinoController::sharedController()->addError(error);

@@ -88,25 +88,25 @@ bool PiLink::hasTimedOut() {
 
 void PiLink::outputValue(const Value *value) {
   _stream->print("\"");
-  _stream->print(value->getName());
+  _stream->print(value->name());
   _stream->print("\":");
   if (!value || value->isNull()) {
     _stream->print("null");
   } else {
-    switch (value->getType()) {
+    switch (value->type()) {
       case Value::Type::String:
         _stream->print("\"");
-        _stream->print(value->getString());
+        _stream->print(value->valueAsString());
         _stream->print("\"");
         break;
       case Value::Type::Integer:
-        _stream->print(value->getInteger());
+        _stream->print(value->valueAsInteger());
         break;
       case Value::Type::Double:
-        _stream->print(value->getDouble());
+        _stream->print(value->valueAsDouble());
         break;
       case Value::Type::Boolean:
-        _stream->print(value->getBoolean() ? "true" : "false");
+        _stream->print(value->valueAsBoolean() ? "true" : "false");
         break;
     }
   }

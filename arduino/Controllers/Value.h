@@ -20,16 +20,16 @@ public:
   void setDouble(double value);
   void setBoolean(bool value);
   
-  Type getType() const { return _type; };
-  const char *getName() const { return _name; };
+  Type type() const { return _type; };
+  const char *name() const { return _name; };
   bool isNull() const { return _null; };
-  const char *getString() const;
-  int32_t getInteger() const;
-  double getDouble() const;
-  bool getBoolean() const;
+  const char *valueAsString() const;
+  int32_t valueAsInteger() const;
+  double valueAsDouble() const;
+  bool valueAsBoolean() const;
 
   bool operator==(const Value &a) const {
-    return strcmp(_name, a.getName()) == 0;
+    return strcmp(_name, a.name()) == 0;
   }
 
 protected:
