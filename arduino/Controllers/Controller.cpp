@@ -29,7 +29,7 @@ bool Controller::removeError(Error *error) {
 }
 
 void Controller::clearNonPersistantErrors() {
-  const List<Error>::Bucket *bucket = _errorList.getFirstBucket();
+  const List<Error>::Bucket *bucket = _errorList.firstBucket();
   Error *error = NULL;
   while (_errorList.currentDataWithBucket(bucket, error)) {
     if (error->isPersistant()) {
@@ -42,7 +42,7 @@ void Controller::clearNonPersistantErrors() {
 
 bool Controller::removeErrorWithCode(Error::Domain domain, int code) {
   bool result = false;
-  const List<Error>::Bucket *bucket = _errorList.getFirstBucket();
+  const List<Error>::Bucket *bucket = _errorList.firstBucket();
   Error *error = NULL;
   while (_errorList.currentDataWithBucket(bucket, error)) {
     if (error->getDomain() == domain && error->getCode() == code) {

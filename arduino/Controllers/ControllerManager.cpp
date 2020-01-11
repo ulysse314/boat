@@ -14,7 +14,7 @@ void ControllerManager::addController(Controller *controller) {
 }
 
 void ControllerManager::addSensorsToList(SensorList *sensorList) {
-  const List<Controller>::Bucket *bucket = _controllerList.getFirstBucket();
+  const List<Controller>::Bucket *bucket = _controllerList.firstBucket();
   Controller *controller = NULL;
   while (_controllerList.nextDataWithBucket(bucket, controller)) {
     controller->addSensorsToList(sensorList);
@@ -22,7 +22,7 @@ void ControllerManager::addSensorsToList(SensorList *sensorList) {
 }
 
 void ControllerManager::begin() {
-  const List<Controller>::Bucket *bucket = _controllerList.getFirstBucket();
+  const List<Controller>::Bucket *bucket = _controllerList.firstBucket();
   Controller *controller = NULL;
   while (_controllerList.nextDataWithBucket(bucket, controller)) {
     controller->begin();
@@ -30,7 +30,7 @@ void ControllerManager::begin() {
 }
 
 void ControllerManager::sensorsHasBeenUpdated() {
-  const List<Controller>::Bucket *bucket = _controllerList.getFirstBucket();
+  const List<Controller>::Bucket *bucket = _controllerList.firstBucket();
   Controller *controller = NULL;
   while (_controllerList.nextDataWithBucket(bucket, controller)) {
     controller->clearNonPersistantErrors();
@@ -39,7 +39,7 @@ void ControllerManager::sensorsHasBeenUpdated() {
 }
 
 void ControllerManager::outputControllers(PiLink *piLink) {
-  const List<Controller>::Bucket *bucket = _controllerList.getFirstBucket();
+  const List<Controller>::Bucket *bucket = _controllerList.firstBucket();
   Controller *controller = NULL;
   while (_controllerList.nextDataWithBucket(bucket, controller)) {
     piLink->outputController(controller);

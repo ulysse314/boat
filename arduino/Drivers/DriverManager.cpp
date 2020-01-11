@@ -9,7 +9,7 @@ void DriverManager::addDriver(Driver *driver) {
 }
 
 void DriverManager::begin() {
-  const List<Driver>::Bucket *bucket = _driverList.getFirstBucket();
+  const List<Driver>::Bucket *bucket = _driverList.firstBucket();
   Driver *driver = NULL;
   while (_driverList.nextDataWithBucket(bucket, driver)) {
     driver->begin();
@@ -17,7 +17,7 @@ void DriverManager::begin() {
 }
 
 void DriverManager::loop() {
-  const List<Driver>::Bucket *bucket = _driverList.getFirstBucket();
+  const List<Driver>::Bucket *bucket = _driverList.firstBucket();
   Driver *driver = NULL;
   while (_driverList.nextDataWithBucket(bucket, driver)) {
     if (driver->getAvailable()) {

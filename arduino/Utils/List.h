@@ -174,7 +174,7 @@ public:
     return (size_t)-1;
   }
 
-  const Bucket *getFirstBucket() const {
+  const Bucket *firstBucket() const {
     return _firstBucket;
   };
   

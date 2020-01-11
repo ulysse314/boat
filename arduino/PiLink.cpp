@@ -39,7 +39,7 @@ void PiLink::outputController(const Controller *controller) {
   _stream->print("{\"name\":\"");
   _stream->print(controller->getName());
   _stream->print("\"");
-  const List<Error>::Bucket *errorBucket = controller->getFirstErrorBucket();
+  const List<Error>::Bucket *errorBucket = controller->firstErrorBucket();
   if (errorBucket) {
     _stream->print(",\"err\":[");
     bool firstError = true;
@@ -56,7 +56,7 @@ void PiLink::outputController(const Controller *controller) {
     _stream->print("]");
   }
   _stream->flush();
-  const List<Value>::Bucket *valueBucket = controller->getFirstValueBucket();
+  const List<Value>::Bucket *valueBucket = controller->firstValueBucket();
   const Value *value = NULL;
   while (controller->nextValueBucket(valueBucket, value)) {
     _stream->print(",");
