@@ -4,17 +4,25 @@
 #include "Sensor.h"
 
 class MTK3339;
+class Stream;
 
 class GPSSensor : public Sensor {
 public:
+  GPSSensor(Stream *serial);
+  ~GPSSensor();
+
+  void switchToHighSpeed();
+  void highSpeedSwitchDone();
+  MTK3339 *mkt3339() { return _mtk3339; };
+
   virtual const char *sensorClass() const override { return "GPS"; };
   virtual const char *sensorType() const override { return "GPS"; };
   virtual void begin() override;
   virtual void loop() override;
-  MTK3339 *getGPS() { return _mtk3339; };
   
 protected:
-    MTK3339 *_mtk3339;
+    Stream *const _serial;
+    MTK3339 *const _mtk3339;
 };
 
 #endif // GPSSensor_h

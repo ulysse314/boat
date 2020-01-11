@@ -3,22 +3,30 @@
 #include <Arduino.h>
 #include <MTK3339.h>
 
-#define GPSSerial Serial1
+GPSSensor::GPSSensor(Stream *serial) :
+    _serial(serial),
+    _mtk3339(new MTK3339(serial)) {
+}
 
-void GPSSensor::begin() {
-  _mtk3339 = new MTK3339(&GPSSerial);
-  _mtk3339->begin(9600);
+GPSSensor::~GPSSensor() {
+  delete(_mtk3339);
+}
+
+void GPSSensor::switchToHighSpeed() {
   _mtk3339->sendCommand(PMTK_SET_BAUD_115200);
-  delay(1000);
-  GPSSerial.end();
-  delay(1000);
-  _mtk3339->begin(115200);
+}
+
+void GPSSensor::highSpeedSwitchDone() {
   _mtk3339->sendCommand(PMTK_SET_NMEA_UPDATE_1HZ); // 1 Hz update rate
   _mtk3339->sendCommand(PGCMD_ANTENNA);
 }
 
+void GPSSensor::begin() {
+  _mtk3339->begin();
+}
+
 void GPSSensor::loop() {
-  if (GPSSerial.available()) {
+  if (_serial->available()) {
     _mtk3339->read();
     if (_mtk3339->newNMEAreceived()) {
       const char *nmea = _mtk3339->lastNMEA();

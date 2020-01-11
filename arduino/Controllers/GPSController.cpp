@@ -4,12 +4,15 @@
 
 #include "GPSError.h"
 #include "GPSSensor.h"
+#include "HardwareConfig.h"
 #include "SensorList.h"
 
 #define kUsedSatelliteTooLow 3
 #define kUsedSatelliteLow 5
 
-GPSController::GPSController() :
+GPSController::GPSController(HardwareConfig *hardwareConfig) :
+    _hardwareConfig(hardwareConfig),
+    _gpsSensor(new GPSSensor(hardwareConfig->gpsSerial())),
     _antenna(Value::Type::Integer, "ant"),
     _mode(Value::Type::Integer, "mod"),
     _viewedSatellites(Value::Type::Integer, "vst"),
@@ -24,10 +27,10 @@ GPSController::GPSController() :
     _pdop(Value::Type::Double, "pdp"),
     _hdop(Value::Type::Double, "hdp"),
     _vdop(Value::Type::Double, "vdp") {
-  _gpsSensor = new GPSSensor();
 }
 
 GPSController::~GPSController() {
+  delete(_gpsSensor);
 }
 
 void GPSController::begin() {
@@ -45,6 +48,9 @@ void GPSController::begin() {
   addValue(&_pdop);
   addValue(&_hdop);
   addValue(&_vdop);
+  _gpsSensor->switchToHighSpeed();
+  _hardwareConfig->switchGPSSerialToHighSpeed();
+  _gpsSensor->highSpeedSwitchDone();
 }
 
 void GPSController::addSensorsToList(SensorList *sensorList) {
@@ -52,7 +58,7 @@ void GPSController::addSensorsToList(SensorList *sensorList) {
 }
 
 void GPSController::sensorsHasBeenUpdated() {
-  MTK3339 *gps = _gpsSensor->getGPS();
+  MTK3339 *gps = _gpsSensor->mkt3339();
   switch (gps->antenna) {
     case MTK3339::AntennaUnknown:
       addError(new GPSError(GPSError::CodeUnknownAntenna));

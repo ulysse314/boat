@@ -5,10 +5,11 @@
 #include "Value.h"
 
 class GPSSensor;
+class HardwareConfig;
 
 class GPSController : public Controller {
 public:
-  GPSController();
+  GPSController(HardwareConfig *hardwareConfig);
   ~GPSController();
   
   // Controller
@@ -18,6 +19,7 @@ public:
   void sensorsHasBeenUpdated() override;
 
 protected:
+  HardwareConfig *_hardwareConfig;
   GPSSensor *_gpsSensor;
   Value _antenna;
   Value _mode;

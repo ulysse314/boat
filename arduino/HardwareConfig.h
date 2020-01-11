@@ -7,6 +7,7 @@
 class Serial_;
 class Stream;
 class TwoWire;
+class Uart;
 
 class HardwareConfig {
 public:
@@ -18,6 +19,9 @@ public:
   TwoWire *i2c() const { return _i2c; };
   OneWire *oneWire() const { return _oneWire; };
   Stream *piSerial() const;
+  Stream *gpsSerial() const;
+
+  void switchGPSSerialToHighSpeed();
 
   const OneWire::Address leftMotorDallasAddress() const;
   const OneWire::Address rightMotorDallasAddress() const;
@@ -37,7 +41,8 @@ public:
 private:
   TwoWire *const _i2c;
   OneWire *const _oneWire;
-  Serial_ *const _serial;
+  Serial_ *const _piSerial;
+  Uart *const _gpsSerial;
 };
 
 #endif  // HardwareConfig_h

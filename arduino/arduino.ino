@@ -47,7 +47,7 @@ void initGlobal() {
   pwmDriver = new PWMDriver(&hardwareConfig);
   driverManager->addDriver(pwmDriver);
 
-  gpsController = new GPSController();
+  gpsController = new GPSController(&hardwareConfig);
   controllerManager->addController(gpsController);
   arduinoController = ArduinoController::generateController(&hardwareConfig);
   controllerManager->addController(arduinoController);
