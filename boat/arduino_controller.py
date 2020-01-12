@@ -107,8 +107,11 @@ class ArduinoController:
       await asyncio.sleep(1)
 
   def _update_gps_values(self, values):
-    if "lat" in values: values["lat"] = values["lat"] / 10000000
-    if "lon" in values: values["lon"] = values["lon"] / 10000000
+    try:
+      if "lat" in values and values["lat"] != None: values["lat"] = values["lat"] / 10000000
+      if "lon" in values and values["lon"] != None: values["lon"] = values["lon"] / 10000000
+    except:
+      self.logger.exception(pprint.pformat(values))
     return values
 
   def _add_values(self, keys, value):
