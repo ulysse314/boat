@@ -19,6 +19,7 @@ class PiController:
   def __init__(self):
     self.values = {}
     self.logger = logging.getLogger(self.__class__.__name__)
+    self.loop_duration = 0
 
   def start(self):
     pass
@@ -32,6 +33,7 @@ class PiController:
   async def _get_values(self):
     try:
       self.values["pi"] = { "temp": self._get_cpu_temperature(), "cpu%": psutil.cpu_percent() }
+      self.values["pi"]["lpdrt"] = self.loop_duration * 1000
       self.values["pi"].update(self._get_disk_space())
       self.values["pi"].update(self._get_ram_info())
       errors = []

@@ -11,13 +11,14 @@ import munin_server
 import value_sender
 
 class BoatController:
-  def __init__(self, controllers, arduino, commnand, value_sender):
+  def __init__(self, controllers, arduino_controller, pi_controller, commnand, value_sender):
     self.logger = logging.getLogger(self.__class__.__name__)
     self.record = False
     self.boot_timestamp = time.time()
     self.value_id = 0
     self.controllers = controllers
-    self.arduino_controller = arduino
+    self.arduino_controller = arduino_controller
+    self.pi_controller = pi_controller
     self.command_controller = commnand
     self.value_sender = value_sender
 
@@ -58,10 +59,12 @@ class BoatController:
     self.received_values({"led":{"left%":0,"right%":100}})
     await asyncio.sleep(0.25)
     self.received_values({"led":{"left%":0,"right%":0}})
+    next_wakeup = time.time()
     while True:
       values = self._get_values()
       munin_server.set_values(values)
       self.value_sender.add_values(values)
+      self.pi_controller.loop_duration = time.time() - next_wakeup
       # Start a cycle 1s exactly after the last one.
       next_wakeup = int(time.time()) + 1
       await asyncio.sleep(next_wakeup - time.time())
