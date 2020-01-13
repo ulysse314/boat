@@ -12,11 +12,11 @@
 // Real expected value, sec: 0.0011
 #define PWM_REVERSE_S 0.0011
 // Frequency mesured
-#define REAL_FREQUENCE 247.2
+#define REAL_FREQUENCE 239
 
-#define FORWARD() (PWM_FORWARD_S * 4096.0 * REAL_FREQUENCE)
-#define STOPPED() (PWM_STOPPED_S * 4096.0 * REAL_FREQUENCE)
-#define REVERSED() (PWM_REVERSE_S * 4096.0 * REAL_FREQUENCE)
+#define FORWARD() (PWM_FORWARD_S * 4095.0 * REAL_FREQUENCE)
+#define STOPPED() (PWM_STOPPED_S * 4095.0 * REAL_FREQUENCE)
+#define REVERSED() (PWM_REVERSE_S * 4095.0 * REAL_FREQUENCE)
 
 PWMDriver::PWMDriver(HardwareConfig *hardwareConfig) :
     _pca9685(hardwareConfig->pca9685Address(), hardwareConfig->i2c()) {
