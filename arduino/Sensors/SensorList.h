@@ -18,7 +18,7 @@ protected:
 public:
   SensorList();
   ~SensorList();
-  
+
   void addSensor(Sensor *sensor);
   Sensor *sensorAtIndex(unsigned int index);
   unsigned int sensorCount();

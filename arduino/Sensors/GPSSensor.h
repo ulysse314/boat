@@ -19,7 +19,7 @@ public:
   virtual const char *sensorType() const override { return "GPS"; };
   virtual void begin() override;
   virtual void loop() override;
-  
+
 protected:
     Stream *const _serial;
     MTK3339 *const _mtk3339;

@@ -20,11 +20,11 @@ SensorList::~SensorList() {
 void SensorList::addSensor(Sensor *sensor) {
   SensorBucket *newSensorBucket;
   SensorBucket **bucketCursor;
-  
+
   newSensorBucket = (SensorBucket *)malloc(sizeof(SensorBucket));
   newSensorBucket->sensor = sensor;
   newSensorBucket->nextBucket = NULL;
-  
+
   bucketCursor = &_sensorBucket;
   while (*bucketCursor) {
     bucketCursor = &((*bucketCursor)->nextBucket);
@@ -34,7 +34,7 @@ void SensorList::addSensor(Sensor *sensor) {
 
 Sensor *SensorList::sensorAtIndex(unsigned int index) {
   SensorBucket *bucketCursor = _sensorBucket;
-  
+
   while (bucketCursor && index > 0) {
     bucketCursor = bucketCursor->nextBucket;
     index--;
@@ -45,7 +45,7 @@ Sensor *SensorList::sensorAtIndex(unsigned int index) {
 unsigned int SensorList::sensorCount(void) {
   SensorBucket *bucketCursor = _sensorBucket;
   unsigned int count = 0;
-  
+
   while (bucketCursor) {
     bucketCursor = bucketCursor->nextBucket;
     count++;
@@ -55,7 +55,7 @@ unsigned int SensorList::sensorCount(void) {
 
 Sensor *SensorList::getNextSensor(void **cursor) {
   Sensor *result;
-  
+
   if (cursor == NULL || *cursor == NULL) {
     result = NULL;
   } else {
@@ -68,6 +68,7 @@ Sensor *SensorList::getNextSensor(void **cursor) {
 
 void SensorList::begin() {
   SensorBucket *bucketCursor = _sensorBucket;
+
   while (bucketCursor) {
     bucketCursor->sensor->begin();
     bucketCursor = bucketCursor->nextBucket;
@@ -76,6 +77,7 @@ void SensorList::begin() {
 
 void SensorList::loop() {
   SensorBucket *bucketCursor = _sensorBucket;
+
   while (bucketCursor) {
     bucketCursor->sensor->loop();
     bucketCursor = bucketCursor->nextBucket;
@@ -85,7 +87,7 @@ void SensorList::loop() {
 bool SensorList::readValues() {
   bool result = true;
   SensorBucket *bucketCursor = _sensorBucket;
-  
+
   while (bucketCursor) {
     result = bucketCursor->sensor->readValues() && result;
     bucketCursor = bucketCursor->nextBucket;
@@ -96,7 +98,7 @@ bool SensorList::readValues() {
 bool SensorList::resetValues() {
   bool result = true;
   SensorBucket *bucketCursor = _sensorBucket;
-  
+
   while (bucketCursor) {
     result = bucketCursor->sensor->resetValues() && result;
     bucketCursor = bucketCursor->nextBucket;
@@ -107,7 +109,7 @@ bool SensorList::resetValues() {
 bool SensorList::areAllReady() {
   bool result = true;
   SensorBucket *bucketCursor = _sensorBucket;
-  
+
   while (bucketCursor) {
     if (!bucketCursor->sensor->isReady()) {
       result = false;

@@ -16,7 +16,7 @@ public:
     CodeUsedSatellitesTooLow,              // 7
     CodeUsedSatellitesLow,                 // 8
   } Code;
-  
+
   GPSError(Code code, const char *message = NULL);
   ~GPSError();
 

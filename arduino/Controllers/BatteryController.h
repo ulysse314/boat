@@ -20,7 +20,7 @@ public:
   void begin() override;
   void addSensorsToList(SensorList *sensorList) override;
   void sensorsHasBeenUpdated() override;
-  
+
 protected:
   ADS1115Sensor *_ads1115Sensor;
   INA219Sensor _ina219Sensor;

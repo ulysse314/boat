@@ -14,12 +14,12 @@ public:
   Value(Type type, const char *name);
   ~Value();
 
-  void setNull(); 
+  void setNull();
   void setString(const char *value);
   void setInteger(int32_t value);
   void setDouble(double value);
   void setBoolean(bool value);
-  
+
   Type type() const { return _type; };
   const char *name() const { return _name; };
   bool isNull() const { return _null; };

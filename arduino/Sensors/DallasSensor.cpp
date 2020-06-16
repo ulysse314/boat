@@ -18,7 +18,7 @@ static byte dallasType(const OneWire::Address address) {
       break;
     default:
       return -1;
-  } 
+  }
 }
 
 // static
@@ -67,7 +67,7 @@ const char *DallasSensor::copyAddressString() const {
 
 void DallasSensor::sendConvertCommand() {
   _oneWire->reset();
-  _oneWire->select(_address);    
+  _oneWire->select(_address);
   _oneWire->write(DallasCommandConvertTemperature, 1);         // Read Scratchpad
 }
 
@@ -76,7 +76,7 @@ void DallasSensor::sendReadCommand() {
   byte data[9];
 
   _oneWire->reset();
-  _oneWire->select(_address);    
+  _oneWire->select(_address);
   _oneWire->write(DallasCommandReadScratchpad);         // Read Scratchpad
   for (ii = 0; ii < 9; ii++) {           // we need 9 bytes
     data[ii] = _oneWire->read();

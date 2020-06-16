@@ -13,7 +13,7 @@ public:
     CodeTemperatureCritical,               // 4
     CodePWMNotAvailable,                   // 5
   } Code;
-  
+
   MotorError(Code code, const char *message = NULL);
   ~MotorError();
 

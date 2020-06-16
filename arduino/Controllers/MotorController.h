@@ -24,7 +24,7 @@ public:
   void begin() override;
 
   void setValue(int);
-  
+
 protected:
   MotorController(const char *name, const char *humanName, PWMDriver *pwmDriver, uint8_t motorID, const OneWire::Address dallasAddress, HardwareConfig *hardwareConfig);
 

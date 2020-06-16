@@ -23,7 +23,6 @@ Error::Level GPSError::getLevel() const {
     case Code2DMode:
     case CodeUsedSatellitesLow:
       return Error::Level::Warning;
-    
   };
   Error *error = new ArduinoError(ArduinoError::CodeGPSCodeUnknown, NULL);
   ArduinoController::sharedController()->addError(error);

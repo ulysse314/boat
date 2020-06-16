@@ -28,7 +28,7 @@ public:
   ~List() {
     removeAllData();
   };
-  
+
   bool hasMoreThanOne() const {
     return _firstBucket && _firstBucket->nextBucket;
   }
@@ -177,7 +177,7 @@ public:
   const Bucket *firstBucket() const {
     return _firstBucket;
   };
-  
+
   bool currentDataWithBucket(const Bucket *bucket, T *&data) const {
     if (!bucket) {
       data = NULL;
@@ -186,7 +186,7 @@ public:
     data = bucket->data;
     return true;
   }
-  
+
   bool currentDataWithBucket(const Bucket *bucket, const T *&data) const {
     if (!bucket) {
       data = NULL;

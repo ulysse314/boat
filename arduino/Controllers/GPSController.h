@@ -11,7 +11,7 @@ class GPSController : public Controller {
 public:
   GPSController(HardwareConfig *hardwareConfig);
   ~GPSController();
-  
+
   // Controller
   const char *name() const override { return "gps"; };
   void begin() override;

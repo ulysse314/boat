@@ -17,7 +17,7 @@ public:
   void begin() override;
   void addSensorsToList(SensorList *sensorList) override;
   void sensorsHasBeenUpdated() override;
-  
+
 protected:
   ADS1115Sensor *_ads1115Sensor;
   BME680Sensor *_bme680Sensor;

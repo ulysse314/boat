@@ -24,7 +24,7 @@ public:
     CodeBalancerTemperatureWarning,    // 15
     CodeBalancerTemperatureCritical,   // 16
   } Code;
-  
+
   BatteryError(Code code, const char *message = NULL);
   ~BatteryError();
 

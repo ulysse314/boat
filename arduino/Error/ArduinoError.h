@@ -32,7 +32,7 @@ public:
     CodeBatteryCodeUnknown,            // 23
     CodeHullCodeUnknown,               // 24
   } Code;
-  
+
   ArduinoError(Code code, const char *message = NULL);
   ~ArduinoError();
 

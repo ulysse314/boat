@@ -18,7 +18,7 @@ public:
     _characterIndex = 0;
     _searchFinished = false;
   }
-  
+
   bool isValidActuator(char character) {
     if (!_bucket) {
       return false;
@@ -43,11 +43,11 @@ public:
     }
     return NULL;
   }
-  
+
   void finished() {
     _searchFinished = true;
   }
-  
+
   bool isFinished() const {
     return _searchFinished;
   }
@@ -73,7 +73,7 @@ void ActuatorList::addActuator(Actuator *actuator) {
   ActuatorBucket *newActuatorBucket = (ActuatorBucket *)malloc(sizeof(ActuatorBucket));
   newActuatorBucket->actuator = actuator;
   newActuatorBucket->nextBucket = NULL;
-  
+
   ActuatorBucket **bucketCursor = &_actuatorBucket;
   while (*bucketCursor) {
     if (!isOrdered((*bucketCursor)->actuator, newActuatorBucket->actuator)) {
@@ -159,7 +159,7 @@ void ActuatorList::listen(Stream *serial) {
   }
 }
 
-void ActuatorList::processBuffer() { 
+void ActuatorList::processBuffer() {
   Actuator *actuatorFound = _actuatorSearcher->actuatorFound();
   if (actuatorFound) {
     actuatorFound->processValues(_currentValue.c_str());

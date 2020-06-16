@@ -14,7 +14,7 @@ public:
     TemperatureCritical,               // 5
     TemperatureInvalid,                // 6
   } Code;
-  
+
   HullError(Code code, const char *message = NULL);
   ~HullError();
 

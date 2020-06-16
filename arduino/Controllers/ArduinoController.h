@@ -13,7 +13,7 @@ class ArduinoController : public Controller {
 public:
   static ArduinoController *generateController(HardwareConfig *hardwareConfig);
   static ArduinoController *sharedController();
-  
+
   ~ArduinoController();
 
   void setLoopCounter(long int cycleCount) { _loopCounter.setInteger(cycleCount); };

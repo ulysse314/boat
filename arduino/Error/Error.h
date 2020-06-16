@@ -34,7 +34,7 @@ public:
   bool operator==(const Error &a) const {
     return getDomain() == a.getDomain() && getCode() == a.getCode();
   }
-  
+
 protected:
   Domain _domain;
   int _code;

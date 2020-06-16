@@ -25,10 +25,10 @@ public:
   };
 
   DallasSensor(const OneWire::Address adress, OneWire *oneWire);
-  
+
   float celsius() const { return _celsius; };
   bool hasValue() const { return _hasValue; };
-  
+
   // sensor
   const char *sensorClass() const override { return "DALLAS"; };
   const char *sensorType() const override;
