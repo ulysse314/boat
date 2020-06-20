@@ -13,7 +13,7 @@ parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../shared"
 if parent_dir not in sys.path:
   sys.path.append(parent_dir)
 
-import camera
+import camera_controller
 import config
 import line_parser
 import value_logger
@@ -32,6 +32,7 @@ CONTROLLER_PORT = int(config.values["controller_port"])
 
 valid_boat_client = None
 valid_controller_clients = []
+camera = camera_controller.CameraController(BOAT_NAME)
 last_message = None
 last_message_id_for_boat = None
 logger_for_values = None
