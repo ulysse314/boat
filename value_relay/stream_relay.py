@@ -44,29 +44,40 @@ async def stream_handler(reader, writer):
   global client_queues
   addr = writer.get_extra_info('peername')
   print(f"stream {addr!r} is connected !!!!")
-  while True:
-    data = b''
-    while len(data) < 6:
-      data += await reader.read(6 - len(data))
-    if not data == b"frame,":
-#      pprint.pprint(data)
-      break;
-    size_binary = await reader.read(4)
-    expected_size = int.from_bytes(size_binary, "big")
-    if expected_size == 0:
-      continue
-#    pprint.pprint("size :" + str(expected_size))
-    current_client_queues = client_queues
-    client_queues = []
-    await send_to_clients(current_client_queues, expected_size)
-    while expected_size > 0:
-      data = await reader.read(expected_size)
-      await send_to_clients(current_client_queues, data)
-      expected_size -= len(data)
-#      pprint.pprint("receive : " + str(len(data)) + " left: " + str(expected_size))
-    writer.write(b'!')
+  current_client_queues = None
+  try:
+    while True:
+      data = b''
+      while len(data) < 6:
+        result = await reader.read(6 - len(data))
+        if result == b'':
+          pprint.pprint("socket dead")
+          break
+        data += result
+      if not data == b"frame,":
+        pprint.pprint("no header: ")
+        pprint.pprint(data)
+        break;
+      size_binary = await reader.read(4)
+      expected_size = int.from_bytes(size_binary, "big")
+      if expected_size == 0:
+        continue
+#      pprint.pprint("size :" + str(expected_size))
+      current_client_queues = client_queues
+      client_queues = []
+      await send_to_clients(current_client_queues, expected_size)
+      while expected_size > 0:
+        data = await reader.read(expected_size)
+        await send_to_clients(current_client_queues, data)
+        expected_size -= len(data)
+#        pprint.pprint("receive : " + str(len(data)) + " left: " + str(expected_size))
+#      pprint.pprint("Send confirmation")
+      writer.write(b'!')
+      await send_to_clients(current_client_queues, None)
+  finally:
+    pprint.pprint("stream done")
     await send_to_clients(current_client_queues, None)
-  writer.close()
+    writer.close()
 
 def main():
   loop = asyncio.get_event_loop()
