@@ -13,6 +13,16 @@ parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../shared"
 if parent_dir not in sys.path:
   sys.path.append(parent_dir)
 
+import config
+
+if len(sys.argv) == 2:
+  boat_name = sys.argv[1]
+  config.load(boat_name)
+  STREAMER_PORT = int(config.values["boat_stream_port"])
+  CLIENT_PORT = int(config.values["controller_stream_port"])
+elif len(sys.argv) == 3:
+  STREAMER_PORT = int(sys.argv[1])
+  CLIENT_PORT = int(sys.argv[2])
 client_queues = []
 frame_data = []
 my_boundary = "frame"
@@ -85,20 +95,20 @@ async def stream_handler(reader, writer):
     await send_to_clients(current_client_queues, None)
     writer.close()
 
-def main():
+def main(streamer_port, client_port):
   loop = asyncio.get_event_loop()
   # Create server for to receive stream
-  stream_server = asyncio.start_server(stream_handler, '0.0.0.0', 31402)
+  stream_server = asyncio.start_server(stream_handler, '0.0.0.0', streamer_port)
   stream_server = loop.run_until_complete(stream_server)
-  print('Serving on {}'.format(stream_server.sockets[0].getsockname()))
+  print('Serving stream on {}'.format(stream_server.sockets[0].getsockname()))
 
   # Create http server for clients
   app = aiohttp.web.Application()
   app.router.add_get('/', client_handler)
-  client_server = loop.create_server(app.make_handler(), '0.0.0.0', 31412)
+  client_server = loop.create_server(app.make_handler(), '0.0.0.0', client_port)
   client_server = loop.run_until_complete(client_server)
-  print('Serving on {}'.format(client_server.sockets[0].getsockname()))
+  print('Serving clients on {}'.format(client_server.sockets[0].getsockname()))
 
   loop.run_forever()
 
-main()
+main(STREAMER_PORT, CLIENT_PORT)
