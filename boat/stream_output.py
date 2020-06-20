@@ -7,35 +7,32 @@ import io
 import json
 import logging
 import os
+import picamera
 import pprint
+import socket
 import sys
+import time
 from threading import Condition
 
 parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../shared"))
 if parent_dir not in sys.path:
   sys.path.append(parent_dir)
 
-import arduino_controller
-import boat_controller
-import command_controller
 import config
-import e3372_controller
-import gps_controller
-import munin_server
-import pi_controller
-import pwm_controller
-import value_sender
 
-if len(sys.argv) == 1:
-  BOAT_NAME = config.default_boat_name()
-else:
-  BOAT_NAME = sys.argv[1]
+if len(sys.argv) <= 2:
+  if len(sys.argv) == 1:
+    BOAT_NAME = config.default_boat_name()
+  else:
+    BOAT_NAME = sys.argv[1]
+  config.load(BOAT_NAME)
+  SERVER_IP = config.values["value_relay_server"]
+  SERVER_PORT = int(config.values["boat_stream_port"])
+elif len(sys.argv) == 3:
+  SERVER_IP = argv[1]
+  SERVER_PORT = int(argv[2])
 
 logging.basicConfig(level=logging.DEBUG)
-config.load(BOAT_NAME)
-import socket
-import time
-import picamera
 
 class StreamingOutput(object):
   def __init__(self):
@@ -54,9 +51,7 @@ class StreamingOutput(object):
       self.buffer.seek(0)
     return self.buffer.write(buf)
 
-# Connect a client socket to my_server:8000 (change my_server to the
-# hostname of your server)
-pprint.pprint((config.values["value_relay_server"], int(config.values["boat_stream_port"])))
+pprint.pprint((SERVER_IP, SERVER_PORT))
 try:
   with picamera.PiCamera() as camera:
     # 1296, 972
@@ -73,7 +68,7 @@ try:
     while True:
       try:
         client_socket = socket.socket()
-        client_socket.connect((config.values["value_relay_server"], int(config.values["boat_stream_port"])))
+        client_socket.connect((SERVER_IP, SERVER_PORT))
         pprint.pprint("Connected")
         while True:
           with output.condition:
