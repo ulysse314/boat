@@ -38,9 +38,6 @@ class ProcessController:
       if self.process == None:
         break
       counter += 1
-      if counter == 3:
-        self.process = None
-        break
       await asyncio.sleep(2)
 
 def main():
