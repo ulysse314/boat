@@ -4,8 +4,10 @@
 import asyncio
 import datetime
 import logging
+import os
 import pprint
 import time
+import sys
 
 parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../shared"))
 if parent_dir not in sys.path:

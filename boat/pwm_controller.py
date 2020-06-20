@@ -4,7 +4,9 @@
 import Adafruit_PCA9685
 import asyncio
 import logging
+import os
 import pprint
+import sys
 
 parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../shared"))
 if parent_dir not in sys.path:

@@ -2,7 +2,9 @@
 # -*- coding: utf-8 -*-
 
 import logging
+import os
 import subprocess
+import sys
 import time
 
 parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../shared"))

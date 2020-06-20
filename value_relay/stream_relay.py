@@ -5,7 +5,9 @@ import asyncio
 import aiohttp
 import aiohttp.web
 import io
+import os
 import pprint
+import sys
 
 parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../shared"))
 if parent_dir not in sys.path:
