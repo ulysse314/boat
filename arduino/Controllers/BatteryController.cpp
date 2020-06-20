@@ -35,7 +35,9 @@ BatteryController::BatteryController(ADS1115Sensor *ads1115Sensor,
     _balancerTemperature(Value::Type::Double, "balT"),
     _balancer0(Value::Type::Integer, "bal0"),
     _balancer1(Value::Type::Integer, "bal1"),
-    _balancer2(Value::Type::Integer, "bal2") {
+    _balancer2(Value::Type::Integer, "bal2"),
+    _currentConsumption(Value::Type::Double, "ah"),
+    _lastCurrentValueTimestamp(0) {
 }
 
 BatteryController::~BatteryController() {
@@ -49,6 +51,7 @@ void BatteryController::begin() {
   addValue(&_balancer0);
   addValue(&_balancer1);
   addValue(&_balancer2);
+  _lastCurrentValueTimestamp = millis();
 }
 
 void BatteryController::addSensorsToList(SensorList *sensorList) {
@@ -71,6 +74,11 @@ void BatteryController::sensorsHasBeenUpdated() {
       addError(new BatteryError(BatteryError::CodeVoltageCritical));
     }
     double current = _ina219Sensor.getCurrent();
+    unsigned long long currentMillis = millis();
+    double consumption = _currentConsumption.valueAsDouble();
+    consumption += current / (currentMillis - _lastCurrentValueTimestamp);
+    _currentConsumption.setDouble(consumption);
+    _lastCurrentValueTimestamp = currentMillis;
     _current.setDouble(current);
   } else {
     addError(new BatteryError(BatteryError::CodeINA219NotFound));
@@ -119,4 +127,8 @@ void BatteryController::sensorsHasBeenUpdated() {
     _balancer1.setNull();
     _balancer2.setNull();
   }
+}
+
+void BatteryController::setInitialCurrentConsumption(double initialConsumption) {
+  _currentConsumption += initialConsumption;
 }

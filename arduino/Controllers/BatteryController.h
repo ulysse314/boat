@@ -21,6 +21,8 @@ public:
   void addSensorsToList(SensorList *sensorList) override;
   void sensorsHasBeenUpdated() override;
 
+  void setInitialCurrentConsumption(double initialConsumption);
+
 protected:
   ADS1115Sensor *_ads1115Sensor;
   INA219Sensor _ina219Sensor;
@@ -33,6 +35,8 @@ protected:
   Value _balancer0;
   Value _balancer1;
   Value _balancer2;
+  Value _currentConsumption;
+  unsigned long long _lastCurrentValueTimestamp;
 };
 
 #endif // BatteryController_h
