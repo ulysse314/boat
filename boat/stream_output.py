@@ -59,7 +59,9 @@ class StreamingOutput(object):
 pprint.pprint((config.values["value_relay_server"], int(config.values["boat_stream_port"])))
 try:
   with picamera.PiCamera() as camera:
-    camera.resolution = (640, 480)
+    # 1296, 972
+    # 640, 480
+    camera.resolution = (1296, 972)
     camera.framerate = 24
     # Start a preview and let the camera warm up for 2 seconds
     camera.start_preview()
@@ -73,15 +75,16 @@ try:
         client_socket = socket.socket()
         client_socket.connect((config.values["value_relay_server"], int(config.values["boat_stream_port"])))
         pprint.pprint("Connected")
-        connection = client_socket.makefile('wb')
         while True:
           with output.condition:
             output.condition.wait()
             frame = output.frame
-          if frame != None:
-            connection.write("frame,".encode("utf8") + len(frame).to_bytes(4, byteorder = 'big'))
-            connection.write(frame)
-            pprint.pprint("frame size: " + str(len(frame)))
+          frame_size = len(frame)
+          if frame != None and frame_size > 0:
+            pprint.pprint("send: " + str(frame_size))
+            client_socket.sendall("frame,".encode("utf8") + frame_size.to_bytes(4, byteorder = 'big'))
+            client_socket.sendall(frame)
+            data = client_socket.recv(1)
       finally:
         pprint.pprint("bug")
     camera.stop_recording()
