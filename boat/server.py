@@ -15,6 +15,7 @@ if parent_dir not in sys.path:
 
 import arduino_controller
 import boat_controller
+import camera_controller
 import command_controller
 import config
 import e3372_controller
@@ -38,6 +39,7 @@ RELAY_SERVER = config.values["value_relay_server"]
 sender = value_sender.ValueSender(BOAT_NAME, RELAY_SERVER, BOAT_PORT, config.values["boat_key"])
 
 arduino = arduino_controller.ArduinoController(config.values["sensors"])
+camera = camera_controller.CameraController(BOAT_NAME)
 pi = pi_controller.PiController()
 commnand = command_controller.CommandController(arduino)
 controllers = [ e3372_controller.E3372Controller(),
@@ -53,7 +55,7 @@ for controller in controllers:
   except:
     logging.exception("{} not started !!!!".format(controller.__class__.__name__))
 
-boat = boat_controller.BoatController(started_controllers, arduino, pi, commnand, sender)
+boat = boat_controller.BoatController(started_controllers, arduino, camera, pi, commnand, sender)
 sender.delegate = boat
 boat.start()
 sender.start()

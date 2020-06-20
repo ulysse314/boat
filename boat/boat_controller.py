@@ -17,13 +17,14 @@ import munin_server
 import value_sender
 
 class BoatController:
-  def __init__(self, controllers, arduino_controller, pi_controller, commnand, value_sender):
+  def __init__(self, controllers, arduino_controller, camera_controller, pi_controller, commnand, value_sender):
     self.logger = logging.getLogger(self.__class__.__name__)
     self.record = False
     self.boot_timestamp = time.time()
     self.value_id = 0
     self.controllers = controllers
     self.arduino_controller = arduino_controller
+    self.camera_controller = camera_controller
     self.pi_controller = pi_controller
     self.command_controller = commnand
     self.value_sender = value_sender
@@ -95,6 +96,11 @@ class BoatController:
           self.command_controller.execute(value)
         elif key == "ping":
           self.arduino_controller.send_ping()
+        elif key == "camera":
+          if value["state"]:
+            self.camera_controller.start()
+          else:
+            self.camera_controller.stop()
         else:
           self.logger.warning("Command unknown")
           self.logger.warning(pprint.pformat(values))
