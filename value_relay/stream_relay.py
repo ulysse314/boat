@@ -64,6 +64,7 @@ async def stream_handler(reader, writer):
       await send_to_clients(current_client_queues, data)
       expected_size -= len(data)
 #      pprint.pprint("receive : " + str(len(data)) + " left: " + str(expected_size))
+    writer.write(b'!')
     await send_to_clients(current_client_queues, None)
   writer.close()
 
