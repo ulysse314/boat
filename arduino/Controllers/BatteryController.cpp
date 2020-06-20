@@ -130,5 +130,6 @@ void BatteryController::sensorsHasBeenUpdated() {
 }
 
 void BatteryController::setInitialCurrentConsumption(double initialConsumption) {
-  _currentConsumption += initialConsumption;
+  initialConsumption += _currentConsumption.valueAsDouble();
+  _currentConsumption.setDouble(initialConsumption);
 }
