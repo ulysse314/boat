@@ -5,6 +5,10 @@ import logging
 import subprocess
 import time
 
+parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../shared"))
+if parent_dir not in sys.path:
+  sys.path.append(parent_dir)
+
 class CommandController:
   def __init__(self, arduino_controller):
     self.logger = logging.getLogger(self.__class__.__name__)

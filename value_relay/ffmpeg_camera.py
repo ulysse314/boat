@@ -6,6 +6,10 @@ import signal
 import subprocess
 import threading
 
+parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../shared"))
+if parent_dir not in sys.path:
+  sys.path.append(parent_dir)
+
 ffserver_proccess = None
 ffserver_thread = None
 running = False

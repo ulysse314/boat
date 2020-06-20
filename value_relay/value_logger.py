@@ -9,6 +9,10 @@ import pprint
 import requests
 import time
 
+parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../shared"))
+if parent_dir not in sys.path:
+  sys.path.append(parent_dir)
+
 async def fetch(url, data = None):
   async with aiohttp.ClientSession() as client:
     async with client.post(url, data = data) as resp:
