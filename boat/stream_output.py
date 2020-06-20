@@ -81,7 +81,7 @@ try:
             frame = output.frame
           frame_size = len(frame)
           if frame != None and frame_size > 0:
-            pprint.pprint("send: " + str(frame_size))
+#            pprint.pprint("send: " + str(frame_size))
             client_socket.sendall("frame,".encode("utf8") + frame_size.to_bytes(4, byteorder = 'big'))
             client_socket.sendall(frame)
             data = client_socket.recv(1)
