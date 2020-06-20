@@ -19,8 +19,7 @@ import line_parser
 import value_logger
 
 if len(sys.argv) == 1:
-  with open("/etc/ulysse314/name", "r") as file:
-    BOAT_NAME = file.readline().strip()
+  BOAT_NAME = config.default_boat_name()
 else:
   BOAT_NAME = sys.argv[1]
 
