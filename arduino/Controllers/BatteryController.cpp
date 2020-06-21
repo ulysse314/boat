@@ -51,6 +51,7 @@ void BatteryController::begin() {
   addValue(&_balancer0);
   addValue(&_balancer1);
   addValue(&_balancer2);
+  addValue(&_currentConsumption);
   _lastCurrentValueTimestamp = millis();
 }
 
@@ -76,7 +77,8 @@ void BatteryController::sensorsHasBeenUpdated() {
     double current = _ina219Sensor.getCurrent();
     unsigned long long currentMillis = millis();
     double consumption = _currentConsumption.valueAsDouble();
-    consumption += current / (currentMillis - _lastCurrentValueTimestamp);
+    double delta = current * ((double)(currentMillis - _lastCurrentValueTimestamp) / (double)1000. / (double)3600.);
+    consumption += delta;
     _currentConsumption.setDouble(consumption);
     _lastCurrentValueTimestamp = currentMillis;
     _current.setDouble(current);
