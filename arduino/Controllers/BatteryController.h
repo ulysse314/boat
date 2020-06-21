@@ -21,7 +21,8 @@ public:
   void addSensorsToList(SensorList *sensorList) override;
   void sensorsHasBeenUpdated() override;
 
-  void setInitialCurrentConsumption(double initialConsumption);
+  void addCurrentConsumption(double initialConsumption);
+  void resetCurrentConsumption();
 
 protected:
   ADS1115Sensor *_ads1115Sensor;

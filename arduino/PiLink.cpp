@@ -3,13 +3,19 @@
 #include <Arduino.h>
 
 #include "ArduinoController.h"
+#include "BatteryController.h"
 #include "Controller.h"
 #include "Error.h"
 #include "HardwareConfig.h"
 #include "MotorController.h"
 #include "Value.h"
 
-#define TIMEOUT           4000
+#define PI_TIMEOUT             4000
+#define RESET_COMSUMPTION_CMD  "resetconsumption"
+#define PING_CMD               "ping"
+#define LEFT_MOTOR_CMD         "lm "
+#define RIGHT_MOTOR_CMD        "rm "
+#define ARDUINO_CMD            "arduino "
 
 static PiLink *sharedPiLink = NULL;
 
@@ -30,7 +36,7 @@ PiLink::PiLink(HardwareConfig *hardwareConfig) :
     _stream(hardwareConfig->piSerial()),
     _inputBuffer{0},
     _inputBufferLength(0),
-    _nextTimeOut(millis() + TIMEOUT),
+    _nextTimeOut(millis() + PI_TIMEOUT),
     _leftMotorController(NULL),
     _rightMotorController(NULL) {
 }
@@ -131,20 +137,22 @@ void PiLink::outputError(const Error *error) {
 
 void PiLink::processInputBuffer() {
   _inputBuffer[_inputBufferLength] = 0;
-  if (strncmp(_inputBuffer, "lm ", strlen("lm ")) == 0) {
-    char *buffer = _inputBuffer + strlen("lm ");
+  if (strncmp(_inputBuffer, LEFT_MOTOR_CMD, strlen(LEFT_MOTOR_CMD)) == 0) {
+    char *buffer = _inputBuffer + strlen(LEFT_MOTOR_CMD);
     _leftMotorController->setValue(atoi(buffer));
-  } else if (strncmp(_inputBuffer, "rm ", strlen("rm ")) == 0) {
-    char *buffer = _inputBuffer + strlen("rm ");
+  } else if (strncmp(_inputBuffer, RIGHT_MOTOR_CMD, strlen(RIGHT_MOTOR_CMD)) == 0) {
+    char *buffer = _inputBuffer + strlen(RIGHT_MOTOR_CMD);
     _rightMotorController->setValue(atoi(buffer));
-  } else if (strncmp(_inputBuffer, "arduino ", strlen("arduino ")) == 0) {
-    char *buffer = _inputBuffer + strlen("arduino ");
+  } else if (strncmp(_inputBuffer, ARDUINO_CMD, strlen(ARDUINO_CMD)) == 0) {
+    char *buffer = _inputBuffer + strlen(ARDUINO_CMD);
     _arduinoController->setCommand(buffer);
-  } else if (strcmp(_inputBuffer, "ping") == 0) {
+  } else if (strcmp(_inputBuffer, RESET_COMSUMPTION_CMD) == 0) {
+    _batteryController->resetCurrentConsumption();
+  } else if (strcmp(_inputBuffer, PING_CMD) == 0) {
     // Nothing to do.
   } else {
     // Error
   }
   _inputBufferLength = 0;
-  _nextTimeOut = millis() + TIMEOUT;
+  _nextTimeOut = millis() + PI_TIMEOUT;
 }

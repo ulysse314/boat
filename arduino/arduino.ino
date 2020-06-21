@@ -64,6 +64,7 @@ void initGlobal() {
   piLink->setLeftMotorController(leftMotorController);
   piLink->setRightMotorController(rightMotorController);
   piLink->setArduinoController(arduinoController);
+  piLink->setBatteryController(batteryController);
 
   driverManager->begin();
   sensorList->begin();
