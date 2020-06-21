@@ -11,7 +11,7 @@
 #include "Value.h"
 
 #define PI_TIMEOUT             4000
-#define RESET_COMSUMPTION_CMD  "resetconsumption"
+#define RESET_COMSUMPTION_CMD  "resetcurrentconsumption"
 #define PING_CMD               "ping"
 #define LEFT_MOTOR_CMD         "lm "
 #define RIGHT_MOTOR_CMD        "rm "
