@@ -1,9 +1,10 @@
 #!/usr/bin/env python3.8
 # -*- coding: utf-8 -*-
 
-import asyncio
+import aiofiles
 import aiohttp
 import aiohttp.web
+import asyncio
 import io
 import os
 import pprint
@@ -14,6 +15,8 @@ if parent_dir not in sys.path:
   sys.path.append(parent_dir)
 
 import config
+
+MOVIES_PATH = os.path.join("../../movies")
 
 if len(sys.argv) == 2:
   boat_name = sys.argv[1]
@@ -36,20 +39,23 @@ async def client_handler(request):
                     'boundary=--%s' % my_boundary,
   })
   await response.prepare(request)
-  while True:
-    data_queue = asyncio.Queue()
-    client_queues.append(data_queue)
-    size = await data_queue.get()
-    await response.write(b'--' + my_boundary.encode("utf8") + b'\r\n')
-    await response.write(b'Content-Type: image/jpeg\r\n')
-    await response.write(b'Content-Length: ' + str(size).encode("utf8") + b'\r\n\r\n')
+  try:
     while True:
-      data = await data_queue.get()
-      if data == None:
-        await response.write(b'\r\n')
-        break
-      await response.write(data)
-  wc.shutdown()
+      data_queue = asyncio.Queue()
+      client_queues.append(data_queue)
+      size = await data_queue.get()
+      await response.write(b'--' + my_boundary.encode("utf8") + b'\r\n')
+      await response.write(b'Content-Type: image/jpeg\r\n')
+      await response.write(b'Content-Length: ' + str(size).encode("utf8") + b'\r\n\r\n')
+      while True:
+        data = await data_queue.get()
+        if data == None:
+          await response.write(b'\r\n')
+          break
+        await response.write(data)
+    wc.shutdown()
+  finally:
+    pass
   return response
 
 async def send_to_clients(current_client_queues, data):
@@ -95,8 +101,44 @@ async def stream_handler(reader, writer):
     await send_to_clients(current_client_queues, None)
     writer.close()
 
+async def write_images(path):
+  global client_queues
+  try:
+    frame_counter = 0
+    while True:
+      filename = "frame_" + str(frame_counter).zfill(8) + ".jpg"
+      filename_path = os.path.join(path, filename)
+      data_queue = asyncio.Queue()
+      client_queues.append(data_queue)
+      size = await data_queue.get()
+      async with aiofiles.open(filename_path, 'wb') as afp:
+        while True:
+          data = await data_queue.get()
+          if data == None:
+            break
+          await afp.write(data)
+      frame_counter += 1
+    wc.shutdown()
+  finally:
+    pass
+
+def get_next_movie_path():
+  global MOVIES_PATH
+  dir_counter = 0
+  while True:
+    movie_dir = os.path.join(MOVIES_PATH, "movie_" + str(dir_counter))
+    if not os.path.isdir(movie_dir):
+      os.mkdir(movie_dir)
+      pprint.pprint(movie_dir)
+      break
+    dir_counter += 1
+  return movie_dir
+
 def main(streamer_port, client_port):
   loop = asyncio.get_event_loop()
+
+  loop.create_task(write_images(get_next_movie_path()))
+
   # Create server for to receive stream
   stream_server = asyncio.start_server(stream_handler, '0.0.0.0', streamer_port)
   stream_server = loop.run_until_complete(stream_server)
