@@ -16,7 +16,7 @@ if parent_dir not in sys.path:
 
 import config
 
-MOVIES_PATH = os.path.join("../../movies")
+MOVIES_PATH = os.path.join(os.path.dirname(__file__), "../../movies")
 
 if len(sys.argv) == 2:
   boat_name = sys.argv[1]
