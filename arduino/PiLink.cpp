@@ -16,6 +16,7 @@
 #define LEFT_MOTOR_CMD         "lm "
 #define RIGHT_MOTOR_CMD        "rm "
 #define ARDUINO_CMD            "arduino "
+#define RESTART_CMD            "restart"
 
 static PiLink *sharedPiLink = NULL;
 
@@ -148,6 +149,8 @@ void PiLink::processInputBuffer() {
     _arduinoController->setCommand(buffer);
   } else if (strcmp(_inputBuffer, RESET_COMSUMPTION_CMD) == 0) {
     _batteryController->resetCurrentConsumption();
+  } else if (strcmp(_inputBuffer, RESTART_CMD) == 0) {
+    _arduinoController->restart();
   } else if (strcmp(_inputBuffer, PING_CMD) == 0) {
     // Nothing to do.
   } else {

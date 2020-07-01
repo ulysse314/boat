@@ -9,8 +9,12 @@
 #include <Arduino.h>
 #include <OneWire.h>
 #include <Wire.h>
+#include <Adafruit_SleepyDog.h>
 
 static ArduinoController *sharedArduinoController = NULL;
+
+#define WATCHDOG_BEGIN_DELAY             10000
+#define WATCHDOG_LOOP_DELAY              4000
 
 // static
 ArduinoController *ArduinoController::generateController(HardwareConfig *hardwareConfig) {
@@ -32,6 +36,7 @@ ArduinoController::ArduinoController(HardwareConfig *hardwareConfig) :
     _criticalFreeRAM(0),
     _lastMillis(0),
     _cylcleCounter(0),
+    _shouldRestart(false),
     _started(Value::Type::Boolean, "stt"),
     _loopCounter(Value::Type::Integer, "lpcnt"),
     _longestLoopDuration(Value::Type::Integer, "lpdrt"),
@@ -43,7 +48,8 @@ ArduinoController::ArduinoController(HardwareConfig *hardwareConfig) :
     _timestamp(Value::Type::Integer, "tst"),
     _compileDate(Value::Type::String, "cmp"),
     _arduinoVersion(Value::Type::Integer, "vrs"),
-    _debugInfo(Value::Type::String, "dbg") {
+    _debugInfo(Value::Type::String, "dbg"),
+    _lastRestartCause(Value::Type::Integer, "rst") {
   String compileDateString;
   compileDateString.concat(__TIME__);
   compileDateString.concat(" ");
@@ -68,10 +74,13 @@ void ArduinoController::begin() {
   addValue(&_compileDate);
   addValue(&_arduinoVersion);
   addValue(&_debugInfo);
+  addValue(&_lastRestartCause);
   size_t currentFreeRAM = freeMemory();
   _infoFreeRAM = currentFreeRAM * 0.6;
   _warningFreeRAM = currentFreeRAM * 0.4;
   _criticalFreeRAM = currentFreeRAM * 0.2;
+  _lastRestartCause.setInteger(Watchdog.resetCause());
+  Watchdog.enable(WATCHDOG_BEGIN_DELAY);
 }
 
 void ArduinoController::sensorsHasBeenUpdated() {
@@ -124,6 +133,9 @@ void ArduinoController::sensorsHasBeenUpdated() {
   if (PiLink::getSharedPiLink()->hasTimedOut()) {
     addError(new ArduinoError(ArduinoError::CodePiLinkConnectionTimeOut));
   }
+  if (!_shouldRestart) {
+    Watchdog.enable(WATCHDOG_LOOP_DELAY);
+  }
 }
 
 char hexFromByte(byte value) {
@@ -169,4 +181,9 @@ void ArduinoController::setCommand(const char *command) {
     result = "I2C: " + result;
   }
   _debugInfo.setString(result.c_str());
+}
+
+void ArduinoController::restart() {
+  Watchdog.enable(100);
+  _shouldRestart = true;
 }

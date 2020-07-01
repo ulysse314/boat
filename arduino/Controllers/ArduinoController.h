@@ -21,6 +21,7 @@ public:
   void setCycleDuration(long int cycleDuration) { _cycleDuration.setInteger(cycleDuration); };
   void setExportDuration(long int exportDuration) { _exportDuration.setInteger(exportDuration); };
   void setCommand(const char *command);
+  void restart();
 
   // Controller
   const char *name() const override { return "ard"; };
@@ -37,6 +38,7 @@ protected:
   unsigned long _lastMillis;
   // Counter for each cycle.
   unsigned long _cylcleCounter;
+  bool _shouldRestart;
   Value _started;
   Value _loopCounter;
   Value _longestLoopDuration;
@@ -49,6 +51,7 @@ protected:
   Value _compileDate;
   Value _arduinoVersion;
   Value _debugInfo;
+  Value _lastRestartCause;
 };
 
 #endif // ArduinoController_h
