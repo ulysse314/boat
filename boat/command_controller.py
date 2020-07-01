@@ -43,6 +43,8 @@ class CommandController:
       self.update_pi()
     elif command == "reset_current_consumption":
       self.arduino_controller.reset_current_consumption()
+    elif command == "restart_arduino":
+      self.arduino_controller.restart_arduino()
 
   def reboot(self):
     subprocess.call(["/sbin/reboot"])

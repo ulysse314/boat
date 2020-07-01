@@ -52,6 +52,10 @@ class ArduinoController:
     if self.serial_transport:
       self.serial_transport.send_line("resetcurrentconsumption")
 
+  def restart_arduino(self):
+    if self.serial_transport:
+      self.serial_transport.send_line("restart")
+
   def set_motors(self, values):
     left = None
     right = None
