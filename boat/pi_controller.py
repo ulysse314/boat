@@ -63,7 +63,7 @@ class PiController:
       elif self.values["pi"]["disk.used%"] > 50:
         errors.append([boat_error.PiDomain, boat_error.Pi.diskInfo, str(self.values["pi"]["disk.used%"]) ])
       if len(errors) > 0:
-        self.values["pi"]["errors"] = errors
+        self.values["pi"][boat_error.ErrorKey] = errors
     except:
       self.logger.exception("Get values")
 

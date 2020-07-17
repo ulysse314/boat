@@ -104,7 +104,7 @@ class E3372Controller:
     errors = []
     try:
       if not self.INTERFACE in netifaces.interfaces():
-        values["errors"] = [[ boat_error.E3372Domain, boat_error.E3372.NoInterface, self.INTERFACE ]]
+        values[boat_error.ErrorKey] = [[ boat_error.E3372Domain, boat_error.E3372.NoInterface, self.INTERFACE ]]
         return values
       for api, apiError in self.APIS.items():
         error_message, dict = await self._get(api)
@@ -123,7 +123,7 @@ class E3372Controller:
     except Exception as e:
       error_message = "Get values error " + pprint.pformat(e)
       self.logger.exception(error_message)
-      values = { "errors": [[ boat_error.E3372Domain, boat_error.E3372.GenericError, error_message ]] }
+      errors.append([ boat_error.E3372Domain, boat_error.E3372.GenericError, error_message ])
     try:
       if "ConnectionStatus" in values:
         if values["ConnectionStatus"] != 901:
@@ -143,7 +143,7 @@ class E3372Controller:
     if "SimStatus" in values and values["SimStatus"] != 1:
       errors.append([ boat_error.E3372Domain, boat_error.E3372.SimLocked, error_message ])
     if len(errors) > 0:
-      values["errors"] = errors
+      values[boat_error.ErrorKey] = errors
     return values
 
   async def _get(self, path):

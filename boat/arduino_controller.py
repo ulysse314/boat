@@ -107,10 +107,10 @@ class ArduinoController:
           break
         else:
           self.values = {}
-          self.values['ard'] = { 'err': [[ boat_error.ArduinoDomain, boat_error.Arduino.DevNotFound ]] }
+          self.values['ard'] = { boat_error.ErrorKey: [[ boat_error.ArduinoDomain, boat_error.Arduino.DevNotFound ]] }
       except:
         self.values = {}
-        self.values['ard'] = { 'err': [[ boat_error.ArduinoDomain, boat_error.Arduino.ConnectionError ]] }
+        self.values['ard'] = { boat_error.ErrorKey: [[ boat_error.ArduinoDomain, boat_error.Arduino.ConnectionError ]] }
         self.logger.exception("connection failed")
       await asyncio.sleep(1)
 
@@ -135,7 +135,7 @@ class ArduinoController:
       await asyncio.sleep(2)
       if time.time() - self.last_line_received_timestamp >= 2:
         self.values = {}
-        self.values['ard'] = { 'err': [[ boat_error.ArduinoDomain, boat_error.Arduino.NoData ]] }
+        self.values['ard'] = { boat_error.ErrorKey: [[ boat_error.ArduinoDomain, boat_error.Arduino.NoData ]] }
  
 ## connection
   def connection_made(self, transport):
