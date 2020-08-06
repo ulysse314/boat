@@ -10,6 +10,13 @@ class TwoWire;
 
 class BNO055Sensor : public Sensor {
 public:
+  class Vector {
+  public:
+    double x;
+    double y;
+    double z;
+  };
+
   BNO055Sensor(uint8_t address, TwoWire *i2cBus);
   ~BNO055Sensor();
 
@@ -21,19 +28,19 @@ public:
   virtual bool readValues() override;
 
   bool getAvailable() const { return _available; };
-  int16_t getValue0() const { return _value0; };
-  int16_t getValue1() const { return _value1; };
-  int16_t getValue2() const { return _value2; };
-  int16_t getValue3() const { return _value3; };
+  Vector getAcc() const { return _acc; };
+  Vector getMag() const { return _mag; };
+  Vector getGyro() const { return _gyro; };
+  Vector getEuler() const { return _euler; };
 
 protected:
   BNO055 *_bno055;
   bool _available;
   unsigned long long _lastMeasure = 0;
-  int16_t _value0 = 0;
-  int16_t _value1 = 0;
-  int16_t _value2 = 0;
-  int16_t _value3 = 0;
+  Vector _acc;
+  Vector _mag;
+  Vector _gyro;
+  Vector _euler;
 };
 
 #endif // BNO055Sensor_h

@@ -32,6 +32,7 @@ public:
   uint8_t ina219Address() const;
   uint8_t ads1115Address() const;
   uint8_t bme680Address() const;
+  uint8_t bno055Address() const;
 
   uint8_t leftMotorPWMID() const;
   uint8_t rightMotorPWMID() const;

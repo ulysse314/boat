@@ -104,6 +104,10 @@ uint8_t HardwareConfig::bme680Address() const {
   return BME680_ADDRESS;
 }
 
+uint8_t HardwareConfig::bno055Address() const {
+  return BNO055_ADDRESS;
+}
+
 uint8_t HardwareConfig::leftMotorPWMID() const {
   return LEFT_MOTOR_ID;
 }
