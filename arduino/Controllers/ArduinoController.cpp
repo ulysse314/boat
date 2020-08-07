@@ -13,6 +13,7 @@
 
 static ArduinoController *sharedArduinoController = NULL;
 
+#define WATCHDOC_ENABLE                  1
 #define WATCHDOG_BEGIN_DELAY             10000
 #define WATCHDOG_LOOP_DELAY              4000
 
@@ -80,7 +81,9 @@ void ArduinoController::begin() {
   _warningFreeRAM = currentFreeRAM * 0.4;
   _criticalFreeRAM = currentFreeRAM * 0.2;
   _lastRestartCause.setInteger(Watchdog.resetCause());
+#if WATCHDOC_ENABLE
   Watchdog.enable(WATCHDOG_BEGIN_DELAY);
+#endif
 }
 
 void ArduinoController::sensorsHasBeenUpdated() {
@@ -134,7 +137,9 @@ void ArduinoController::sensorsHasBeenUpdated() {
     addError(new ArduinoError(ArduinoError::CodePiLinkConnectionTimeOut));
   }
   if (!_shouldRestart) {
+#if WATCHDOC_ENABLE
     Watchdog.enable(WATCHDOG_LOOP_DELAY);
+#endif
   }
 }
 
@@ -184,6 +189,8 @@ void ArduinoController::setCommand(const char *command) {
 }
 
 void ArduinoController::restart() {
+#if WATCHDOC_ENABLE
   Watchdog.enable(100);
+#endif
   _shouldRestart = true;
 }
