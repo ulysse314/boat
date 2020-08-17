@@ -4,9 +4,9 @@
 
 namespace {
 
-bool readVector(BNO055::adafruit_vector_type_t vectorType, BNO055Sensor::Vector &vector, BNO055 *bno055) {
+bool readVector(BNO055::Vector vectorName, BNO055Sensor::Vector &vector, BNO055 *bno055) {
   imu::Vector<3> xyz;
-  if (!bno055->getVector(vectorType, &xyz)) {
+  if (!bno055->getVector(vectorName, &xyz)) {
     return false;
   }
   vector.x = xyz[0];
@@ -27,33 +27,31 @@ BNO055Sensor::~BNO055Sensor() {
 
 void BNO055Sensor::begin() {
   _available = _bno055->begin();
-  if (_available) {
-  }
 }
 
 void BNO055Sensor::loop() {
-  if (!_available) {
-    _available = _bno055->begin();
-    return;
-  }
-  if (!readVector(BNO055::VECTOR_ACCELEROMETER, _acc, _bno055)) {
-    _available = false;
-    return;
-  }
-  if (!readVector(BNO055::VECTOR_MAGNETOMETER, _mag, _bno055)) {
-    _available = false;
-    return;
-  }
-  if (!readVector(BNO055::VECTOR_GYROSCOPE, _gyro, _bno055)) {
-    _available = false;
-    return;
-  }
-  if (!readVector(BNO055::VECTOR_EULER, _euler, _bno055)) {
-    _available = false;
-    return;
-  }
 }
 
 bool BNO055Sensor::readValues() {
+  if (!_available) {
+    _available = _bno055->begin();
+  return _available;
+  }
+  if (!readVector(BNO055::Vector::Accelerometer, _acc, _bno055)) {
+    _available = false;
+  return _available;
+  }
+  if (!readVector(BNO055::Vector::Magnetometer, _mag, _bno055)) {
+    _available = false;
+  return _available;
+  }
+  if (!readVector(BNO055::Vector::Gyroscope, _gyro, _bno055)) {
+    _available = false;
+  return _available;
+  }
+  if (!readVector(BNO055::Vector::Euler, _euler, _bno055)) {
+    _available = false;
+  return _available;
+  }
   return _available;
 }
