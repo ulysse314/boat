@@ -27,6 +27,9 @@ BNO055Sensor::~BNO055Sensor() {
 
 void BNO055Sensor::begin() {
   _available = _bno055->begin();
+  if (_available) {
+    _available = _bno055->setPlacementConfig(BNO055::PlacementConfig::P5);
+  }
 }
 
 void BNO055Sensor::loop() {
@@ -34,24 +37,24 @@ void BNO055Sensor::loop() {
 
 bool BNO055Sensor::readValues() {
   if (!_available) {
-    _available = _bno055->begin();
-  return _available;
+    begin();
+    return _available;
   }
   if (!readVector(BNO055::Vector::Accelerometer, _acc, _bno055)) {
     _available = false;
-  return _available;
+    return _available;
   }
   if (!readVector(BNO055::Vector::Magnetometer, _mag, _bno055)) {
     _available = false;
-  return _available;
+    return _available;
   }
   if (!readVector(BNO055::Vector::Gyroscope, _gyro, _bno055)) {
     _available = false;
-  return _available;
+    return _available;
   }
   if (!readVector(BNO055::Vector::Euler, _euler, _bno055)) {
     _available = false;
-  return _available;
+    return _available;
   }
   return _available;
 }
