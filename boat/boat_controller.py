@@ -71,10 +71,14 @@ class BoatController:
       values = self._get_values()
       munin_server.set_values(values)
       self.value_sender.add_values(values)
+      # Record the time taken between the sleep
+      # at the end of the loop and now
       self.pi_controller.loop_duration = time.time() - next_wakeup
-      # Start a cycle 1s exactly after the last one.
+      # Start the next cycle at 1s after the last one.
       next_wakeup = int(time.time()) + 1
-      await asyncio.sleep(next_wakeup - time.time())
+      delay = next_wakeup - time.time()
+      if delay > 0:
+        await asyncio.sleep(delay)
 
   def _turn_off_motors(self):
     self.received_values({"motor":{"left%":0,"right%":0}})
