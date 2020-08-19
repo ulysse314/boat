@@ -8,7 +8,7 @@ import pprint
 import os
 import pprint
 import serial
-import serial_asyncio
+import serial_asyncio2
 import sys
 import time
 
@@ -103,7 +103,7 @@ class ArduinoController:
         self.logger.debug("Starting connection")
         if os.path.exists(self.dev_port):
           loop = asyncio.get_event_loop()
-          await serial_asyncio.create_serial_connection(loop, lambda: line_protocol.LineProtocol(self), self.dev_port, baudrate = self.port_speed)
+          await serial_asyncio2.create_serial_connection(loop, lambda: line_protocol.LineProtocol(self), self.dev_port, baudrate = self.port_speed)
           break
         else:
           self.values = {}
