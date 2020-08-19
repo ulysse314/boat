@@ -16,6 +16,28 @@ public:
     double y;
     double z;
   };
+  enum class Error {
+    NoError,
+    PeripheralInitializationError,
+    SystemInitializationError,
+    SelfTestResultFailed,
+    RegisterMapValueOutOfRange,
+    RegisterMapAddressOutOfRange,
+    RegisterMapWriteError,
+    LowPowerNotAvailableForSelectedOperationMode,
+    AccelerometerPowerModeNotAvailable,
+    FusionAlgorithmConfigurationError,
+    SensorConfigurationError,
+  };
+  enum class SystemStatus {
+    Idle,
+    Error,
+    InitializingPeripherals,
+    SystemInitialization,
+    ExecutingSelfTest,
+    RunningWithFusionAlgorithm,
+    RunningWihtoutFusionAlgorithm,
+  };
 
   BNO055Sensor(uint8_t address, TwoWire *i2cBus);
   ~BNO055Sensor();
@@ -32,6 +54,8 @@ public:
   Vector getMag() const { return _mag; };
   Vector getGyro() const { return _gyro; };
   Vector getEuler() const { return _euler; };
+  Error getError() const { return _error; };
+  SystemStatus getSystemStatus() const { return _systemStatus; };
 
 protected:
   BNO055 *_bno055;
@@ -41,6 +65,8 @@ protected:
   Vector _mag;
   Vector _gyro;
   Vector _euler;
+  Error _error;
+  SystemStatus _systemStatus;
 };
 
 #endif // BNO055Sensor_h

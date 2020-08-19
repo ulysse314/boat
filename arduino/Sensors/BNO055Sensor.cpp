@@ -40,6 +40,34 @@ bool BNO055Sensor::readValues() {
     begin();
     return _available;
   }
+  BNO055::SystemStatus bno055SystemStatus;
+  if (!_bno055->getSystemStatus(&bno055SystemStatus)) {
+    _available = false;
+    return _available;
+  }
+  switch (bno055SystemStatus) {
+  case BNO055::SystemStatus::Idle:
+    _systemStatus = SystemStatus::Idle;
+    break;
+  case BNO055::SystemStatus::Error:
+    _systemStatus = SystemStatus::Error;
+    break;
+  case BNO055::SystemStatus::InitializingPeripherals:
+    _systemStatus = SystemStatus::InitializingPeripherals;
+    break;
+  case BNO055::SystemStatus::SystemInitialization:
+    _systemStatus = SystemStatus::SystemInitialization;
+    break;
+  case BNO055::SystemStatus::ExecutingSelfTest:
+    _systemStatus = SystemStatus::ExecutingSelfTest;
+    break;
+  case BNO055::SystemStatus::RunningWithFusionAlgorithm:
+    _systemStatus = SystemStatus::RunningWithFusionAlgorithm;
+    break;
+  case BNO055::SystemStatus::RunningWihtoutFusionAlgorithm:
+    _systemStatus = SystemStatus::RunningWihtoutFusionAlgorithm;
+    break;
+  }
   if (!readVector(BNO055::Vector::Accelerometer, _acc, _bno055)) {
     _available = false;
     return _available;
