@@ -56,6 +56,7 @@ class BoatController:
     asyncio.ensure_future(self._run())
 
   async def _run(self):
+    self.logger.info("Version python {}".format(sys.version))
     self._turn_off_motors()
     self.received_values({"led":{"left%":100,"right%":0}})
     await asyncio.sleep(0.25)
