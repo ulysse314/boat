@@ -27,9 +27,12 @@ BNO055Sensor::~BNO055Sensor() {
 
 void BNO055Sensor::begin() {
   _available = _bno055->begin();
-  if (_available) {
-    _available = _bno055->setPlacementConfig(BNO055::PlacementConfig::P5);
+  if (!_available) {
+    return;
   }
+  BNO055::AxesConfiguration axesConfiguration;
+  axesConfiguration = BNO055::getAxesConfigurationForDevicePlacement(BNO055::DevicePlacement::P5);
+  _available = _bno055->setAxesRemap(axesConfiguration);
 }
 
 void BNO055Sensor::loop() {
