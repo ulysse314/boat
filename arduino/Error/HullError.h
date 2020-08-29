@@ -13,6 +13,13 @@ public:
     TemperatureWarning,                // 4
     TemperatureCritical,               // 5
     TemperatureInvalid,                // 6
+    BNO055Error,                       // 7
+    BNO055SystemStatus,                // 8
+    BNO055SelfTest,                    // 9
+    BNO055AccelCalibration,            // 10
+    BNO055GyroCalibration,             // 11
+    BNO055MagCalibration,              // 12
+    BNO055SysCalibration,              // 13
   } Code;
 
   HullError(Code code, const char *message = NULL);

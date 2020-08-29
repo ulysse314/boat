@@ -17,8 +17,15 @@ Error::Level HullError::getLevel() const {
     case CodeLeak:
     case TemperatureCritical:
     case TemperatureInvalid:
+    case BNO055Error:
+    case BNO055SystemStatus:
       return Error::Level::Critical;
     case TemperatureWarning:
+    case BNO055SelfTest:
+    case BNO055SysCalibration:
+    case BNO055AccelCalibration:
+    case BNO055GyroCalibration:
+    case BNO055MagCalibration:
       return Error::Level::Warning;
     case TemperatureInfo:
       return Error::Level::Info;
@@ -38,6 +45,13 @@ bool HullError::isPersistant() const {
     case TemperatureWarning:
     case TemperatureCritical:
     case TemperatureInvalid:
+    case BNO055Error:
+    case BNO055SystemStatus:
+    case BNO055SelfTest:
+    case BNO055SysCalibration:
+    case BNO055AccelCalibration:
+    case BNO055GyroCalibration:
+    case BNO055MagCalibration:
       return false;
   };
   Error *error = new ArduinoError(ArduinoError::CodeHullCodeUnknown, NULL);
