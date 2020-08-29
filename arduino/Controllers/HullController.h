@@ -39,6 +39,8 @@ protected:
   Value _eulerX;
   Value _eulerY;
   Value _eulerZ;
+  Value _heading;
+  Value _averageHeading;
 };
 
 #endif // HullController_h

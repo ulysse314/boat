@@ -1,5 +1,7 @@
 #include "HullController.h"
 
+#include <Arduino.h>
+
 #include "ADS1115Sensor.h"
 #include "BME680Sensor.h"
 #include "BNO055Sensor.h"
@@ -32,7 +34,9 @@ HullController::HullController(ADS1115Sensor *ads1115Sensor, HardwareConfig *har
     _gyroZ(Value::Type::Double, "gyrz"),
     _eulerX(Value::Type::Double, "eulx"),
     _eulerY(Value::Type::Double, "euly"),
-    _eulerZ(Value::Type::Double, "eulz") {
+    _eulerZ(Value::Type::Double, "eulz"),
+    _heading(Value::Type::Double, "head"),
+    _averageHeading(Value::Type::Double, "headav") {
 }
 
 HullController::~HullController() {
@@ -55,6 +59,8 @@ void HullController::begin() {
   addValue(&_eulerX);
   addValue(&_eulerY);
   addValue(&_eulerZ);
+  addValue(&_heading);
+  addValue(&_averageHeading);
   _bme680Sensor->begin();
   _bno055Sensor->begin();
 }
@@ -101,5 +107,41 @@ void HullController::sensorsHasBeenUpdated() {
     _eulerX.setDouble(_bno055Sensor->getEuler().x);
     _eulerY.setDouble(_bno055Sensor->getEuler().y);
     _eulerZ.setDouble(_bno055Sensor->getEuler().z);
+    _heading.setDouble(_bno055Sensor->getHeading());
+    _averageHeading.setDouble(_bno055Sensor->getAverageHeading());
+    BNO055Sensor::SystemError systemError = _bno055Sensor->getSystemError();
+    if (systemError != BNO055Sensor::SystemError::NoError) {
+      String message((uint8_t)systemError);
+      addError(new HullError(HullError::BNO055Error, message.c_str()));
+    }
+    BNO055Sensor::SystemStatus systemStatus = _bno055Sensor->getSystemStatus();
+    if (systemStatus != BNO055Sensor::SystemStatus::RunningWithFusionAlgorithm && systemStatus != BNO055Sensor::SystemStatus::RunningWihtoutFusionAlgorithm) {
+      String message((uint8_t)systemStatus);
+      addError(new HullError(HullError::BNO055SystemStatus, message.c_str()));
+    }
+    if (!_bno055Sensor->getAccelSelfTest() || !_bno055Sensor->getGyroSelfTest() || !_bno055Sensor->getMagSelfTest() || !_bno055Sensor->getSysSelfTest()) {
+      String message;
+      message += _bno055Sensor->getAccelSelfTest() ? "A" : "a";
+      message += _bno055Sensor->getGyroSelfTest() ? "G" : "g";
+      message += _bno055Sensor->getMagSelfTest() ? "M" : "m";
+      message += _bno055Sensor->getSysSelfTest() ? "S" : "s";
+      addError(new HullError(HullError::BNO055SelfTest, message.c_str()));
+    }
+    if (_bno055Sensor->getAccelCalibration() != 3) {
+      String message(_bno055Sensor->getAccelCalibration());
+      addError(new HullError(HullError::BNO055AccelCalibration, message.c_str()));
+    }
+    if (_bno055Sensor->getGyroCalibration() != 3) {
+      String message(_bno055Sensor->getGyroCalibration());
+      addError(new HullError(HullError::BNO055GyroCalibration, message.c_str()));
+    }
+    if (_bno055Sensor->getMagCalibration() != 3) {
+      String message(_bno055Sensor->getMagCalibration());
+      addError(new HullError(HullError::BNO055MagCalibration, message.c_str()));
+    }
+    if (_bno055Sensor->getSysCalibration() != 3) {
+      String message(_bno055Sensor->getSysCalibration());
+      addError(new HullError(HullError::BNO055SysCalibration, message.c_str()));
+    }
   }
 }
