@@ -15,7 +15,7 @@ static ArduinoController *sharedArduinoController = NULL;
 
 #define WATCHDOG_ENABLE                  1
 #define WATCHDOG_BEGIN_DELAY             10000
-#define WATCHDOG_LOOP_DELAY              4000
+#define WATCHDOG_LOOP_DELAY              10000
 
 // static
 ArduinoController *ArduinoController::generateController(HardwareConfig *hardwareConfig) {
