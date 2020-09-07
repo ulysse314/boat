@@ -8,6 +8,7 @@
 #include "../Drivers/PWMDriver.h"
 #include "../Main/HardwareConfig.h"
 #include "../Main/PiLink.h"
+#include "../Main/Version.h"
 #include "../Sensors/ADS1115Sensor.h"
 #include "../Sensors/DallasSensor.h"
 #include "../Sensors/GPSSensor.h"
@@ -84,7 +85,9 @@ void setup() {
     delay(500);                       // wait for a second
     Serial.println(i);
   }
-  Serial.println("Starting...");
+  Serial.print("Starting ");
+  Serial.print(BOAT_NAME);
+  Serial.println("...");
   initGlobal();
   Serial.println("Started!");
 }
