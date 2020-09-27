@@ -18,6 +18,20 @@ bool readVector(BNO055::Vector vectorName, BNO055Sensor::Vector &vector, BNO055 
   return true;
 }
 
+BNO055Sensor::Calibration ConvertBNO055CalibrationToBNO055SensorCalibration(BNO055::Calibration calibration) {
+  switch (calibration) {
+  case BNO055::Calibration::None:
+    return BNO055Sensor::Calibration::None;
+  case BNO055::Calibration::Low:
+    return BNO055Sensor::Calibration::Low;
+  case BNO055::Calibration::Medium:
+    return BNO055Sensor::Calibration::Medium;
+  case BNO055::Calibration::Fully:
+    return BNO055Sensor::Calibration::Fully;
+  }
+  return BNO055Sensor::Calibration::None;
+}
+
 }  // namespace
 
 BNO055Sensor::BNO055Sensor(uint8_t address, TwoWire *i2cBus) :
@@ -140,10 +154,18 @@ bool BNO055Sensor::readValues() {
     _available = false;
     return _available;
   }
-  if (!_bno055->getCalibration(&_sysCalibration, &_gyroCalibration, &_accelCalibration, &_magCalibration)) {
+  BNO055::Calibration sysCalibration;
+  BNO055::Calibration gyroCalibration;
+  BNO055::Calibration accelCalibration;
+  BNO055::Calibration magCalibration;
+  if (!_bno055->getCalibration(&sysCalibration, &gyroCalibration, &accelCalibration, &magCalibration)) {
     _available = false;
     return _available;
   }
+  _sysCalibration = ConvertBNO055CalibrationToBNO055SensorCalibration(sysCalibration);
+  _gyroCalibration = ConvertBNO055CalibrationToBNO055SensorCalibration(gyroCalibration);
+  _accelCalibration = ConvertBNO055CalibrationToBNO055SensorCalibration(accelCalibration);
+  _magCalibration = ConvertBNO055CalibrationToBNO055SensorCalibration(magCalibration);
   if (!_bno055->getSelfTestResult(&_accelSelfTest, &_magSelfTest, &_gyroSelfTest, &_sysSelfTest)) {
     _available = false;
     return _available;

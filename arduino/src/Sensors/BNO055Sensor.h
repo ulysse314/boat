@@ -40,6 +40,12 @@ public:
     RunningWithFusionAlgorithm,
     RunningWihtoutFusionAlgorithm,
   };
+  enum class Calibration {
+    None = 0,
+    Low = 1,
+    Medium = 2,
+    Fully = 3,
+  };
 
   BNO055Sensor(uint8_t address, TwoWire *i2cBus);
   ~BNO055Sensor();
@@ -61,10 +67,10 @@ public:
   double getAverageHeading() const;
   SystemError getSystemError() const { return _systemError; };
   SystemStatus getSystemStatus() const { return _systemStatus; };
-  uint8_t getAccelCalibration() const { return _accelCalibration; };
-  uint8_t getGyroCalibration() const { return _gyroCalibration; };
-  uint8_t getMagCalibration() const { return _magCalibration; };
-  uint8_t getSysCalibration() const { return _sysCalibration; };
+  Calibration getAccelCalibration() const { return _accelCalibration; };
+  Calibration getGyroCalibration() const { return _gyroCalibration; };
+  Calibration getMagCalibration() const { return _magCalibration; };
+  Calibration getSysCalibration() const { return _sysCalibration; };
   bool getAccelSelfTest() const { return _accelSelfTest; };
   bool getGyroSelfTest() const { return _gyroSelfTest; };
   bool getMagSelfTest() const { return _magSelfTest; };
@@ -79,7 +85,7 @@ protected:
   Vector _gyro;
   Vector _euler;
   Vector _magValues[MAG_MAX_COUNT] = { { 0, 0, 0 } };
-  uint8_t _accelCalibration, _gyroCalibration, _magCalibration, _sysCalibration;
+  Calibration _accelCalibration, _gyroCalibration, _magCalibration, _sysCalibration;
   bool _accelSelfTest, _magSelfTest, _gyroSelfTest, _sysSelfTest;
   size_t _magValueIndex = 0;
   SystemError _systemError = SystemError::NoError;

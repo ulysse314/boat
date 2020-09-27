@@ -15,6 +15,24 @@
 #define kTemperatureInfo           45
 #define kTemperatureInvalid        2
 
+namespace {
+
+const char *BNO055SensorCalibrationToString(BNO055Sensor::Calibration calibration) {
+  switch(calibration) {
+  case BNO055Sensor::Calibration::None:
+    return "None";
+  case BNO055Sensor::Calibration::Low:
+    return "Low";
+  case BNO055Sensor::Calibration::Medium:
+    return "Medium";
+  case BNO055Sensor::Calibration::Fully:
+    return "Fully";
+  }
+  return "-";
+}
+
+}  // namespace
+
 HullController::HullController(ADS1115Sensor *ads1115Sensor, HardwareConfig *hardwareConfig) :
     _ads1115Sensor(ads1115Sensor),
     _bme680Sensor(new BME680Sensor(hardwareConfig->bme680Address(), hardwareConfig->i2c())),
@@ -127,21 +145,17 @@ void HullController::sensorsHasBeenUpdated() {
       message += _bno055Sensor->getSysSelfTest() ? "S" : "s";
       addError(new HullError(HullError::BNO055SelfTest, message.c_str()));
     }
-    if (_bno055Sensor->getAccelCalibration() != 3) {
-      String message(_bno055Sensor->getAccelCalibration());
-      addError(new HullError(HullError::BNO055AccelCalibration, message.c_str()));
+    if (_bno055Sensor->getAccelCalibration() != BNO055Sensor::Calibration::Fully) {
+      addError(new HullError(HullError::BNO055AccelCalibration, BNO055SensorCalibrationToString(_bno055Sensor->getAccelCalibration())));
     }
-    if (_bno055Sensor->getGyroCalibration() != 3) {
-      String message(_bno055Sensor->getGyroCalibration());
-      addError(new HullError(HullError::BNO055GyroCalibration, message.c_str()));
+    if (_bno055Sensor->getGyroCalibration() != BNO055Sensor::Calibration::Fully) {
+      addError(new HullError(HullError::BNO055GyroCalibration, BNO055SensorCalibrationToString(_bno055Sensor->getGyroCalibration())));
     }
-    if (_bno055Sensor->getMagCalibration() != 3) {
-      String message(_bno055Sensor->getMagCalibration());
-      addError(new HullError(HullError::BNO055MagCalibration, message.c_str()));
+    if (_bno055Sensor->getMagCalibration() != BNO055Sensor::Calibration::Fully) {
+      addError(new HullError(HullError::BNO055MagCalibration, BNO055SensorCalibrationToString(_bno055Sensor->getMagCalibration())));
     }
-    if (_bno055Sensor->getSysCalibration() != 3) {
-      String message(_bno055Sensor->getSysCalibration());
-      addError(new HullError(HullError::BNO055SysCalibration, message.c_str()));
+    if (_bno055Sensor->getSysCalibration() != BNO055Sensor::Calibration::Fully) {
+      addError(new HullError(HullError::BNO055SysCalibration, BNO055SensorCalibrationToString(_bno055Sensor->getSysCalibration())));
     }
   }
 }
