@@ -6,6 +6,7 @@
 #include "../Controllers/MotorController.h"
 #include "../Drivers/DriverManager.h"
 #include "../Drivers/PWMDriver.h"
+#include "../Main/AutoPilot.h"
 #include "../Main/HardwareConfig.h"
 #include "../Main/PiLink.h"
 #include "../Main/Version.h"
@@ -34,12 +35,12 @@ GPSController *gpsController = NULL;
 MotorController *leftMotorController = NULL;
 MotorController *rightMotorController = NULL;
 
+AutoPilot *autoPilot = NULL;
 PiLink *piLink = NULL;
 
 void initGlobal() {
   controllerManager = new ControllerManager();
   driverManager = new DriverManager();
-  piLink = PiLink::generatePiLink(&hardwareConfig);
 
   sensorList = new SensorList();
   ads1115Sensor = new ADS1115Sensor(hardwareConfig.ads1115Address(), hardwareConfig.i2c());
@@ -59,13 +60,17 @@ void initGlobal() {
   leftMotorController = MotorController::LeftMotor(pwmDriver, &hardwareConfig);
   controllerManager->addController(leftMotorController);
   rightMotorController = MotorController::RightMotor(pwmDriver, &hardwareConfig);
-  controllerManager->addController(rightMotorController);
 
+  controllerManager->addController(rightMotorController);
   controllerManager->addSensorsToList(sensorList);
+
+  autoPilot = new AutoPilot(gpsController);
+  piLink = PiLink::generatePiLink(&hardwareConfig);
   piLink->setLeftMotorController(leftMotorController);
   piLink->setRightMotorController(rightMotorController);
   piLink->setArduinoController(arduinoController);
   piLink->setBatteryController(batteryController);
+  piLink->setAutoPilot(autoPilot);
 
   driverManager->begin();
   sensorList->begin();

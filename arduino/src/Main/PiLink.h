@@ -4,6 +4,7 @@
 #include <Arduino.h>
 
 class ArduinoController;
+class AutoPilot;
 class BatteryController;
 class Controller;
 class Error;
@@ -23,6 +24,7 @@ public:
   void setRightMotorController(MotorController *motorController) { _rightMotorController = motorController; };
   void setArduinoController(ArduinoController *arduinoController) { _arduinoController = arduinoController; };
   void setBatteryController(BatteryController *batteryController) { _batteryController = batteryController; };
+  void setAutoPilot(AutoPilot *autoPilot) { _autoPilot = autoPilot; };
 
   void outputController(const Controller *controller);
   void listen();
@@ -45,6 +47,7 @@ protected:
   MotorController *_rightMotorController;
   ArduinoController *_arduinoController;
   BatteryController *_batteryController;
+  AutoPilot *_autoPilot;
 };
 
 #endif // PiLink_h

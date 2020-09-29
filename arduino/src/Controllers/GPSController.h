@@ -18,6 +18,9 @@ public:
   void addSensorsToList(SensorList *sensorList) override;
   void sensorsHasBeenUpdated() override;
 
+  double getLatitudeDegree() const { return _latitudeDegree.valueAsDouble(); };
+  double getLongitudeDegree() const { return _longitudeDegree.valueAsDouble(); };
+
 protected:
   HardwareConfig *_hardwareConfig;
   GPSSensor *_gpsSensor;

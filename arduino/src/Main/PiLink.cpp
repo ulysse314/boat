@@ -6,6 +6,7 @@
 #include "../Controllers/MotorController.h"
 #include "../Controllers/Value.h"
 #include "../Errors/Error.h"
+#include "../Main/AutoPilot.h"
 #include "../Main/HardwareConfig.h"
 
 #include <Arduino.h>
@@ -39,7 +40,10 @@ PiLink::PiLink(HardwareConfig *hardwareConfig) :
     _inputBufferLength(0),
     _nextTimeOut(millis() + PI_TIMEOUT),
     _leftMotorController(NULL),
-    _rightMotorController(NULL) {
+    _rightMotorController(NULL),
+    _arduinoController(NULL),
+    _batteryController(NULL),
+    _autoPilot(NULL) {
 }
 
 void PiLink::outputController(const Controller *controller) {
