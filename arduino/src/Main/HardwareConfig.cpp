@@ -19,10 +19,17 @@
 #define LED_PIN                   13
 
 // I2C addresses
+// 9 DOF
 #define BNO055_ADDRESS            0x28
+// PWM
 #define PCA9685_ADDRESS           0x40
+// Battery volt and current measure
 #define INA219_ADDRESS            0x41
+// ADC for water leak, and battery cell balancer
 #define ADS1115_ADDRESS           0x48
+// PWM all calls
+#define PCA9685_ALL_ADDRESS       0x70
+// Temperature, humidity and atmospheric pressure
 #define BME680_ADDRESS            0x76
 
 #if IS_MOUSSAILLON
