@@ -189,8 +189,6 @@ void ArduinoController::setCommand(const char *command) {
 }
 
 void ArduinoController::restart() {
-#if WATCHDOG_ENABLE
   Watchdog.enable(100);
-#endif
   _shouldRestart = true;
 }
