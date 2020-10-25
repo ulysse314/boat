@@ -29,6 +29,8 @@
 #define ADS1115_ADDRESS           0x48
 // PWM all calls
 #define PCA9685_ALL_ADDRESS       0x70
+// Lid arduino
+#define LID_ADDRESS               0x74
 // Temperature, humidity and atmospheric pressure
 #define BME680_ADDRESS            0x76
 
@@ -120,6 +122,10 @@ uint8_t HardwareConfig::leftMotorPWMID() const {
 
 uint8_t HardwareConfig::rightMotorPWMID() const {
   return RIGHT_MOTOR_ID;
+}
+
+uint8_t HardwareConfig::lidAddress() const {
+  return LID_ADDRESS;
 }
 
 uint8_t HardwareConfig::ledPin() const {

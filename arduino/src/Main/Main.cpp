@@ -3,6 +3,7 @@
 #include "../Controllers/ControllerManager.h"
 #include "../Controllers/GPSController.h"
 #include "../Controllers/HullController.h"
+#include "../Controllers/LidController.h"
 #include "../Controllers/MotorController.h"
 #include "../Drivers/DriverManager.h"
 #include "../Drivers/PWMDriver.h"
@@ -32,6 +33,7 @@ ArduinoController *arduinoController = NULL;
 BatteryController *batteryController = NULL;
 HullController *hullController = NULL;
 GPSController *gpsController = NULL;
+LidController *lidController = NULL;
 MotorController *leftMotorController = NULL;
 MotorController *rightMotorController = NULL;
 
@@ -57,6 +59,8 @@ void initGlobal() {
   controllerManager->addController(batteryController);
   hullController = new HullController(ads1115Sensor, &hardwareConfig);
   controllerManager->addController(hullController);
+  lidController = new LidController(&hardwareConfig);
+  controllerManager->addController(lidController);
   leftMotorController = MotorController::LeftMotor(pwmDriver, &hardwareConfig);
   controllerManager->addController(leftMotorController);
   rightMotorController = MotorController::RightMotor(pwmDriver, &hardwareConfig);
@@ -66,10 +70,11 @@ void initGlobal() {
 
   autoPilot = new AutoPilot(gpsController);
   piLink = PiLink::generatePiLink(&hardwareConfig);
-  piLink->setLeftMotorController(leftMotorController);
-  piLink->setRightMotorController(rightMotorController);
   piLink->setArduinoController(arduinoController);
   piLink->setBatteryController(batteryController);
+  piLink->setLidController(lidController);
+  piLink->setLeftMotorController(leftMotorController);
+  piLink->setRightMotorController(rightMotorController);
   piLink->setAutoPilot(autoPilot);
 
   driverManager->begin();
