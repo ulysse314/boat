@@ -93,8 +93,14 @@ class BoatController:
           self.record = value
         elif key == "motor" and type(value) is dict:
           self.arduino_controller.set_motors(value)
-        elif key == "led" and type(value) is dict:
-          self.arduino_controller.set_leds(value)
+        elif key == "light" and type(value) is int:
+          self.arduino_controller.set_light(value)
+        elif key == "stop light":
+          self.arduino_controller.stop_light()
+        elif key == "song" and type(value) is int:
+          self.arduino_controller.set_song(value)
+        elif key == "stop song":
+          self.arduino_controller.stop_song()
         elif key == "controller" and value == 0:
           self._turn_off_motors()
         elif key == "command":

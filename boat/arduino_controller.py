@@ -83,8 +83,17 @@ class ArduinoController:
     if self.serial_transport:
       self.serial_transport.send_line("Info")
 
-  def set_leds(self, values):
-    pass
+  def set_light(self, value):
+    self.serial_transport.send_line("light {}".format(value))
+
+  def stop_light(self):
+    self.serial_transport.send_line("stop light")
+
+  def set_song(self, value):
+    self.serial_transport.send_line("light {}".format(value))
+
+  def stop_song(self):
+    self.serial_transport.send_line("stop song")
 
   def start(self):
     asyncio.ensure_future(self._connect())
