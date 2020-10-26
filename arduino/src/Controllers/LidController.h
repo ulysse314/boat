@@ -17,10 +17,13 @@ public:
   void begin() override;
 
   bool playLight(size_t lightIndex);
+  bool stopLight();
   bool playSong(size_t songIndex);
+  bool stopSong();
 
 protected:
   bool sendPlayCommand(String command, size_t index);
+  bool sendCommand(String command);
 
   I2CDevice *_i2cDevice;
 };

@@ -18,12 +18,24 @@ bool LidController::playLight(size_t lightIndex) {
   return sendPlayCommand("PL", lightIndex);
 }
 
+bool LidController::stopLight() {
+  return sendCommand("SL");
+}
+
 bool LidController::playSong(size_t songIndex) {
   return sendPlayCommand("PS", songIndex);
 }
 
+bool LidController::stopSong() {
+  return sendCommand("SS");
+}
+
 bool LidController::sendPlayCommand(String command, size_t index) {
   command += String(index);
+  return sendCommand(command);
+}
+
+bool LidController::sendCommand(String command) {
   size_t bufferSize = command.length();
   if (_i2cDevice->writeBuffer((const uint8_t*)command.c_str(), bufferSize, false) != bufferSize) {
     return false;

@@ -18,8 +18,10 @@
 #define LEFT_MOTOR_CMD         "lm "
 #define RIGHT_MOTOR_CMD        "rm "
 #define ARDUINO_CMD            "arduino "
-#define LIGHT_CMD              "light "
-#define SONG_CMD               "song "
+#define PLAY_LIGHT_CMD         "light "
+#define PLAY_SONG_CMD          "song "
+#define STOP_LIGHT             "stop light"
+#define STOP_SONG              "stop song"
 #define RESTART_CMD            "restart"
 
 static PiLink *sharedPiLink = NULL;
@@ -157,12 +159,16 @@ void PiLink::processInputBuffer() {
     _arduinoController->setCommand(buffer);
   } else if (strcmp(_inputBuffer, RESET_COMSUMPTION_CMD) == 0) {
     _batteryController->resetCurrentConsumption();
-  } else if (strncmp(_inputBuffer, LIGHT_CMD, strlen(LIGHT_CMD)) == 0) {
-    char *buffer = _inputBuffer + strlen(LIGHT_CMD);
+  } else if (strncmp(_inputBuffer, PLAY_LIGHT_CMD, strlen(PLAY_LIGHT_CMD)) == 0) {
+    char *buffer = _inputBuffer + strlen(PLAY_LIGHT_CMD);
     _lidController->playLight(atoi(buffer));
-  } else if (strncmp(_inputBuffer, SONG_CMD, strlen(SONG_CMD)) == 0) {
-    char *buffer = _inputBuffer + strlen(SONG_CMD);
+  } else if (strcmp(_inputBuffer, STOP_LIGHT) == 0) {
+    _lidController->stopLight();
+  } else if (strncmp(_inputBuffer, PLAY_SONG_CMD, strlen(PLAY_SONG_CMD)) == 0) {
+    char *buffer = _inputBuffer + strlen(PLAY_SONG_CMD);
     _lidController->playSong(atoi(buffer));
+  } else if (strcmp(_inputBuffer, STOP_SONG) == 0) {
+    _lidController->stopSong();
   } else if (strcmp(_inputBuffer, RESTART_CMD) == 0) {
     _arduinoController->restart();
   } else if (strcmp(_inputBuffer, PING_CMD) == 0) {
