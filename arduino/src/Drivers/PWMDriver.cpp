@@ -4,19 +4,19 @@
 #include "../Main/HardwareConfig.h"
 
 // Frequency to set for the PWM chip
-#define ADAFRUIT_FREQUENCE 250
+#define FREQUENCE_SET 250
+// Frequency mesured
+#define MEASURED_FREQUENCE 253.5
 // Real expected value, sec: 0.0019
 #define PWM_FORWARD_S 0.001905
 // Real expected value, sec: 0.0015
 #define PWM_STOPPED_S 0.0015
 // Real expected value, sec: 0.0011
-#define PWM_REVERSE_S 0.0011
-// Frequency mesured
-#define REAL_FREQUENCE 239
+#define PWM_REVERSE_S 0.001095
 
-#define FORWARD() (PWM_FORWARD_S * 4095.0 * REAL_FREQUENCE)
-#define STOPPED() (PWM_STOPPED_S * 4095.0 * REAL_FREQUENCE)
-#define REVERSED() (PWM_REVERSE_S * 4095.0 * REAL_FREQUENCE)
+#define FORWARD() (PWM_FORWARD_S * 4096.0 * MEASURED_FREQUENCE)
+#define STOPPED() (PWM_STOPPED_S * 4096.0 * MEASURED_FREQUENCE)
+#define REVERSED() (PWM_REVERSE_S * 4096.0 * MEASURED_FREQUENCE)
 
 PWMDriver::PWMDriver(HardwareConfig *hardwareConfig) :
     _pca9685(hardwareConfig->pca9685Address(), hardwareConfig->i2c()) {
@@ -24,8 +24,8 @@ PWMDriver::PWMDriver(HardwareConfig *hardwareConfig) :
 
 void PWMDriver::begin() {
   _available = _pca9685.begin();
-  _pca9685.setOscillatorFrequency(27000000);
-  _available = _available && _pca9685.setPWMFreq(ADAFRUIT_FREQUENCE);
+  _pca9685.setOscillatorFrequency(24000000);
+  _available = _available && _pca9685.setPWMFreq(FREQUENCE_SET);
   Error *error = new ArduinoError(ArduinoError::CodePWMDriverNotAvailable, NULL);
   if (_available) {
     ArduinoController::sharedController()->removeError(error);
