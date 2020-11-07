@@ -57,7 +57,7 @@ void initGlobal() {
   controllerManager->addController(arduinoController);
   batteryController = new BatteryController(ads1115Sensor, &hardwareConfig);
   controllerManager->addController(batteryController);
-  hullController = new HullController(ads1115Sensor, &hardwareConfig);
+  hullController = new HullController(&hardwareConfig);
   controllerManager->addController(hullController);
   lidController = new LidController(&hardwareConfig);
   controllerManager->addController(lidController);
@@ -68,7 +68,7 @@ void initGlobal() {
   controllerManager->addController(rightMotorController);
   controllerManager->addSensorsToList(sensorList);
 
-  autoPilot = new AutoPilot(gpsController);
+  autoPilot = new AutoPilot(gpsController, hullController);
   piLink = PiLink::generatePiLink(&hardwareConfig);
   piLink->setArduinoController(arduinoController);
   piLink->setBatteryController(batteryController);

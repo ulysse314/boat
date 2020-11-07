@@ -2,14 +2,13 @@
 
 #include "../Errors/HullError.h"
 #include "../Main/HardwareConfig.h"
-#include "../Sensors/ADS1115Sensor.h"
 #include "../Sensors/BME680Sensor.h"
 #include "../Sensors/BNO055Sensor.h"
 #include "../Sensors/SensorList.h"
 
 #include <Arduino.h>
 
-#define kLeakThresshold            10000
+#define kLeakThresshold            500
 #define kTemperatureCritical       65
 #define kTemperatureWarning        50
 #define kTemperatureInfo           45
@@ -33,8 +32,8 @@ const char *BNO055SensorCalibrationToString(BNO055Sensor::Calibration calibratio
 
 }  // namespace
 
-HullController::HullController(ADS1115Sensor *ads1115Sensor, HardwareConfig *hardwareConfig) :
-    _ads1115Sensor(ads1115Sensor),
+HullController::HullController(HardwareConfig *hardwareConfig) :
+    _leakPin(hardwareConfig->leakPin()),
     _bme680Sensor(new BME680Sensor(hardwareConfig->bme680Address(), hardwareConfig->i2c())),
     _bno055Sensor(new BNO055Sensor(hardwareConfig->bno055Address(), hardwareConfig->i2c())),
     _water(Value::Type::Integer, "wtr"),
@@ -81,6 +80,7 @@ void HullController::begin() {
   addValue(&_averageHeading);
   _bme680Sensor->begin();
   _bno055Sensor->begin();
+  pinMode(_leakPin, INPUT);
 }
 
 void HullController::addSensorsToList(SensorList *sensorList) {
@@ -89,15 +89,10 @@ void HullController::addSensorsToList(SensorList *sensorList) {
 }
 
 void HullController::sensorsHasBeenUpdated() {
-  if (_ads1115Sensor->getAvailable()) {
-    int16_t water = _ads1115Sensor->getValue0();
-    _water.setInteger(water);
-    if (water > kLeakThresshold) {
-      addError(new HullError(HullError::CodeLeak));
-    }
-  } else {
-    _water.setNull();
-    addError(new HullError(HullError::CodeADS1115NotFound));
+  int16_t water = analogRead(_leakPin);
+  _water.setInteger(water);
+  if (water > kLeakThresshold) {
+    addError(new HullError(HullError::CodeLeak));
   }
   float temperature = _bme680Sensor->getTemperature();
   _temperature.setDouble(temperature);

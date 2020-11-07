@@ -1,8 +1,9 @@
 #include "AutoPilot.h"
 
-AutoPilot::AutoPilot(GPSController *gpsController) :
+AutoPilot::AutoPilot(GPSController *gpsController, HullController * hullController) :
   _mode(Mode::Disabled),
-  _gpsController(gpsController) {
+  _gpsController(gpsController),
+  _hullController(hullController) {
 }
 
 AutoPilot::~AutoPilot() {

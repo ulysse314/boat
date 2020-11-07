@@ -17,6 +17,7 @@
 // Arduino pins
 #define ONE_WIRE_PIN              12
 #define LED_PIN                   13
+#define LEAK_PIN                  4
 
 // I2C addresses
 // 9 DOF
@@ -130,4 +131,8 @@ uint8_t HardwareConfig::lidAddress() const {
 
 uint8_t HardwareConfig::ledPin() const {
   return LED_PIN;
+}
+
+uint8_t HardwareConfig::leakPin() const {
+  return LEAK_PIN;
 }

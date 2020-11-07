@@ -39,6 +39,7 @@ public:
   uint8_t rightMotorPWMID() const;
 
   uint8_t ledPin() const;
+  uint8_t leakPin() const;
 
 private:
   TwoWire *const _i2c;

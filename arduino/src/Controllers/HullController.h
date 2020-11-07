@@ -4,14 +4,13 @@
 #include "../Controllers/Controller.h"
 #include "../Controllers/Value.h"
 
-class ADS1115Sensor;
 class BME680Sensor;
 class BNO055Sensor;
 class HardwareConfig;
 
 class HullController : public Controller {
 public:
-  HullController(ADS1115Sensor *ads1115Sensor, HardwareConfig *hardwareConfig);
+  HullController(HardwareConfig *hardwareConfig);
   virtual ~HullController();
 
   const char *name() const override { return "hll"; };
@@ -20,7 +19,7 @@ public:
   void sensorsHasBeenUpdated() override;
 
 protected:
-  ADS1115Sensor *_ads1115Sensor;
+  const uint8_t _leakPin;
   BME680Sensor *_bme680Sensor;
   BNO055Sensor *_bno055Sensor;
   Value _water;
