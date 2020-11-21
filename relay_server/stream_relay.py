@@ -9,11 +9,13 @@ import io
 import os
 import pprint
 import sys
+import time
 
 parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../shared"))
 if parent_dir not in sys.path:
   sys.path.append(parent_dir)
 
+import command
 import config
 
 MOVIES_PATH = os.path.join(os.path.dirname(__file__), "../../movies")
@@ -46,6 +48,7 @@ async def client_handler(request):
       size = await data_queue.get()
       await response.write(b'--' + my_boundary.encode("utf8") + b'\r\n')
       await response.write(b'Content-Type: image/jpeg\r\n')
+      await response.write(b'X-Timestamp: ' + str(time.time()).encode("utf-8") + b'\r\n')
       await response.write(b'Content-Length: ' + str(size).encode("utf8") + b'\r\n\r\n')
       while True:
         data = await data_queue.get()
@@ -122,6 +125,11 @@ async def write_images(path):
   finally:
     pass
 
+async def run_ffmpeg(client_port, live_stream_url):
+  while True:
+    await asyncio.sleep(2)
+    await command.run("/usr/bin/ffmpeg", "-threads", "4", "-vsync", "1", "-use_wallclock_as_timestamps", "1", "-i", "http://127.0.0.1:" + str(client_port), "-vcodec", "libx264", "-b:v", "5M", "-f", "flv", live_stream_url)
+
 def get_next_movie_path():
   global MOVIES_PATH
   dir_counter = 0
@@ -134,7 +142,7 @@ def get_next_movie_path():
     dir_counter += 1
   return movie_dir
 
-def main(streamer_port, client_port):
+def main(streamer_port, client_port, live_stream_url):
   loop = asyncio.get_event_loop()
 
   loop.create_task(write_images(get_next_movie_path()))
@@ -151,6 +159,8 @@ def main(streamer_port, client_port):
   client_server = loop.run_until_complete(client_server)
   print('Serving clients on {}'.format(client_server.sockets[0].getsockname()))
 
+  loop.create_task(run_ffmpeg(client_port, live_stream_url))
+
   loop.run_forever()
 
-main(STREAMER_PORT, CLIENT_PORT)
+main(STREAMER_PORT, CLIENT_PORT, config.values["live_stream_url"])
