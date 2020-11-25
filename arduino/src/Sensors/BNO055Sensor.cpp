@@ -174,8 +174,8 @@ bool BNO055Sensor::readValues() {
 }
 
 double BNO055Sensor::headingForVector(Vector vector) const {
-  double heading = atan2(vector.y, vector.x) / PI * 180. - 90.;
-  if (heading < -180.) {
+  double heading = atan2(vector.y, vector.x) / PI * 180.;
+  if (heading < 0.) {
     heading += 360.;
   }
   return heading;
