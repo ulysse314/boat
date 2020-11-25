@@ -15,9 +15,9 @@
 #define RIGHT_MOTOR_ID            1
 
 // Arduino pins
+#define LEAK_PIN                  4
 #define ONE_WIRE_PIN              12
 #define LED_PIN                   13
-#define LEAK_PIN                  4
 
 // I2C addresses
 // 9 DOF
