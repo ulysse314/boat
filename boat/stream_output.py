@@ -39,6 +39,7 @@ class StreamingOutput(object):
     self.frame = None
     self.buffer = io.BytesIO()
     self.condition = Condition()
+    self.frame_counter = 0
 
   def write(self, buf):
     if buf.startswith(b'\xff\xd8'):
@@ -47,11 +48,11 @@ class StreamingOutput(object):
       self.buffer.truncate()
       with self.condition:
         self.frame = self.buffer.getvalue()
+        self.frame_counter += 1
         self.condition.notify_all()
       self.buffer.seek(0)
     return self.buffer.write(buf)
 
-pprint.pprint((SERVER_IP, SERVER_PORT))
 try:
   with picamera.PiCamera() as camera:
     # 1296, 972
@@ -65,21 +66,33 @@ try:
     # seconds, then stop
     output = StreamingOutput()
     camera.start_recording(output, format='mjpeg') # h264 ?
+    image_sent_counter = 0
+    data_sent_counter = 0
+    timer = time.time()
     while True:
       try:
         client_socket = socket.socket()
         client_socket.connect((SERVER_IP, SERVER_PORT))
-        pprint.pprint("Connected")
         while True:
           with output.condition:
             output.condition.wait()
             frame = output.frame
           frame_size = len(frame)
           if frame != None and frame_size > 0:
-#            pprint.pprint("send: " + str(frame_size))
-            client_socket.sendall("frame,".encode("utf8") + frame_size.to_bytes(4, byteorder = 'big'))
+            header = "frame,".encode("utf8") + frame_size.to_bytes(4, byteorder = 'big')
+            data_sent_counter += frame_size + len(header)
+            image_sent_counter += 1
+            client_socket.sendall(header)
             client_socket.sendall(frame)
             data = client_socket.recv(1)
+          new_time = time.time()
+          if new_time - timer > 5:
+            time_delta = new_time - timer
+            timer = new_time
+            print("{{ 'img_camera': {}, 'img_sent': {}, 'data_sent': {}, 'img_size': {} }}".format(output.frame_counter / time_delta, image_sent_counter / time_delta, data_sent_counter / time_delta, data_sent_counter / image_sent_counter))
+            output.frame_counter = 0
+            image_sent_counter = 0
+            data_sent_counter = 0
       finally:
         pprint.pprint("bug")
     camera.stop_recording()
