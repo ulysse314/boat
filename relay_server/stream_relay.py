@@ -1,6 +1,9 @@
 #!/usr/bin/env python3.8
 # -*- coding: utf-8 -*-
 
+# ./stream_relay.py boat_name live_stream_name
+# ./stream_relay.py boat_stream_port client_stream_port live_stream_name
+
 import aiofiles
 import aiohttp
 import aiohttp.web
@@ -20,15 +23,17 @@ import config
 
 MOVIES_PATH = os.path.join(os.path.dirname(__file__), "../../movies")
 
-if len(sys.argv) == 2:
+if len(sys.argv) == 3:
   boat_name = sys.argv[1]
+  LIVE_STREAM_NAME = sys.argv[2]
   config.load(boat_name)
-  STREAMER_PORT = int(config.values["boat_stream_port"])
-  CLIENT_PORT = int(config.values["controller_stream_port"])
-elif len(sys.argv) == 3:
-  STREAMER_PORT = int(sys.argv[1])
-  CLIENT_PORT = int(sys.argv[2])
-LIVE_STREAM_URL = (config.values["live_stream_url"]) if ("live_stream_url" in config.values) else None
+  BOAT_STREAM_PORT = int(config.values["boat_stream_port"])
+  CLIENT_STREAM_PORT = int(config.values["controller_stream_port"])
+elif len(sys.argv) == 4:
+  BOAT_STREAM_PORT = int(sys.argv[1])
+  CLIENT_STREAM_PORT = int(sys.argv[2])
+  LIVE_STREAM_NAME = sys.argv[3]
+LIVE_STREAM_URL = (config.values["live_stream_url"][LIVE_STREAM_NAME]) if (LIVE_STREAM_NAME in config.values["live_stream_url"]) else None
 client_queues = []
 frame_data = []
 my_boundary = "frame"
@@ -126,12 +131,12 @@ async def write_images(path):
   finally:
     pass
 
-async def run_ffmpeg(client_port, live_stream_url):
+async def run_ffmpeg(client_stream_port, live_stream_url):
   if live_stream_url is None or live_stream_url == "":
     return
   while True:
     await asyncio.sleep(2)
-    await command.run("/usr/bin/ffmpeg", "-threads", "4", "-vsync", "1", "-use_wallclock_as_timestamps", "1", "-i", "http://127.0.0.1:" + str(client_port), "-vcodec", "libx264", "-b:v", "5M", "-f", "flv", live_stream_url)
+    await command.run("/usr/bin/ffmpeg", "-threads", "4", "-vsync", "1", "-use_wallclock_as_timestamps", "1", "-i", "http://127.0.0.1:" + str(client_stream_port), "-vcodec", "libx264", "-b:v", "5M", "-f", "flv", live_stream_url)
 
 def get_next_movie_path():
   global MOVIES_PATH
@@ -145,25 +150,25 @@ def get_next_movie_path():
     dir_counter += 1
   return movie_dir
 
-def main(streamer_port, client_port, live_stream_url):
+def main(boat_stream_port, client_stream_port, live_stream_url):
   loop = asyncio.get_event_loop()
 
   loop.create_task(write_images(get_next_movie_path()))
 
   # Create server for to receive stream
-  stream_server = asyncio.start_server(stream_handler, '0.0.0.0', streamer_port)
+  stream_server = asyncio.start_server(stream_handler, '0.0.0.0', boat_stream_port)
   stream_server = loop.run_until_complete(stream_server)
   print('Serving stream on {}'.format(stream_server.sockets[0].getsockname()))
 
   # Create http server for clients
   app = aiohttp.web.Application()
   app.router.add_get('/', client_handler)
-  client_server = loop.create_server(app.make_handler(), '0.0.0.0', client_port)
+  client_server = loop.create_server(app.make_handler(), '0.0.0.0', client_stream_port)
   client_server = loop.run_until_complete(client_server)
   print('Serving clients on {}'.format(client_server.sockets[0].getsockname()))
 
-  loop.create_task(run_ffmpeg(client_port, live_stream_url))
+  loop.create_task(run_ffmpeg(client_stream_port, live_stream_url))
 
   loop.run_forever()
 
-main(STREAMER_PORT, CLIENT_PORT, LIVE_STREAM_URL)
+main(BOAT_STREAM_PORT, CLIENT_STREAM_PORT, LIVE_STREAM_URL)

@@ -21,10 +21,10 @@ class CameraController:
     self.boat_name = boat_name
     self.camera_process = None
 
-  def start(self):
+  def start(self, live_stream_name):
     self.logger.debug("Start camera")
     camera_process_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "stream_relay.py"))
-    self.camera_process = process_controller.ProcessController(camera_process_path, [ self.boat_name ])
+    self.camera_process = process_controller.ProcessController(camera_process_path, [ self.boat_name, live_stream_name ])
     self.camera_process.start()
 
   def stop(self):
