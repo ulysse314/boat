@@ -183,7 +183,8 @@ class ControllerClient(GenericClient):
     if "camera" in message:
       if "state" in message["camera"]:
         if message["camera"]["state"]:
-          camera.start(message["camera"]["live_stream_name"])
+          live_stream_name = message["camera"]["live_stream_name"] if "live_stream_name" in message["camera"] else None
+          camera.start(live_stream_name)
         else:
           camera.stop()
       extra_values["camera"].update(message["camera"])
