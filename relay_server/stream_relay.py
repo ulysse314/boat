@@ -28,6 +28,7 @@ if len(sys.argv) == 2:
 elif len(sys.argv) == 3:
   STREAMER_PORT = int(sys.argv[1])
   CLIENT_PORT = int(sys.argv[2])
+LIVE_STREAM_URL = (config.values["live_stream_url"]) if ("live_stream_url" in config.values) else None
 client_queues = []
 frame_data = []
 my_boundary = "frame"
@@ -126,6 +127,8 @@ async def write_images(path):
     pass
 
 async def run_ffmpeg(client_port, live_stream_url):
+  if live_stream_url is None or live_stream_url == "":
+    return
   while True:
     await asyncio.sleep(2)
     await command.run("/usr/bin/ffmpeg", "-threads", "4", "-vsync", "1", "-use_wallclock_as_timestamps", "1", "-i", "http://127.0.0.1:" + str(client_port), "-vcodec", "libx264", "-b:v", "5M", "-f", "flv", live_stream_url)
@@ -163,4 +166,4 @@ def main(streamer_port, client_port, live_stream_url):
 
   loop.run_forever()
 
-main(STREAMER_PORT, CLIENT_PORT, config.values["live_stream_url"])
+main(STREAMER_PORT, CLIENT_PORT, LIVE_STREAM_URL)
