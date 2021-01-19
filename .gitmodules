@@ -1,0 +1,3 @@
+[submodule "MavlinkGenerated"]
+	path = MavlinkGenerated
+	url = git@github-ulysse314:ulysse314/MavlinkGenerated.git
