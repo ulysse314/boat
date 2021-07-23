@@ -1,0 +1,3 @@
+[submodule "boat/mavlink"]
+	path = boat/mavlink
+	url = git@github.com:ulysse314/mavlink.git
