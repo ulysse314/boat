@@ -13,6 +13,11 @@ parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../shared"
 if parent_dir not in sys.path:
   sys.path.append(parent_dir)
 
+parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../shared/mavlink"))
+if parent_dir not in sys.path:
+  sys.path.append(parent_dir)
+from MavlinkGenerated import mavlink
+
 import arduino_controller
 import boat_controller
 import camera_controller
